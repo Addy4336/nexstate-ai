@@ -1,4 +1,5 @@
 import { pool } from "@/lib/db";
+import Link from "next/link";
 import {
     Table,
     TableBody,
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, MoreHorizontal } from "lucide-react";
+import { requireAdmin } from "@/lib/auth-utils";
 
 async function getUsers() {
     const client = await pool.connect();
@@ -27,6 +29,9 @@ async function getUsers() {
 }
 
 export default async function UsersPage() {
+    // Verify admin access
+    await requireAdmin();
+    
     const users = await getUsers();
 
     return (
@@ -38,9 +43,11 @@ export default async function UsersPage() {
                         Manage admin access and user roles.
                     </p>
                 </div>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" /> Add User
-                </Button>
+                <Link href="/admin/users/new">
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" /> Add User
+                    </Button>
+                </Link>
             </div>
 
             <Card>
