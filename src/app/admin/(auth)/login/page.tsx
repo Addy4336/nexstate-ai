@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,9 @@ import { toast } from "sonner";
 
 export default function LoginPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/admin/dashboard";
+    
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +34,7 @@ export default function LoginPage() {
                         toast.success("Welcome back!", {
                             description: "Successfully signed in to admin dashboard",
                         });
-                        router.push("/admin/dashboard");
+                        router.push(callbackUrl);
                     },
                     onError: (ctx) => {
                         toast.error(ctx.error.message || "Invalid email or password");

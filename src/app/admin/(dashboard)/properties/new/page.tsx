@@ -1,6 +1,10 @@
 import { PropertyForm } from "@/components/admin/PropertyForm";
+import { requireAdmin } from "@/lib/auth-utils";
 
-export default function NewPropertyPage() {
+export default async function NewPropertyPage() {
+    // Verify admin access
+    await requireAdmin();
+    
     return (
         <div className="space-y-6">
             <div>

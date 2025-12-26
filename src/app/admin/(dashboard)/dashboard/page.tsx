@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
     Building2,
     Users,
@@ -116,22 +117,30 @@ export default function DashboardPage() {
                             <CardTitle>Quick Actions</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
-                            <Button className="w-full justify-start gap-2" variant="outline">
-                                <Building2 className="w-4 h-4" />
-                                Add New Property
-                            </Button>
-                            <Button className="w-full justify-start gap-2" variant="outline">
-                                <Users className="w-4 h-4" />
-                                Add New Tenant
-                            </Button>
-                            <Button className="w-full justify-start gap-2" variant="outline">
-                                <Calendar className="w-4 h-4" />
-                                Schedule Viewing
-                            </Button>
-                            <Button className="w-full justify-start gap-2" variant="outline">
-                                <Eye className="w-4 h-4" />
-                                View Reports
-                            </Button>
+                            <Link href="/admin/properties/new" className="block">
+                                <Button className="w-full justify-start gap-2" variant="outline">
+                                    <Building2 className="w-4 h-4" />
+                                    Add New Property
+                                </Button>
+                            </Link>
+                            <Link href="/admin/users/new" className="block">
+                                <Button className="w-full justify-start gap-2" variant="outline">
+                                    <Users className="w-4 h-4" />
+                                    Add New Tenant
+                                </Button>
+                            </Link>
+                            <Link href="/admin/properties" className="block">
+                                <Button className="w-full justify-start gap-2" variant="outline">
+                                    <Calendar className="w-4 h-4" />
+                                    Schedule Viewing
+                                </Button>
+                            </Link>
+                            <Link href="/admin/properties" className="block">
+                                <Button className="w-full justify-start gap-2" variant="outline">
+                                    <Eye className="w-4 h-4" />
+                                    View Reports
+                                </Button>
+                            </Link>
                         </CardContent>
                     </Card>
                 </motion.div>
