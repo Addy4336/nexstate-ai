@@ -46,6 +46,7 @@ export async function createProperty(formData: FormData) {
     }
 
     revalidatePath("/admin/properties");
+    revalidatePath("/"); // Revalidate homepage to show updated properties
     return { success: true };
 }
 
@@ -103,6 +104,7 @@ export async function updateProperty(id: string, formData: FormData) {
 
     revalidatePath("/admin/properties");
     revalidatePath(`/admin/properties/${id}`);
+    revalidatePath("/"); // Revalidate homepage
     return { success: true };
 }
 
@@ -116,5 +118,6 @@ export async function deleteProperty(id: string) {
         client.release();
     }
     revalidatePath("/admin/properties");
+    revalidatePath("/"); // Revalidate homepage
     return { success: true };
 }
