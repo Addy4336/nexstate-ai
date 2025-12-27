@@ -1,18 +1,18 @@
 "use server";
 
 import { pool } from "@/lib/db";
+import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import bcrypt from "bcryptjs";
+import { sendUserInviteEmail, generateSecurePassword } from "@/lib/email";
 
-export async function createUser(formData: FormData) {
+export async function inviteUser(formData: FormData) {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const role = formData.get("role") as string || "user";
-    
-    if (!name || !email || !password) {
-        return { error: "Name, email, and password are required" };
+    const role = formData.get("role") as string || "editor";
+
+    if (!name || !email) {
+        return { error: "Name and email are required" };
     }
 
     // Validate email format
@@ -21,10 +21,14 @@ export async function createUser(formData: FormData) {
         return { error: "Invalid email format" };
     }
 
-    // Validate password strength
-    if (password.length < 8) {
-        return { error: "Password must be at least 8 characters long" };
+    // Validate role
+    const validRoles = ["admin", "manager", "editor"];
+    if (!validRoles.includes(role)) {
+        return { error: "Invalid role selected" };
     }
+
+    // Generate a secure password
+    const password = generateSecurePassword(12);
 
     const client = await pool.connect();
     try {
@@ -38,13 +42,14 @@ export async function createUser(formData: FormData) {
             return { error: "User with this email already exists" };
         }
 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Use Better Auth's internal password hashing
+        const ctx = await auth.$context;
+        const hashedPassword = await ctx.password.hash(password);
 
         // Create user
         const userResult = await client.query(
             `INSERT INTO "user" (name, email, role, email_verified, created_at, updated_at) 
-             VALUES ($1, $2, $3, false, now(), now()) 
+             VALUES ($1, $2, $3, true, now(), now()) 
              RETURNING id`,
             [name, email, role]
         );
@@ -62,6 +67,22 @@ export async function createUser(formData: FormData) {
             [userId, email, "credential", hashedPassword]
         );
 
+        // Send invitation email with credentials
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
+        const emailResult = await sendUserInviteEmail({
+            to: email,
+            name,
+            email,
+            password,
+            role,
+            loginUrl: `${baseUrl}/admin/login`,
+        });
+
+        if (!emailResult.success) {
+            console.error("Failed to send invitation email:", emailResult.error);
+            // User is created but email failed - don't fail the whole operation
+        }
+
     } catch (error: any) {
         console.error("Error creating user:", error);
         return { error: error.message || "Failed to create user" };
@@ -70,8 +91,11 @@ export async function createUser(formData: FormData) {
     }
 
     revalidatePath("/admin/users");
-    redirect("/admin/users");
+    return { success: true, message: "User invited successfully! An email with login credentials has been sent." };
 }
+
+// Keep the old function name as an alias for backwards compatibility
+export const createUser = inviteUser;
 
 export async function updateUser(id: string, formData: FormData) {
     const name = formData.get("name") as string;
@@ -135,7 +159,9 @@ export async function resetUserPassword(id: string, formData: FormData) {
 
     const client = await pool.connect();
     try {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        // Use Better Auth's internal password hashing
+        const ctx = await auth.$context;
+        const hashedPassword = await ctx.password.hash(newPassword);
 
         await client.query(
             'UPDATE "account" SET password = $1 WHERE user_id = $2 AND provider_id = $3',
@@ -150,3 +176,4 @@ export async function resetUserPassword(id: string, formData: FormData) {
 
     return { success: true };
 }
+

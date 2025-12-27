@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { betterFetch } from "@better-fetch/fetch";
 
+// Staff roles that can access the admin dashboard
+const STAFF_ROLES = ["admin", "manager", "editor"];
+
 /**
  * Next.js 16 Proxy Function (replaces middleware.ts)
  * Protects admin routes and handles authentication
@@ -46,14 +49,21 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Check if user has admin role
-  if (session.user.role !== "admin") {
-    // Non-admin users trying to access admin area
+  // Check if user has a staff role (admin, manager, or editor)
+  if (!STAFF_ROLES.includes(session.user.role)) {
+    // Non-staff users trying to access admin area
     const unauthorizedUrl = new URL("/", request.url);
     return NextResponse.redirect(unauthorizedUrl);
   }
 
-  // User is authenticated and has admin role
+  // Additional check: Users page should be admin-only
+  if (pathname.startsWith("/admin/users") && session.user.role !== "admin") {
+    const dashboardUrl = new URL("/admin/dashboard", request.url);
+    dashboardUrl.searchParams.set("error", "unauthorized");
+    return NextResponse.redirect(dashboardUrl);
+  }
+
+  // User is authenticated and has staff role
   return NextResponse.next();
 }
 
@@ -73,3 +83,4 @@ export const config = {
     "/admin/:path*",
   ],
 };
+

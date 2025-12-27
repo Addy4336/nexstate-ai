@@ -14,23 +14,28 @@ export async function createProperty(formData: FormData) {
     const area_sqft = parseInt(formData.get("area_sqft") as string) || 0;
     const status = formData.get("status") as string || "available";
     const featured = formData.get("featured") === "on";
+    const drive_folder_id = formData.get("folderId") as string;
 
     // Images are passed as comma-separated string from client component
     const imagesString = formData.get("images") as string;
     const images = imagesString ? imagesString.split(",").filter(Boolean) : [];
 
+    // Extract cover image (first image in the list)
+    // IMPORTANT: The schema says cover_image is text[] (ARRAY), so we wrap it in an array
+    const cover_image = images.length > 0 ? [images[0]] : [];
+
     const client = await pool.connect();
     try {
         await client.query(
             `INSERT INTO property (
-        title, description, price, location, 
-        bedrooms, bathrooms, area_sqft, status, 
-        images, featured
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+                title, description, price, location, 
+                bedrooms, bathrooms, area_sqft, status, 
+                images, featured, cover_image, drive_folder_id
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
             [
                 title, description, price, location,
                 bedrooms, bathrooms, area_sqft, status,
-                images, featured
+                images, featured, cover_image, drive_folder_id
             ]
         );
     } catch (error: any) {
@@ -41,7 +46,64 @@ export async function createProperty(formData: FormData) {
     }
 
     revalidatePath("/admin/properties");
-    redirect("/admin/properties");
+    return { success: true };
+}
+
+export async function updateProperty(id: string, formData: FormData) {
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const price = parseFloat(formData.get("price") as string);
+    const location = formData.get("location") as string;
+    const bedrooms = parseInt(formData.get("bedrooms") as string) || 0;
+    const bathrooms = parseInt(formData.get("bathrooms") as string) || 0;
+    const area_sqft = parseInt(formData.get("area_sqft") as string) || 0;
+    const status = formData.get("status") as string || "available";
+    const featured = formData.get("featured") === "on";
+    const drive_folder_id = formData.get("folderId") as string;
+
+    const imagesString = formData.get("images") as string;
+    const images = imagesString ? imagesString.split(",").filter(Boolean) : [];
+    const cover_image = images.length > 0 ? [images[0]] : [];
+
+    const client = await pool.connect();
+    try {
+        // Build query dynamically or just set all fields (simpler)
+        // If drive_folder_id is empty (user didn't upload new images to change folder), keep existing?
+        // Actually, the client sends 'folderId' from state. If it's empty, we might not want to overwrite it with null if it existed.
+        // But for now, let's assume we update everything. 
+        // Better strategy: Use COALESCE(NULLIF($12, ''), drive_folder_id) logic if needed, but let's stick to simple update.
+
+        await client.query(
+            `UPDATE property SET
+                title = $1, 
+                description = $2, 
+                price = $3, 
+                location = $4, 
+                bedrooms = $5, 
+                bathrooms = $6, 
+                area_sqft = $7, 
+                status = $8, 
+                images = $9, 
+                featured = $10, 
+                cover_image = $11,
+                drive_folder_id = COALESCE(NULLIF($12, ''), drive_folder_id)
+             WHERE id = $13`,
+            [
+                title, description, price, location,
+                bedrooms, bathrooms, area_sqft, status,
+                images, featured, cover_image, drive_folder_id, id
+            ]
+        );
+    } catch (error: any) {
+        console.error("Error updating property:", error);
+        return { error: error.message };
+    } finally {
+        client.release();
+    }
+
+    revalidatePath("/admin/properties");
+    revalidatePath(`/admin/properties/${id}`);
+    return { success: true };
 }
 
 export async function deleteProperty(id: string) {
@@ -54,4 +116,5 @@ export async function deleteProperty(id: string) {
         client.release();
     }
     revalidatePath("/admin/properties");
+    return { success: true };
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { DeletePropertyButton } from "@/components/admin/DeletePropertyButton";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { requireAdmin } from "@/lib/auth-utils";
+import { requireStaff } from "@/lib/auth-utils";
 
 async function getProperties() {
     const client = await pool.connect();
@@ -20,9 +20,9 @@ async function getProperties() {
 }
 
 export default async function PropertiesPage() {
-    // Verify admin access
-    await requireAdmin();
-    
+    // Verify staff access
+    await requireStaff();
+
     const properties = await getProperties();
 
     return (

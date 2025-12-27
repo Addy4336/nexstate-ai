@@ -15,7 +15,7 @@ export default function LoginPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/admin/dashboard";
-    
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -29,12 +29,14 @@ export default function LoginPage() {
             await signIn.email({
                 email,
                 password,
+                callbackURL: "/admin/dashboard",
                 fetchOptions: {
                     onSuccess: () => {
                         toast.success("Welcome back!", {
                             description: "Successfully signed in to admin dashboard",
                         });
-                        router.push(callbackUrl);
+                        // Use replace to prevent back button returning to login
+                        router.replace("/admin/dashboard");
                     },
                     onError: (ctx) => {
                         toast.error(ctx.error.message || "Invalid email or password");

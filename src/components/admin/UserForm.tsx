@@ -4,9 +4,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createUser } from "@/actions/user-actions";
-import { Loader2, Save, Eye, EyeOff } from "lucide-react";
+import { inviteUser } from "@/actions/user-actions";
+import { Loader2, Mail, UserPlus } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import {
     Select,
     SelectContent,
@@ -21,20 +22,44 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+const roles = [
+    {
+        value: "admin",
+        label: "Admin",
+        description: "Full access to all features and settings",
+        color: "bg-red-500/10 text-red-600 border-red-500/20"
+    },
+    {
+        value: "manager",
+        label: "Manager",
+        description: "Manage properties, blogs, and view reports",
+        color: "bg-blue-500/10 text-blue-600 border-blue-500/20"
+    },
+    {
+        value: "editor",
+        label: "Editor",
+        description: "Create and edit content only",
+        color: "bg-green-500/10 text-green-600 border-green-500/20"
+    },
+];
 
 export function UserForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+    const [selectedRole, setSelectedRole] = useState("editor");
+    const router = useRouter();
 
     const handleSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
 
         try {
-            const result = await createUser(formData);
+            const result = await inviteUser(formData);
             if (result?.error) {
                 toast.error(result.error);
             } else {
-                toast.success("User created successfully! 🎉");
+                toast.success(result?.message || "User invited successfully! 🎉");
+                router.push("/admin/users");
             }
         } catch (e: any) {
             toast.error("Something went wrong");
@@ -43,13 +68,18 @@ export function UserForm() {
         }
     };
 
+    const selectedRoleInfo = roles.find(r => r.value === selectedRole);
+
     return (
         <form action={handleSubmit} className="space-y-6 max-w-2xl">
             <Card>
                 <CardHeader>
-                    <CardTitle>User Information</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                        <UserPlus className="h-5 w-5" />
+                        Invite Team Member
+                    </CardTitle>
                     <CardDescription>
-                        Enter the basic details for the new user account.
+                        Send an invitation email with login credentials to a new team member.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -73,56 +103,53 @@ export function UserForm() {
                             required
                         />
                         <p className="text-sm text-muted-foreground">
-                            This will be used for login credentials.
+                            An invitation email with login credentials will be sent to this address.
                         </p>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
-                        <div className="relative">
-                            <Input
-                                id="password"
-                                name="password"
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Enter a secure password"
-                                required
-                                className="pr-10"
-                            />
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? (
-                                    <EyeOff className="h-4 w-4" />
-                                ) : (
-                                    <Eye className="h-4 w-4" />
-                                )}
-                            </Button>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                            Must be at least 8 characters long.
-                        </p>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="role">User Role</Label>
-                        <Select name="role" defaultValue="user">
+                        <Label htmlFor="role">Role</Label>
+                        <Select
+                            name="role"
+                            defaultValue="editor"
+                            onValueChange={setSelectedRole}
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select Role" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="user">User</SelectItem>
-                                <SelectItem value="admin">Admin</SelectItem>
-                                <SelectItem value="manager">Manager</SelectItem>
-                                <SelectItem value="agent">Agent</SelectItem>
+                                {roles.map((role) => (
+                                    <SelectItem key={role.value} value={role.value}>
+                                        <div className="flex items-center gap-2">
+                                            <span>{role.label}</span>
+                                        </div>
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
-                        <p className="text-sm text-muted-foreground">
-                            Defines the user&apos;s access level and permissions.
-                        </p>
+                        {selectedRoleInfo && (
+                            <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="outline" className={selectedRoleInfo.color}>
+                                    {selectedRoleInfo.label}
+                                </Badge>
+                                <span className="text-sm text-muted-foreground">
+                                    {selectedRoleInfo.description}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="bg-muted/50 rounded-lg p-4 border border-dashed">
+                        <div className="flex items-start gap-3">
+                            <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium">Email Invitation</p>
+                                <p className="text-sm text-muted-foreground">
+                                    A secure password will be automatically generated and sent to the user&apos;s email
+                                    along with login instructions. They can change their password after signing in.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -131,7 +158,7 @@ export function UserForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    onClick={() => window.history.back()}
+                    onClick={() => router.back()}
                     disabled={isSubmitting}
                 >
                     Cancel
@@ -140,11 +167,12 @@ export function UserForm() {
                     {isSubmitting ? (
                         <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     ) : (
-                        <Save className="w-4 h-4 mr-2" />
+                        <Mail className="w-4 h-4 mr-2" />
                     )}
-                    Create User
+                    Send Invitation
                 </Button>
             </div>
         </form>
     );
 }
+

@@ -12,13 +12,26 @@ import {
     X,
     Home,
     ChevronRight,
+    Plug,
+    Megaphone,
+    Calculator,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signOut, useSession } from "@/lib/auth-client";
+import { Badge } from "@/components/ui/badge";
 
-const sidebarLinks = [
+type UserRole = "admin" | "manager" | "editor";
+
+interface SidebarLink {
+    label: string;
+    href: string;
+    icon: React.ElementType;
+    roles?: UserRole[]; // If not specified, visible to all staff roles
+}
+
+const sidebarLinks: SidebarLink[] = [
     {
         label: "Dashboard",
         href: "/admin/dashboard",
@@ -30,16 +43,40 @@ const sidebarLinks = [
         icon: Building2,
     },
     {
+        label: "Marketing",
+        href: "/admin/marketing",
+        icon: Megaphone,
+    },
+    {
+        label: "Tools",
+        href: "/admin/tools",
+        icon: Calculator,
+    },
+    {
         label: "Users",
         href: "/admin/users",
         icon: Users,
+        roles: ["admin"], // Only visible to admins
     },
     {
         label: "Settings",
         href: "/admin/settings",
         icon: Settings,
+        roles: ["admin"], // Only visible to admins
+    },
+    {
+        label: "Integrations",
+        href: "/admin/integrations",
+        icon: Plug,
+        roles: ["admin"], // Only visible to admins
     },
 ];
+
+const roleColors: Record<UserRole, string> = {
+    admin: "bg-red-500/10 text-red-600 border-red-500/20",
+    manager: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+    editor: "bg-green-500/10 text-green-600 border-green-500/20",
+};
 
 export function AdminSidebar() {
     const pathname = usePathname();
@@ -47,10 +84,18 @@ export function AdminSidebar() {
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const { data: session } = useSession();
 
+    const userRole = (session?.user?.role as UserRole) || "editor";
+
     const handleSignOut = async () => {
         await signOut();
         window.location.href = "/admin/login";
     };
+
+    // Filter links based on user role
+    const visibleLinks = sidebarLinks.filter((link) => {
+        if (!link.roles) return true; // Visible to all if no roles specified
+        return link.roles.includes(userRole);
+    });
 
     return (
         <>
@@ -95,7 +140,7 @@ export function AdminSidebar() {
 
                     {/* Navigation */}
                     <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-                        {sidebarLinks.map((link) => {
+                        {visibleLinks.map((link) => {
                             const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
                             return (
                                 <Link
@@ -118,6 +163,20 @@ export function AdminSidebar() {
 
                     {/* User Section */}
                     <div className="p-4 border-t border-border">
+                        {/* User Info with Role Badge */}
+                        {!isCollapsed && session?.user && (
+                            <div className="mb-3 px-3 py-2">
+                                <p className="text-sm font-medium text-foreground truncate">
+                                    {session.user.name}
+                                </p>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <Badge variant="outline" className={cn("text-xs capitalize", roleColors[userRole])}>
+                                        {userRole}
+                                    </Badge>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Back to Site */}
                         <Link
                             href="/"
@@ -158,3 +217,4 @@ export function AdminSidebar() {
         </>
     );
 }
+

@@ -1,12 +1,11 @@
 "use server";
 
 import { pool } from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import bcrypt from "bcryptjs";
+import { auth } from "@/lib/auth";
 
 /**
  * Set initial password for admin user or create new admin
- * This should only be used for the first-time setup
+ * Uses Better Auth's internal password context for proper hash format
  */
 export async function setInitialAdminPassword(formData: {
   email: string;
@@ -14,13 +13,13 @@ export async function setInitialAdminPassword(formData: {
   name?: string;
 }) {
   let client;
-  
+
   try {
     client = await pool.connect();
   } catch (error: any) {
     console.error("Database connection error:", error);
-    return { 
-      error: "Cannot connect to database. Please check your DATABASE_URL in .env.local file." 
+    return {
+      error: "Cannot connect to database. Please check your DATABASE_URL in .env.local file."
     };
   }
 
@@ -38,7 +37,7 @@ export async function setInitialAdminPassword(formData: {
       // Create new admin user
       const newUserResult = await client.query(
         `INSERT INTO "user" (id, name, email, email_verified, role, created_at, updated_at)
-         VALUES (uuid_generate_v4(), $1, $2, true, 'admin', now(), now())
+         VALUES (gen_random_uuid()::text, $1, $2, true, 'admin', now(), now())
          RETURNING id`,
         [formData.name || "Admin User", formData.email]
       );
@@ -55,34 +54,41 @@ export async function setInitialAdminPassword(formData: {
       );
 
       if (accountResult.rows.length > 0) {
-        return { error: "Admin account already exists. Please use the login page." };
+        // Delete existing credential to allow re-setup
+        await client.query(
+          'DELETE FROM "account" WHERE user_id = $1 AND provider_id = $2',
+          [userId, "credential"]
+        );
       }
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(formData.password, 10);
+    // Use Better Auth's internal password hashing via the auth context
+    // Better Auth uses scrypt internally, so we access it through the password context
+    const ctx = await auth.$context;
+    const hashedPassword = await ctx.password.hash(formData.password);
 
-    // Insert account with password
+    // Insert account with properly hashed password
     await client.query(
       `INSERT INTO "account" (id, user_id, account_id, provider_id, password, created_at, updated_at)
-       VALUES (uuid_generate_v4(), $1, $2, $3, $4, now(), now())`,
+       VALUES (gen_random_uuid()::text, $1, $2, $3, $4, now(), now())`,
       [userId, formData.email, "credential", hashedPassword]
     );
 
-    return { 
-      success: true, 
-      message: isNewUser ? "Admin account created successfully" : "Password set successfully" 
+    return {
+      success: true,
+      message: isNewUser ? "Admin account created successfully" : "Password set successfully"
     };
   } catch (error: any) {
     console.error("Error setting admin password:", error);
-    
+
     // Provide more specific error messages
     if (error.code === "23505") {
       return { error: "An account with this email already exists" };
     }
-    
+
     return { error: error.message || "Failed to create admin account" };
   } finally {
     client.release();
   }
 }
+

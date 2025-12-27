@@ -72,3 +72,50 @@ VALUES (
   now(),
   now()
 ) ON CONFLICT (email) DO NOTHING;
+
+-- Enable Row Level Security
+ALTER TABLE "user" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "session" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "account" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "verification" ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for user table
+-- Admins can view all users
+CREATE POLICY "admin_view_all_users" ON "user"
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM "user" u 
+      WHERE u.id = current_setting('app.current_user_id', true) 
+      AND u.role = 'admin'
+    )
+  );
+
+-- Users can view their own profile
+CREATE POLICY "users_view_own_profile" ON "user"
+  FOR SELECT USING (id = current_setting('app.current_user_id', true));
+
+-- Admins can insert/update/delete users
+CREATE POLICY "admin_manage_users" ON "user"
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM "user" u 
+      WHERE u.id = current_setting('app.current_user_id', true) 
+      AND u.role = 'admin'
+    )
+  );
+
+-- RLS Policies for session table
+-- Users can only see their own sessions
+CREATE POLICY "users_own_sessions" ON "session"
+  FOR ALL USING (user_id = current_setting('app.current_user_id', true));
+
+-- RLS Policies for account table
+-- Users can only see their own accounts
+CREATE POLICY "users_own_accounts" ON "account"
+  FOR ALL USING (user_id = current_setting('app.current_user_id', true));
+
+-- RLS Policies for verification table
+-- Allow service role full access (for auth operations)
+CREATE POLICY "service_full_access_verification" ON "verification"
+  FOR ALL USING (true);
+

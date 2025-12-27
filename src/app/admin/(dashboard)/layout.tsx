@@ -1,18 +1,18 @@
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminTopNav } from "@/components/admin/AdminTopNav";
-import { requireAdmin } from "@/lib/auth-utils";
+import { requireStaff } from "@/lib/auth-utils";
 
 /**
  * Admin Dashboard Layout
- * Requires authentication and admin role to access
+ * Requires authentication and staff role (admin, manager, or editor) to access
  */
 export default async function AdminDashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    // Verify admin access - redirects if not authenticated or not admin
-    await requireAdmin();
+    // Verify staff access - redirects if not authenticated or not a staff member
+    await requireStaff();
 
     return (
         <div className="min-h-screen bg-background">
@@ -24,3 +24,4 @@ export default async function AdminDashboardLayout({
         </div>
     );
 }
+
