@@ -6,6 +6,7 @@ import { DeletePropertyButton } from "@/components/admin/DeletePropertyButton";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth-utils";
+import { getDriveImageUrl } from "@/lib/utils";
 
 async function getProperties() {
     const client = await pool.connect();
@@ -47,7 +48,7 @@ export default async function PropertiesPage() {
                         <div className="relative aspect-video">
                             {property.images && property.images.length > 0 ? (
                                 <Image
-                                    src={property.images[0]}
+                                    src={getDriveImageUrl(property.images[0])}
                                     alt={property.title}
                                     fill
                                     className="object-cover"

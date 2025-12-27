@@ -62,7 +62,7 @@ const sidebarLinks: SidebarLink[] = [
         label: "Settings",
         href: "/admin/settings",
         icon: Settings,
-        roles: ["admin"], // Only visible to admins
+        // Visible to all staff
     },
     {
         label: "Integrations",
