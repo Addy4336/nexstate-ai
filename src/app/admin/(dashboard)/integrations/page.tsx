@@ -2,12 +2,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getStoredTokens } from "@/lib/google-drive";
-import { CheckCircle, AlertCircle, HardDrive } from "lucide-react";
+import { getStoredZohoTokens } from "@/lib/zoho-crm";
+import { CheckCircle, AlertCircle, HardDrive, Users } from "lucide-react";
 import Link from "next/link";
 
 export default async function IntegrationsPage() {
     const tokens = await getStoredTokens();
     const isConnected = !!tokens;
+
+    const zohoTokens = await getStoredZohoTokens();
+    const isZohoConnected = !!zohoTokens;
 
     return (
         <div className="space-y-6">
@@ -44,6 +48,46 @@ export default async function IntegrationsPage() {
                                 {isConnected ? "Reconnect Drive" : "Connect Drive"}
                             </Link>
                         </Button>
+                    </CardFooter>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Users className="h-6 w-6" />
+                            Zoho Creator
+                        </CardTitle>
+                        <CardDescription>
+                            Connect Zoho Creator to sync data with your applications.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex items-center gap-2">
+                            Status:
+                            {isZohoConnected ? (
+                                <span className="text-green-600 flex items-center gap-1 font-medium">
+                                    <CheckCircle className="h-4 w-4" /> Connected
+                                </span>
+                            ) : (
+                                <span className="text-yellow-600 flex items-center gap-1 font-medium">
+                                    <AlertCircle className="h-4 w-4" /> Not Connected
+                                </span>
+                            )}
+                        </div>
+                    </CardContent>
+                    <CardFooter className="flex gap-2">
+                        <Button asChild>
+                            <Link href="/api/auth/zoho">
+                                {isZohoConnected ? "Reconnect" : "Connect Zoho"}
+                            </Link>
+                        </Button>
+                        {isZohoConnected && (
+                            <Button variant="outline" asChild>
+                                <Link href="/admin/integrations/zoho">
+                                    Configure
+                                </Link>
+                            </Button>
+                        )}
                     </CardFooter>
                 </Card>
             </div>
