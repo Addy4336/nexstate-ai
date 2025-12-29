@@ -43,6 +43,11 @@ const sidebarLinks: SidebarLink[] = [
         icon: Building2,
     },
     {
+        label: "Leads",
+        href: "/admin/leads",
+        icon: Users,
+    },
+    {
         label: "Marketing",
         href: "/admin/marketing",
         icon: Megaphone,
