@@ -1,30 +1,82 @@
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Filter } from "lucide-react";
+
+export function StatusFilter({ defaultValue }: { defaultValue: string }) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const handleChange = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (value === 'all') {
+            params.delete('status');
+        } else {
+            params.set('status', value);
+        }
+        router.push(`/admin/properties?${params.toString()}`);
+    };
+
+    return (
+        <Select defaultValue={defaultValue} onValueChange={handleChange}>
+            <SelectTrigger className="w-[180px]">
+                <Filter className="w-4 h-4 mr-2" />
+                <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="all">All Properties</SelectItem>
+                <SelectItem value="available">Available</SelectItem>
+                <SelectItem value="rented">Rented</SelectItem>
+                <SelectItem value="maintenance">Maintenance</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+            </SelectContent>
+        </Select>
+    );
+}
+
 import { pool } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit } from "lucide-react";
 import Link from "next/link";
 import { DeletePropertyButton } from "@/components/admin/DeletePropertyButton";
+import { ArchivePropertyButton } from "@/components/admin/ArchivePropertyButton";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth-utils";
 import { getDriveImageUrl } from "@/lib/utils";
 
-async function getProperties() {
+async function getProperties(statusFilter?: string) {
     const client = await pool.connect();
     try {
-        const res = await client.query(`
-      SELECT * FROM property ORDER BY created_at DESC
-    `);
+        let query = `SELECT * FROM property`;
+        const params: any[] = [];
+        
+        if (statusFilter && statusFilter !== 'all') {
+            query += ` WHERE status = $1`;
+            params.push(statusFilter);
+        }
+        
+        query += ` ORDER BY created_at DESC`;
+        
+        const res = await client.query(query, params);
         return res.rows;
     } finally {
         client.release();
     }
 }
 
-export default async function PropertiesPage() {
+interface PropertiesPageProps {
+    searchParams: Promise<{ status?: string }>;
+}
+
+export default async function PropertiesPage({ searchParams }: PropertiesPageProps) {
     // Verify staff access
     await requireStaff();
 
-    const properties = await getProperties();
+    const params = await searchParams;
+    const statusFilter = params.status || 'all';
+    const properties = await getProperties(statusFilter);
 
     return (
         <div className="space-y-6">
@@ -35,11 +87,14 @@ export default async function PropertiesPage() {
                         Manage your property listings.
                     </p>
                 </div>
-                <Link href="/admin/properties/new">
-                    <Button className="btn-primary">
-                        <Plus className="mr-2 h-4 w-4" /> Add Property
-                    </Button>
-                </Link>
+                <div className="flex items-center gap-3">
+                    <StatusFilter defaultValue={statusFilter} />
+                    <Link href="/admin/properties/new">
+                        <Button className="btn-primary">
+                            <Plus className="mr-2 h-4 w-4" /> Add Property
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -91,6 +146,11 @@ export default async function PropertiesPage() {
                                     <Edit className="w-4 h-4 mr-2" /> Edit
                                 </Button>
                             </Link>
+                            <ArchivePropertyButton 
+                                id={property.id} 
+                                title={property.title}
+                                isArchived={property.status === 'archived'}
+                            />
                             <DeletePropertyButton id={property.id} />
                         </div>
                     </div>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
@@ -13,17 +13,18 @@ const navItems = [
         href: "#tenants",
         submenu: [
             { label: "Browse Properties", href: "/properties" },
+            { label: "Saved Properties", href: "/favorites" },
+            { label: "Cost Calculator", href: "/tools/cost-calculator" },
             { label: "How It Works", href: "/#how-it-works" },
-            { label: "Co-Living Spaces", href: "/properties?type=coliving" },
         ]
     },
     {
         label: "For Owners",
         href: "#owners",
         submenu: [
+            { label: "Owner Portal", href: "/owners" },
             { label: "List Your Property", href: "/list-property" },
-            { label: "ROI Calculator", href: "/#roi" },
-            { label: "Franchise", href: "/franchise" },
+            { label: "ROI Calculator", href: "/tools/roi-calculator" },
         ]
     },
     { label: "About", href: "/about" },
@@ -90,11 +91,14 @@ export function Header() {
 
                         {/* CTA Buttons */}
                         <div className="hidden lg:flex items-center gap-3">
+                            <Link href="/favorites" className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+                                <Heart className="w-5 h-5" />
+                            </Link>
                             <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" asChild>
                                 <Link href="/admin/login">Sign In</Link>
                             </Button>
-                            <Button className="btn-primary text-sm px-5 py-2">
-                                Book Now
+                            <Button className="btn-primary text-sm px-5 py-2" asChild>
+                                <Link href="/properties">Book Now</Link>
                             </Button>
                         </div>
 
@@ -142,11 +146,20 @@ export function Header() {
                                             )}
                                         </div>
                                     ))}
+                                    <Link
+                                        href="/favorites"
+                                        className="flex items-center gap-2 text-foreground font-medium"
+                                        onClick={() => setIsOpen(false)}
+                                    >
+                                        <Heart className="w-4 h-4" /> Saved Properties
+                                    </Link>
                                     <div className="flex flex-col gap-2 pt-4 border-t border-border">
                                         <Button variant="outline" className="w-full" asChild>
                                             <Link href="/admin/login">Sign In</Link>
                                         </Button>
-                                        <Button className="btn-primary w-full">Book Now</Button>
+                                        <Button className="btn-primary w-full" asChild>
+                                            <Link href="/properties">Book Now</Link>
+                                        </Button>
                                     </div>
                                 </div>
                             </motion.div>

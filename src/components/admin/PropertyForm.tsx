@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { createProperty, updateProperty } from "@/actions/property-actions";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -18,6 +18,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { PROPERTY_AMENITIES } from "@/types/property";
+import { Badge } from "@/components/ui/badge";
 
 interface PropertyFormProps {
     initialData?: any; // Define proper type if available
@@ -28,12 +30,22 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [title, setTitle] = useState(initialData?.title || "");
     const [folderId, setFolderId] = useState(initialData?.drive_folder_id || "");
+    const [selectedAmenities, setSelectedAmenities] = useState<string[]>(initialData?.amenities || []);
     const router = useRouter();
+
+    const toggleAmenity = (amenity: string) => {
+        setSelectedAmenities(prev =>
+            prev.includes(amenity)
+                ? prev.filter(a => a !== amenity)
+                : [...prev, amenity]
+        );
+    };
 
     const handleSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
         formData.set("images", images.join(","));
         formData.set("folderId", folderId);
+        formData.set("amenities", selectedAmenities.join(","));
 
         try {
             let result;
@@ -122,6 +134,7 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
                             <SelectItem value="rented">Rented</SelectItem>
                             <SelectItem value="sold">Sold</SelectItem>
                             <SelectItem value="maintenance">Maintenance</SelectItem>
+                            <SelectItem value="archived">Archived</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -129,6 +142,39 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
                 <div className="flex items-center space-x-2 md:col-span-2">
                     <Switch id="featured" name="featured" defaultChecked={initialData?.featured} />
                     <Label htmlFor="featured">Featured Property</Label>
+                </div>
+
+                {/* Amenities Section */}
+                <div className="space-y-3 md:col-span-2">
+                    <Label>Amenities</Label>
+                    <p className="text-xs text-muted-foreground">
+                        Select the amenities available at this property
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                        {PROPERTY_AMENITIES.map((amenity) => {
+                            const isSelected = selectedAmenities.includes(amenity);
+                            return (
+                                <Badge
+                                    key={amenity}
+                                    variant={isSelected ? "default" : "outline"}
+                                    className={`cursor-pointer transition-all ${
+                                        isSelected 
+                                            ? "bg-primary text-primary-foreground" 
+                                            : "hover:bg-muted"
+                                    }`}
+                                    onClick={() => toggleAmenity(amenity)}
+                                >
+                                    {isSelected && <Check className="w-3 h-3 mr-1" />}
+                                    {amenity}
+                                </Badge>
+                            );
+                        })}
+                    </div>
+                    {selectedAmenities.length > 0 && (
+                        <p className="text-xs text-muted-foreground">
+                            {selectedAmenities.length} amenities selected
+                        </p>
+                    )}
                 </div>
 
                 <div className="space-y-2 md:col-span-2">

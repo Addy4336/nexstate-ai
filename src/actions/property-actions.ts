@@ -20,6 +20,10 @@ export async function createProperty(formData: FormData) {
     const imagesString = formData.get("images") as string;
     const images = imagesString ? imagesString.split(",").filter(Boolean) : [];
 
+    // Amenities are passed as comma-separated string
+    const amenitiesString = formData.get("amenities") as string;
+    const amenities = amenitiesString ? amenitiesString.split(",").filter(Boolean) : [];
+
     // Extract cover image (first image in the list)
     // IMPORTANT: The schema says cover_image is text[] (ARRAY), so we wrap it in an array
     const cover_image = images.length > 0 ? [images[0]] : [];
@@ -30,12 +34,12 @@ export async function createProperty(formData: FormData) {
             `INSERT INTO property (
                 title, description, price, location, 
                 bedrooms, bathrooms, area_sqft, status, 
-                images, featured, cover_image, drive_folder_id
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+                images, featured, cover_image, drive_folder_id, amenities
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
             [
                 title, description, price, location,
                 bedrooms, bathrooms, area_sqft, status,
-                images, featured, cover_image, drive_folder_id
+                images, featured, cover_image, drive_folder_id, amenities
             ]
         );
     } catch (error: any) {
@@ -66,14 +70,11 @@ export async function updateProperty(id: string, formData: FormData) {
     const images = imagesString ? imagesString.split(",").filter(Boolean) : [];
     const cover_image = images.length > 0 ? [images[0]] : [];
 
+    const amenitiesString = formData.get("amenities") as string;
+    const amenities = amenitiesString ? amenitiesString.split(",").filter(Boolean) : [];
+
     const client = await pool.connect();
     try {
-        // Build query dynamically or just set all fields (simpler)
-        // If drive_folder_id is empty (user didn't upload new images to change folder), keep existing?
-        // Actually, the client sends 'folderId' from state. If it's empty, we might not want to overwrite it with null if it existed.
-        // But for now, let's assume we update everything. 
-        // Better strategy: Use COALESCE(NULLIF($12, ''), drive_folder_id) logic if needed, but let's stick to simple update.
-
         await client.query(
             `UPDATE property SET
                 title = $1, 
@@ -87,12 +88,14 @@ export async function updateProperty(id: string, formData: FormData) {
                 images = $9, 
                 featured = $10, 
                 cover_image = $11,
-                drive_folder_id = COALESCE(NULLIF($12, ''), drive_folder_id)
-             WHERE id = $13`,
+                drive_folder_id = COALESCE(NULLIF($12, ''), drive_folder_id),
+                amenities = $13,
+                updated_at = now()
+             WHERE id = $14`,
             [
                 title, description, price, location,
                 bedrooms, bathrooms, area_sqft, status,
-                images, featured, cover_image, drive_folder_id, id
+                images, featured, cover_image, drive_folder_id, amenities, id
             ]
         );
     } catch (error: any) {
@@ -119,5 +122,22 @@ export async function deleteProperty(id: string) {
     }
     revalidatePath("/admin/properties");
     revalidatePath("/"); // Revalidate homepage
+    return { success: true };
+}
+
+export async function archiveProperty(id: string) {
+    const client = await pool.connect();
+    try {
+        await client.query(
+            `UPDATE property SET status = 'archived', updated_at = now() WHERE id = $1`,
+            [id]
+        );
+    } catch (error: any) {
+        return { error: error.message };
+    } finally {
+        client.release();
+    }
+    revalidatePath("/admin/properties");
+    revalidatePath("/");
     return { success: true };
 }

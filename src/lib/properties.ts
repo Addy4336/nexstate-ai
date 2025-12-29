@@ -78,3 +78,58 @@ export async function getPropertyById(id: string): Promise<Property | null> {
         client.release();
     }
 }
+
+/**
+ * Fetches filtered properties based on search criteria
+ */
+export async function getFilteredProperties(searchParams: {
+    query?: string;
+    location?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    bedrooms?: number;
+}): Promise<Property[]> {
+    const client = await pool.connect();
+    try {
+        let sql = `SELECT * FROM property WHERE status = 'available'`;
+        const values: any[] = [];
+        let paramIndex = 1;
+
+        if (searchParams.query) {
+            sql += ` AND (title ILIKE $${paramIndex} OR description ILIKE $${paramIndex} OR location ILIKE $${paramIndex})`;
+            values.push(`%${searchParams.query}%`);
+            paramIndex++;
+        }
+
+        if (searchParams.location) {
+            sql += ` AND location ILIKE $${paramIndex}`;
+            values.push(`%${searchParams.location}%`);
+            paramIndex++;
+        }
+
+        if (searchParams.minPrice) {
+            sql += ` AND price >= $${paramIndex}`;
+            values.push(searchParams.minPrice);
+            paramIndex++;
+        }
+
+        if (searchParams.maxPrice) {
+            sql += ` AND price <= $${paramIndex}`;
+            values.push(searchParams.maxPrice);
+            paramIndex++;
+        }
+
+        if (searchParams.bedrooms) {
+            sql += ` AND bedrooms >= $${paramIndex}`;
+            values.push(searchParams.bedrooms);
+            paramIndex++;
+        }
+
+        sql += ` ORDER BY featured DESC, created_at DESC`;
+
+        const res = await client.query(sql, values);
+        return res.rows as Property[];
+    } finally {
+        client.release();
+    }
+}
