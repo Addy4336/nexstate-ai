@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HOPO Homes CMS - Turborepo Monorepo
 
-## Getting Started
+Turborepo monorepo containing HOPO Homes CMS (Next.js) and frontend (Vite React).
 
-First, run the development server:
+## 📁 Project Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+hopohomes_cms/
+├── hopohomes-cms/        # Next.js CMS (Backend + Admin) - Port 3001
+├── hopohomes-frontend/   # Vite React (User Frontend) - Port 3000
+├── package.json          # Root workspace config
+└── turbo.json           # Turborepo configuration
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Quick Start
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Install Dependencies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+bun install
+```
 
-## Learn More
+### Run Both Apps
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+bun run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **CMS**: http://localhost:3001
+- **Frontend**: http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Run Individual Apps
 
-## Deploy on Vercel
+**CMS:**
+```bash
+cd hopohomes-cms && bun run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Frontend:**
+```bash
+cd hopohomes-frontend && bun run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🏗️ Build
+
+```bash
+# Build all
+bun run build
+
+# Build individual
+cd hopohomes-cms && bun run build
+cd hopohomes-frontend && bun run build
+```
+
+## 🔧 Tech Stack
+
+### CMS (hopohomes-cms)
+- Next.js 16 + App Router
+- Supabase (PostgreSQL)
+- Better Auth
+- Tailwind CSS + shadcn/ui
+- Zoho Creator & Google Drive integrations
+
+### Frontend (hopohomes-frontend)
+- Vite + React 18
+- React Router
+- React Query
+- Tailwind CSS + shadcn/ui
+
+## 📝 Environment Variables
+
+Create `.env.local` in `hopohomes-cms/`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:3001
+```
+
+## 🚢 Deployment
+
+- **CMS**: Deploy to Vercel (point to `hopohomes-cms/`)
+- **Frontend**: Deploy to Vercel/Netlify (point to `hopohomes-frontend/`)
+
+## 📄 License
+
+Proprietary - HOPO Homes
