@@ -271,9 +271,10 @@ export class ZohoCreatorService {
     async getApplications(): Promise<{ success: boolean; applications?: any[]; error?: string }> {
         try {
             const accessToken = await this.getValidAccessToken();
-            const { api } = getZohoDomains();
+            
+            const url = `${this.creatorDomain}/api/v2/applications`;
 
-            const response = await fetch(`${api}/creator/v2.1/meta/applications`, {
+            const response = await fetch(url, {
                 headers: {
                     Authorization: `Zoho-oauthtoken ${accessToken}`,
                 },
@@ -290,6 +291,9 @@ export class ZohoCreatorService {
             }
 
             console.log("✅ Applications fetched from Zoho Creator");
+            if (result.applications && result.applications.length > 0) {
+                console.log("🔍 First application structure:", JSON.stringify(result.applications[0], null, 2));
+            }
             return { success: true, applications: result.applications || [] };
         } catch (error: any) {
             console.error("❌ Failed to fetch applications:", error.message);
@@ -303,9 +307,11 @@ export class ZohoCreatorService {
     async getForms(ownerName: string, appLinkName: string): Promise<{ success: boolean; forms?: any[]; error?: string }> {
         try {
             const accessToken = await this.getValidAccessToken();
-            const { api } = getZohoDomains();
+            
+            const url = `${this.creatorDomain}/api/v2/${ownerName}/${appLinkName}/forms`;
+            console.log(`🔍 Fetching forms from: ${url}`);
 
-            const response = await fetch(`${api}/creator/v2.1/meta/${ownerName}/${appLinkName}/forms`, {
+            const response = await fetch(url, {
                 headers: {
                     Authorization: `Zoho-oauthtoken ${accessToken}`,
                 },
@@ -330,14 +336,47 @@ export class ZohoCreatorService {
     }
 
     /**
+     * Get fields for a specific form
+     */
+    async getFormFields(ownerName: string, appLinkName: string, formLinkName: string): Promise<{ success: boolean; fields?: any[]; error?: string }> {
+        try {
+            const accessToken = await this.getValidAccessToken();
+            
+            const url = `${this.creatorDomain}/api/v2/${ownerName}/${appLinkName}/form/${formLinkName}/fields`;
+
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: `Zoho-oauthtoken ${accessToken}`,
+                },
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                console.error("❌ Zoho Creator API error:", result);
+                return {
+                    success: false,
+                    error: result.message || result.description || "Failed to fetch form fields",
+                };
+            }
+
+            console.log("✅ Form fields fetched from Zoho Creator");
+            return { success: true, fields: result.fields || [] };
+        } catch (error: any) {
+            console.error("❌ Failed to fetch form fields:", error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
      * Get reports for a specific application
      */
     async getReports(ownerName: string, appLinkName: string): Promise<{ success: boolean; reports?: any[]; error?: string }> {
         try {
             const accessToken = await this.getValidAccessToken();
-            const { api } = getZohoDomains();
-
-            const response = await fetch(`${api}/creator/v2.1/meta/${ownerName}/${appLinkName}/reports`, {
+            
+            const url = `${this.creatorDomain}/api/v2/${ownerName}/${appLinkName}/reports`;            console.log("🔍 Fetching forms from:", url);
+            const response = await fetch(url, {
                 headers: {
                     Authorization: `Zoho-oauthtoken ${accessToken}`,
                 },

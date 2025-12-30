@@ -13,7 +13,8 @@ import {
     syncPropertiesToZoho,
     getZohoApplications,
     getZohoForms,
-    getZohoReports
+    getZohoReports,
+    getZohoFormFields
 } from "@/actions/zoho-actions";
 import { toast } from "sonner";
 
@@ -30,8 +31,10 @@ interface ZohoConfig {
 interface ZohoApp {
     application_name: string;
     link_name: string;
-    application_owner: string;
-    created_time: string;
+    workspace_name?: string;
+    application_owner?: string;
+    owner_name?: string;
+    created_time?: string;
 }
 
 interface ZohoForm {
@@ -42,6 +45,12 @@ interface ZohoForm {
 interface ZohoReport {
     display_name: string;
     link_name: string;
+}
+
+interface ZohoField {
+    display_name: string;
+    link_name: string;
+    type: string;
 }
 
 interface ZohoSetupFormProps {
@@ -76,9 +85,11 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
     const [applications, setApplications] = useState<ZohoApp[]>([]);
     const [forms, setForms] = useState<ZohoForm[]>([]);
     const [reports, setReports] = useState<ZohoReport[]>([]);
+    const [formFields, setFormFields] = useState<ZohoField[]>([]);
 
     const [loadingApps, setLoadingApps] = useState(false);
     const [loadingForms, setLoadingForms] = useState(false);
+    const [loadingFields, setLoadingFields] = useState(false);
     const [saving, setSaving] = useState(false);
     const [syncing, setSyncing] = useState(false);
 
@@ -139,13 +150,44 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
         }
     };
 
+    // Load fields when form changes
+    useEffect(() => {
+        if (config.owner_name && config.app_name && config.form_name) {
+            loadFormFields(config.owner_name, config.app_name, config.form_name);
+        }
+    }, [config.owner_name, config.app_name, config.form_name]);
+
+    const loadFormFields = async (ownerName: string, appLinkName: string, formLinkName: string) => {
+        setLoadingFields(true);
+        try {
+            const result = await getZohoFormFields(ownerName, appLinkName, formLinkName);
+            if (result.success && result.fields) {
+                setFormFields(result.fields);
+            }
+        } catch (error) {
+            toast.error("Failed to load form fields");
+        } finally {
+            setLoadingFields(false);
+        }
+    };
+
     const handleAppSelect = (appLinkName: string) => {
         const app = applications.find(a => a.link_name === appLinkName);
         if (app) {
+            console.log("Selected App:", app);
+            // Prioritize owner_name or workspace_name over application_owner
+            const ownerName = app.owner_name || app.workspace_name || app.application_owner;
+            
+            if (!ownerName) {
+                console.warn("Could not determine owner name for app:", app);
+                toast.error("Could not determine owner name for this application");
+                return;
+            }
+
             setConfig(prev => ({
                 ...prev,
                 app_name: appLinkName,
-                owner_name: app.application_owner || app.application_name,
+                owner_name: ownerName,
                 form_name: "",
                 report_name: ""
             }));
@@ -351,11 +393,29 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
                                 {CMS_FIELDS.map((field) => (
                                     <div key={field.key} className="grid grid-cols-2 gap-4 items-center">
                                         <Label className="text-sm font-medium">{field.label}</Label>
-                                        <Input
-                                            placeholder="Zoho field name"
-                                            value={config.field_mapping[field.key] || ""}
-                                            onChange={(e) => updateFieldMapping(field.key, e.target.value)}
-                                        />
+                                        {loadingFields ? (
+                                            <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                                                <Loader2 className="h-3 w-3 animate-spin" />
+                                                Loading...
+                                            </div>
+                                        ) : (
+                                            <Select
+                                                value={config.field_mapping[field.key] || ""}
+                                                onValueChange={(val) => updateFieldMapping(field.key, val === "none" ? "" : val)}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Zoho field" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="none">None</SelectItem>
+                                                    {formFields.map((zohoField) => (
+                                                        <SelectItem key={zohoField.link_name} value={zohoField.link_name}>
+                                                            {zohoField.display_name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
                                     </div>
                                 ))}
                             </div>

@@ -49,6 +49,24 @@ export async function getZohoForms(ownerName: string, appLinkName: string) {
 }
 
 /**
+ * Get fields for a specific Zoho Creator form
+ */
+export async function getZohoFormFields(ownerName: string, appLinkName: string, formLinkName: string) {
+    try {
+        const zoho = await getZohoCreatorService();
+        if (!zoho) {
+            return { success: false, error: "Zoho Creator not connected" };
+        }
+
+        const result = await zoho.getFormFields(ownerName, appLinkName, formLinkName);
+        return result;
+    } catch (error: any) {
+        console.error("Error fetching Zoho form fields:", error);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
  * Get reports for a specific Zoho Creator application
  */
 export async function getZohoReports(ownerName: string, appLinkName: string) {

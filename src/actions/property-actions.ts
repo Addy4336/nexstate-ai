@@ -3,6 +3,8 @@
 import { pool } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getZohoConfig } from "./zoho-actions";
+import { getZohoCreatorService } from "@/lib/zoho-crm";
 
 export async function createProperty(formData: FormData) {
     const title = formData.get("title") as string;
@@ -47,6 +49,39 @@ export async function createProperty(formData: FormData) {
         return { error: error.message };
     } finally {
         client.release();
+    }
+
+    // Sync to Zoho Creator if enabled
+    try {
+        const configResult = await getZohoConfig();
+        if (configResult.success && configResult.data && configResult.data.auto_sync) {
+            const config = configResult.data;
+            const zoho = await getZohoCreatorService();
+            
+            if (zoho) {
+                const zohoData: Record<string, any> = {};
+                const mapping = config.field_mapping || {};
+                
+                const propertyData = {
+                    title, description, price, location, 
+                    bedrooms, bathrooms, area_sqft, status, 
+                    featured, amenities: amenities.join(", ")
+                };
+                
+                for (const [localField, zohoField] of Object.entries(mapping)) {
+                    if (zohoField && propertyData[localField as keyof typeof propertyData] !== undefined) {
+                        zohoData[zohoField as string] = propertyData[localField as keyof typeof propertyData];
+                    }
+                }
+                
+                if (Object.keys(zohoData).length > 0) {
+                    await zoho.addRecord(config.owner_name, config.app_name, config.form_name, zohoData);
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Failed to sync with Zoho:", error);
+        // Don't fail the request if sync fails
     }
 
     revalidatePath("/admin/properties");
