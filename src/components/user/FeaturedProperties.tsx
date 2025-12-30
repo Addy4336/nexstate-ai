@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Bed, Bath, Square, Heart, ArrowRight, Home } from "lucide-react";
+import { MapPin, Bed, Bath, Square, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Property } from "@/types/property";
-
+import Link from "next/link";
+import { FavoriteButton } from "@/components/user/FavoriteButton";
 import { getDriveImageUrl } from "@/lib/utils";
 
 interface FeaturedPropertiesProps {
@@ -75,10 +76,12 @@ export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <Button variant="outline" className="group">
-              View All Properties
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link href="/properties">
+              <Button variant="outline" className="group">
+                View All Properties
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </motion.div>
         </div>
 
@@ -94,66 +97,72 @@ export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
                 transition={{ delay: index * 0.1 }}
                 className="group bg-card rounded-2xl overflow-hidden shadow-sm border border-border card-hover"
               >
-                {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={getPropertyImage(property)}
-                    alt={property.title}
-                    onError={handleImageError}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
+                <Link href={`/properties/${property.id}`}>
+                  {/* Image */}
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img
+                      src={getPropertyImage(property)}
+                      alt={property.title}
+                      onError={handleImageError}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
 
-                  {/* Badges */}
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    {property.featured && (
-                      <span className="px-3 py-1 rounded-full bg-accent text-accent-foreground text-xs font-semibold">
-                        Featured
+                    {/* Badges */}
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      {property.featured && (
+                        <span className="px-3 py-1 rounded-full bg-accent text-accent-foreground text-xs font-semibold">
+                          Featured
+                        </span>
+                      )}
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
+                        property.status === 'available' 
+                          ? 'bg-green-500/90 text-white' 
+                          : 'bg-card/90 text-foreground'
+                      }`}>
+                        {property.status}
                       </span>
-                    )}
-                    <span className="px-3 py-1 rounded-full bg-card/90 text-foreground text-xs font-medium capitalize">
-                      {property.status}
-                    </span>
-                  </div>
-
-                  {/* Favorite Button */}
-                  <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-card/90 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors">
-                    <Heart className="w-5 h-5" />
-                  </button>
-
-                  {/* Price */}
-                  <div className="absolute bottom-4 left-4">
-                    <p className="text-primary-foreground font-bold text-xl">
-                      AED {formatPrice(property.price)}<span className="text-sm font-normal">/month</span>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-card-foreground mb-2 group-hover:text-accent transition-colors">
-                    {property.title}
-                  </h3>
-                  <div className="flex items-center gap-1 text-muted-foreground text-sm mb-4">
-                    <MapPin className="w-4 h-4 text-accent" />
-                    {property.location}
-                  </div>
-
-                  {/* Features */}
-                  <div className="flex items-center gap-4 pt-4 border-t border-border">
-                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <Bed className="w-4 h-4" />
-                      {property.bedrooms} Bed
                     </div>
-                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <Bath className="w-4 h-4" />
-                      {property.bathrooms} Bath
-                    </div>
-                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <Square className="w-4 h-4" />
-                      {property.area_sqft || 0} sqft
+
+                    {/* Price */}
+                    <div className="absolute bottom-4 left-4">
+                      <p className="text-primary-foreground font-bold text-xl">
+                        AED {formatPrice(property.price)}<span className="text-sm font-normal">/month</span>
+                      </p>
                     </div>
                   </div>
+
+                  {/* Content */}
+                  <div className="p-5">
+                    <h3 className="text-lg font-semibold text-card-foreground mb-2 group-hover:text-accent transition-colors">
+                      {property.title}
+                    </h3>
+                    <div className="flex items-center gap-1 text-muted-foreground text-sm mb-4">
+                      <MapPin className="w-4 h-4 text-accent" />
+                      {property.location}
+                    </div>
+
+                    {/* Features */}
+                    <div className="flex items-center gap-4 pt-4 border-t border-border">
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <Bed className="w-4 h-4" />
+                        {property.bedrooms} Bed
+                      </div>
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <Bath className="w-4 h-4" />
+                        {property.bathrooms} Bath
+                      </div>
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <Square className="w-4 h-4" />
+                        {property.area_sqft || 0} sqft
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Favorite Button - Outside Link to prevent nested interaction */}
+                <div className="absolute top-4 right-4 z-10">
+                  <FavoriteButton propertyId={property.id} variant="icon" />
                 </div>
               </motion.div>
             ))}

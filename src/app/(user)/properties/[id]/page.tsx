@@ -10,11 +10,11 @@ import {
     Maximize,
     MapPin,
     Check,
-    Share2,
-    Heart,
     Home
 } from "lucide-react";
 import { EnquiryForm } from "@/components/user/EnquiryForm";
+import { FavoriteButton } from "@/components/user/FavoriteButton";
+import { ShareButton } from "@/components/user/ShareButton";
 import Link from "next/link";
 import { Property } from "@/types/property";
 
@@ -109,18 +109,24 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                         {/* Title & Key Specs */}
                         <div>
                             <div className="flex justify-between items-start mb-4">
-                                <div>
+                                <div className="flex-1">
                                     <h1 className="text-3xl font-bold mb-2">{property.title}</h1>
                                     <div className="flex items-center text-muted-foreground">
                                         <MapPin className="w-4 h-4 mr-1" />
                                         {property.location}
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-3xl font-bold text-primary">
-                                        AED {property.price.toLocaleString()}
+                                <div className="flex items-start gap-3">
+                                    <div className="text-right">
+                                        <div className="text-3xl font-bold text-primary">
+                                            AED {property.price.toLocaleString()}
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">per month</div>
                                     </div>
-                                    <div className="text-sm text-muted-foreground">per month</div>
+                                    <div className="flex gap-2 mt-2">
+                                        <FavoriteButton propertyId={property.id} variant="icon" />
+                                        <ShareButton title={property.title} />
+                                    </div>
                                 </div>
                             </div>
 
