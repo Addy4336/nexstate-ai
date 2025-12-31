@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Search, MapPin, Home, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,6 +9,22 @@ import Image from "next/image";
 import heroBg from "@/assets/hero-bg.jpg";
 
 export function Hero() {
+  const router = useRouter();
+  const [location, setLocation] = useState("");
+  const [propertyType, setPropertyType] = useState("");
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (location) params.set("q", location);
+    if (propertyType && propertyType !== "all") params.set("type", propertyType);
+    router.push(`/properties${params.toString() ? `?${params.toString()}` : ""}`);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -70,18 +90,28 @@ export function Hero() {
                   type="text" 
                   placeholder="Where in Dubai?"
                   className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  onKeyPress={handleKeyPress}
                 />
               </div>
               <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-xl bg-card/50">
                 <Home className="w-5 h-5 text-accent" />
-                <select className="flex-1 bg-transparent text-muted-foreground outline-none cursor-pointer">
-                  <option>Property Type</option>
-                  <option>Apartment</option>
-                  <option>Villa</option>
-                  <option>Co-Living</option>
+                <select 
+                  className="flex-1 bg-transparent text-muted-foreground outline-none cursor-pointer"
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                >
+                  <option value="all">Property Type</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="villa">Villa</option>
+                  <option value="studio">Studio</option>
                 </select>
               </div>
-              <Button className="btn-primary px-8 py-6 rounded-xl">
+              <Button 
+                className="btn-primary px-8 py-6 rounded-xl"
+                onClick={handleSearch}
+              >
                 <Search className="w-5 h-5 mr-2" />
                 Search
               </Button>

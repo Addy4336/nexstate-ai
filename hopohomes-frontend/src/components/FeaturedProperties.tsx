@@ -19,15 +19,11 @@ export function FeaturedProperties() {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        console.log("Fetching featured properties...");
         const response = await api.properties.getFeatured(6);
-        console.log("API Response:", response);
         
         if (response.success) {
-          console.log("Properties loaded:", response.data.length);
           setProperties(response.data);
         } else {
-          console.error("API Error:", response.error);
           setError(response.error || "Failed to load properties");
         }
       } catch (err) {
@@ -43,19 +39,12 @@ export function FeaturedProperties() {
 
   // Get property image URL
   const getPropertyImage = (property: Property) => {
-    console.log("Property images:", property.images, "Cover:", property.cover_image);
-    
     if (property.images && property.images.length > 0 && property.images[0]) {
-      const url = getDriveImageUrl(property.images[0]);
-      console.log("Using images[0]:", property.images[0], "→", url);
-      return url;
+      return getDriveImageUrl(property.images[0]);
     }
     if (property.cover_image && property.cover_image.length > 0 && property.cover_image[0]) {
-      const url = getDriveImageUrl(property.cover_image[0]);
-      console.log("Using cover_image[0]:", property.cover_image[0], "→", url);
-      return url;
+      return getDriveImageUrl(property.cover_image[0]);
     }
-    console.log("No image found, using placeholder");
     return PLACEHOLDER_IMAGE;
   };
 
