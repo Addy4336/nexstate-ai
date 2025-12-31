@@ -1,7 +1,7 @@
 import { treaty } from "@elysiajs/eden";
 
-// API base URL - points to hopohomes-cms
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+// API base URL - points to hopohomes-cms API endpoint
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 // Type definitions for API responses
 export interface Property {
@@ -89,7 +89,7 @@ class ApiClient {
         endpoint: string,
         options?: RequestInit
     ): Promise<T> {
-        const url = `${this.baseUrl}/api${endpoint}`;
+        const url = `${this.baseUrl}${endpoint}`;
         
         const response = await fetch(url, {
             ...options,

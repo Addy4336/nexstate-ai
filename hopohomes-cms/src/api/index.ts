@@ -8,6 +8,7 @@ import { blogsRoutes } from "./routes/blogs";
 import { faqsRoutes } from "./routes/faqs";
 
 // Create the main Elysia application
+// Prefix with /api to match Next.js catch-all route at /api/[[...slugs]]
 export const api = new Elysia({ prefix: "/api" })
     // Add CORS for cross-origin requests from frontend
     .use(cors({
@@ -41,7 +42,7 @@ export const api = new Elysia({ prefix: "/api" })
         },
     }))
     
-    // Health check endpoint
+    // Health check endpoint at /api/health
     .get("/health", () => ({
         status: "healthy",
         timestamp: new Date().toISOString(),
