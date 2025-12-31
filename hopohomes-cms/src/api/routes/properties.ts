@@ -55,18 +55,42 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             .limit(limit);
         
         if (error) {
+            console.error("Error fetching featured properties:", error);
             return { success: false, error: error.message, data: [] };
+        }
+        
+        console.log("Featured properties found:", data?.length);
+        if (data && data.length > 0) {
+            console.log("Sample property images:", JSON.stringify({
+                images: data[0].images,
+                cover_image: data[0].cover_image,
+                title: data[0].title
+            }));
         }
         
         // If no featured, return available properties
         if (!data || data.length === 0) {
-            const { data: availableData } = await supabaseAdmin
+            console.log("No featured properties, fetching all available...");
+            const { data: availableData, error: availError } = await supabaseAdmin
                 .from("property")
                 .select("*")
                 .eq("status", "available")
                 .order("created_at", { ascending: false })
                 .limit(limit);
             
+            if (availError) {
+                console.error("Error fetching available properties:", availError);
+                return { success: false, error: availError.message, data: [] };
+            }
+            
+            console.log("Available properties found:", availableData?.length);
+            if (availableData && availableData.length > 0) {
+                console.log("Sample available property images:", JSON.stringify({
+                    images: availableData[0].images,
+                    cover_image: availableData[0].cover_image,
+                    title: availableData[0].title
+                }));
+            }
             return { success: true, data: availableData || [] };
         }
         
