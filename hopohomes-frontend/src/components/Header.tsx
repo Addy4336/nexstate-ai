@@ -4,27 +4,27 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { label: "Home", href: "#" },
+  { label: "Home", href: "/" },
   { 
     label: "For Tenants", 
-    href: "#tenants",
+    href: "/#tenants",
     submenu: [
-      { label: "Browse Properties", href: "#properties" },
-      { label: "How It Works", href: "#how-it-works" },
-      { label: "Co-Living Spaces", href: "#coliving" },
+      { label: "Browse Properties", href: "/properties" },
+      { label: "How It Works", href: "/#how-it-works" },
+      { label: "Saved Favorites", href: "/#favorites" },
     ]
   },
   { 
     label: "For Owners", 
-    href: "#owners",
+    href: "/#owners",
     submenu: [
-      { label: "List Your Property", href: "#list-property" },
-      { label: "ROI Calculator", href: "#roi" },
-      { label: "Franchise", href: "#franchise" },
+      { label: "List Your Property", href: "/#list-property" },
+      { label: "ROI Calculator", href: "/#roi" },
+      { label: "Owner Services", href: "/#services" },
     ]
   },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export function Header() {
@@ -37,7 +37,7 @@ export function Header() {
         <nav className="glass rounded-2xl px-6 py-4 shadow-md">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="#" className="flex items-center gap-2">
+            <a href="/" className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-xl bg-gradient-gold flex items-center justify-center">
                 <span className="text-accent-foreground font-bold text-xl">H</span>
               </div>

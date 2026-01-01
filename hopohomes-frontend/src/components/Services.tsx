@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Home, Key, Calculator, Users, Building, TrendingUp, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const tenantServices = [
   {
@@ -82,10 +83,12 @@ export function Services() {
               ))}
             </div>
 
-            <Button className="btn-primary group">
-              Browse Properties
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link href="/properties">
+              <Button className="btn-primary group">
+                Browse Properties
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </motion.div>
 
           {/* For Owners */}
@@ -127,10 +130,12 @@ export function Services() {
               ))}
             </div>
 
-            <Button className="btn-secondary group border-primary/20 hover:border-primary/50">
-              List Your Property
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link href="/#contact">
+              <Button className="btn-secondary group border-primary/20 hover:border-primary/50">
+                List Your Property
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function CTA() {
   return (
@@ -58,16 +59,20 @@ export function CTA() {
               transition={{ delay: 0.3 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <Button className="btn-primary text-base px-8 py-6 group">
-                Browse Properties
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button 
-                variant="outline" 
-                className="text-base px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:border-primary-foreground/50"
-              >
-                List Your Property
-              </Button>
+              <Link href="/properties">
+                <Button className="btn-primary text-base px-8 py-6 group">
+                  Browse Properties
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <Link href="/#contact">
+                <Button 
+                  variant="outline" 
+                  className="text-base px-8 py-6 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:border-primary-foreground/50"
+                >
+                  List Your Property
+                </Button>
+              </Link>
             </motion.div>
           </div>
         </motion.div>
