@@ -62,6 +62,111 @@ export default function GrowthSection() {
 
                 </div>
 
+                {/* Additional Partner & Services Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 pt-12 md:pt-20 border-t border-gray-100 dark:border-neutral-800">
+
+                    {/* Column 1: Service List (Span 5) */}
+                    <div className="lg:col-span-5 flex flex-col justify-center space-y-8 order-2 lg:order-1">
+
+                        {/* Item 1 */}
+                        <div className="group cursor-pointer">
+                            <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-xl font-medium text-[#1A1A1A] dark:text-white">Tax Advisory & Compliance</h3>
+                                <div className="w-10 h-10 rounded-full border border-gray-200 dark:border-neutral-700 flex items-center justify-center text-gray-400 group-hover:bg-[#8B5CF6] group-hover:text-white group-hover:border-[#8B5CF6] transition-all">
+                                    <ArrowUpRight size={18} />
+                                </div>
+                            </div>
+                            <p className="text-gray-500 text-sm max-w-xs">
+                                Minimize tax liabilities while staying compliant
+                            </p>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-px w-full bg-gray-100 dark:bg-neutral-800"></div>
+
+                        {/* Item 2 */}
+                        <div className="group cursor-pointer">
+                            <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-xl font-medium text-[#1A1A1A] dark:text-white">Risk Assessment & Management</h3>
+                                <div className="w-10 h-10 rounded-full border border-gray-200 dark:border-neutral-700 flex items-center justify-center text-gray-400 group-hover:bg-[#8B5CF6] group-hover:text-white group-hover:border-[#8B5CF6] transition-all">
+                                    <ArrowUpRight size={18} />
+                                </div>
+                            </div>
+                            <p className="text-gray-500 text-sm max-w-xs">
+                                Identify, analyze, and mitigate potential risks to your business.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Column 2: Image with custom shape (Span 4) */}
+                    <div className="lg:col-span-4 relative flex justify-center order-1 lg:order-2">
+                        {/* SVG Clip Path */}
+                        <svg className="absolute w-0 h-0" aria-hidden="true">
+                            <defs>
+                                <clipPath id="center-image-mask" clipPathUnits="objectBoundingBox">
+                                    {/* 
+                                        Shape: Rounded Rect with Bottom-Left cutout.
+                                        Start at Top-Left (rounded).
+                                        Go Right to Top-Right (rounded).
+                                        Go Down to Bottom-Right (rounded).
+                                        Go Left to x=0.2 (approx).
+                                        Curve Up/Inner to (0.15, 0.8). 
+                                        Let's try a simpler path for the "bite".
+                                    */}
+                                    <path d="
+                                        M 0 0.15 
+                                        Q 0 0 0.15 0 
+                                        L 0.85 0 
+                                        Q 1 0 1 0.15 
+                                        L 1 0.85 
+                                        Q 1 1 0.85 1 
+                                        L 0.25 1 
+                                        Q 0.15 1 0.15 0.9
+                                        L 0.15 0.85
+                                        Q 0.15 0.75 0.05 0.75
+                                        L 0 0.75
+                                        Z
+                                    " />
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                        <div className="relative w-full aspect-square max-w-md">
+                            <div className="absolute inset-0 w-full h-full transform transition-transform hover:scale-[1.02] duration-500">
+                                <div
+                                    className="w-full h-full relative overflow-hidden bg-purple-50"
+                                    style={{
+                                        clipPath: 'url(#center-image-mask)',
+                                        WebkitClipPath: 'url(#center-image-mask)',
+                                    }}
+                                >
+                                    <Image
+                                        src="/hero-spiral.png"
+                                        alt="Abstract Shape"
+                                        fill
+                                        className="object-cover scale-125"
+                                    />
+                                    {/* Overlay */}
+                                    <div className="absolute inset-0 bg-[#8B5CF6]/10 mix-blend-overlay"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Column 3: Partner Text (Span 3) */}
+                    <div className="lg:col-span-3 flex flex-col justify-center gap-6 lg:pl-4 order-3">
+                        <h3 className="text-3xl md:text-5xl font-medium text-[#1A1A1A] dark:text-white leading-tight">
+                            Your Partner <br /> in Progress
+                        </h3>
+                        <div>
+                            <span className="inline-block px-5 py-2 rounded-full bg-white border border-gray-100 text-[#8B5CF6] text-sm font-medium shadow-sm">
+                                Growth
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </section>
     );
