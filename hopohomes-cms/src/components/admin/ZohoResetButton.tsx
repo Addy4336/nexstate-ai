@@ -16,7 +16,12 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function ZohoResetButton() {
+interface ZohoResetButtonProps {
+    className?: string;
+    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+}
+
+export function ZohoResetButton({ className, variant = "destructive" }: ZohoResetButtonProps) {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
@@ -46,7 +51,7 @@ export function ZohoResetButton() {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm" disabled={isLoading}>
+                <Button variant={variant} size="sm" disabled={isLoading} className={className}>
                     {isLoading ? (
                         <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -55,7 +60,7 @@ export function ZohoResetButton() {
                     ) : (
                         <>
                             <Trash2 className="h-4 w-4 mr-2" />
-                            Reset Connection
+                            Reset
                         </>
                     )}
                 </Button>
