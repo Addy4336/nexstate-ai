@@ -17,7 +17,7 @@ export default function Home() {
       <ProcessSection />
       <GrowthSection />
       <TeamSection />
-      <FooterSection />
+      
     </main>
   );
 }
