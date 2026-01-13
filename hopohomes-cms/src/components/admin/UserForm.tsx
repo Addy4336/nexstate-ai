@@ -5,36 +5,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { inviteUser } from "@/actions/user-actions";
-import { Loader2, Mail } from "lucide-react";
+import { Loader2, Mail, Shield, Briefcase, PenTool, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const roles = [
     {
         value: "admin",
         label: "Admin",
-        description: "Full access to all features and settings",
-        color: "bg-destructive/10 text-destructive border-destructive/20"
+        description: "Full access to settings, users, and financials.",
+        icon: Shield,
+        color: "text-purple-600 bg-purple-50 border-purple-200",
+        activeBorder: "border-purple-600 ring-1 ring-purple-600"
     },
     {
         value: "manager",
         label: "Manager",
-        description: "Manage properties, blogs, and view reports",
-        color: "bg-chart-1/10 text-chart-1 border-chart-1/20"
+        description: "Can manage properties, leads, and view reports.",
+        icon: Briefcase,
+        color: "text-blue-600 bg-blue-50 border-blue-200",
+        activeBorder: "border-blue-600 ring-1 ring-blue-600"
     },
     {
         value: "editor",
         label: "Editor",
-        description: "Create and edit content only",
-        color: "bg-chart-2/10 text-chart-2 border-chart-2/20"
+        description: "Can Create/Update blog posts and content.",
+        icon: PenTool,
+        color: "text-amber-600 bg-amber-50 border-amber-200",
+        activeBorder: "border-amber-600 ring-1 ring-amber-600"
     },
 ];
 
@@ -45,6 +44,8 @@ export function UserForm() {
 
     const handleSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
+        // Ensure role is set in formData since we're using custom state
+        formData.set('role', selectedRole);
 
         try {
             const result = await inviteUser(formData);
@@ -61,11 +62,9 @@ export function UserForm() {
         }
     };
 
-    const selectedRoleInfo = roles.find(r => r.value === selectedRole);
-
     return (
-        <form action={handleSubmit} className="space-y-6 max-w-2xl">
-            <div className="space-y-4">
+        <form action={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
                     <Input
@@ -73,79 +72,82 @@ export function UserForm() {
                         name="name"
                         placeholder="e.g. John Doe"
                         required
+                        className="h-10"
                     />
                 </div>
-
                 <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
                     <Input
                         id="email"
                         name="email"
                         type="email"
-                        placeholder="e.g. john@example.com"
+                        placeholder="e.g. john@company.com"
                         required
+                        className="h-10"
                     />
-                    <p className="text-sm text-muted-foreground">
-                        An invitation email with login credentials will be sent to this address.
-                    </p>
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="role">Role</Label>
-                    <Select
-                        name="role"
-                        defaultValue="editor"
-                        onValueChange={setSelectedRole}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {roles.map((role) => (
-                                <SelectItem key={role.value} value={role.value}>
-                                    <div className="flex items-center gap-2">
-                                        <span>{role.label}</span>
-                                    </div>
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    {selectedRoleInfo && (
-                        <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="outline" className={selectedRoleInfo.color}>
-                                {selectedRoleInfo.label}
-                            </Badge>
-                            <span className="text-sm text-muted-foreground">
-                                {selectedRoleInfo.description}
-                            </span>
-                        </div>
-                    )}
-                </div>
-
-                <div className="bg-muted/50 rounded-lg p-4 border border-dashed">
-                    <div className="flex items-start gap-3">
-                        <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
-                        <div className="space-y-1">
-                            <p className="text-sm font-medium">Email Invitation</p>
-                            <p className="text-sm text-muted-foreground">
-                                A secure password will be automatically generated and sent to the user&apos;s email
-                                along with login instructions. They can change their password after signing in.
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <div className="flex justify-end gap-4">
+            <div className="space-y-3">
+                <Label>Select Role</Label>
+                <div className="grid gap-4 md:grid-cols-3">
+                    {roles.map((role) => {
+                        const Icon = role.icon;
+                        const isSelected = selectedRole === role.value;
+                        return (
+                            <div
+                                key={role.value}
+                                onClick={() => setSelectedRole(role.value)}
+                                className={cn(
+                                    "relative cursor-pointer rounded-xl border-2 p-4 transition-all hover:border-primary/50 hover:bg-muted/50",
+                                    isSelected ? role.activeBorder + " bg-muted/20" : "border-muted bg-card"
+                                )}
+                            >
+                                {isSelected && (
+                                    <div className="absolute top-3 right-3 text-primary">
+                                        <CheckCircle2 className="w-5 h-5 fill-current" />
+                                    </div>
+                                )}
+                                <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center mb-3", role.color)}>
+                                    <Icon className="w-5 h-5" />
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="font-semibold text-sm">{role.label}</p>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        {role.description}
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+                <input type="hidden" name="role" value={selectedRole} />
+            </div>
+
+            <div className="bg-muted/30 border border-dashed rounded-xl p-4 flex gap-4">
+                <div className="p-2 bg-background rounded-full border shadow-sm h-fit">
+                    <Mail className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="space-y-1">
+                    <h4 className="text-sm font-medium">Invitation Details</h4>
+                    <p className="text-xs text-muted-foreground leading-relaxed max-w-lg">
+                        The user will receive an email with a secure, temporary password.
+                        They will be required to change it upon their first login.
+                        Invitation links expire in 24 hours.
+                    </p>
+                </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
                 <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => router.back()}
                     disabled={isSubmitting}
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting} className="min-w-[140px]">
                     {isSubmitting ? (
                         <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     ) : (
