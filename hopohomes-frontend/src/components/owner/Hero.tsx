@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 export default function Hero() {
     return (
-        <section className="relative overflow-hidden bg-white dark:bg-neutral-950 pt-0 pb-12 lg:pt-4 lg:pb-24 px-6 md:px-12">
+        <section className="relative overflow-hidden  bg-white dark:bg-neutral-950 pt-0 pb-12 lg:pt-4 lg:pb-24 px-6 md:px-12">
 
             {/* SVG Clip Path Definition - Tabbed Shape */}
             <svg className="absolute w-0 h-0" aria-hidden="true">

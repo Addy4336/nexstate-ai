@@ -24,10 +24,10 @@
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
 
-  --color-primary: hsl(var(--primary));
+  --color-primary: var(--primary);
   --color-primary-foreground: hsl(var(--primary-foreground));
 
-  --color-secondary: hsl(var(--secondary));
+  --color-secondary: var(--secondary);
   --color-secondary-foreground: hsl(var(--secondary-foreground));
 
   --color-destructive: hsl(var(--destructive));
@@ -131,10 +131,10 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
 
-  --primary: 222 47% 11%;
+  --primary: oklch(44.74% 0.172 263.98);
   --primary-foreground: 210 40% 98%;
 
-  --secondary: 210 20% 96%;
+  --secondary: oklch(82.11% 0.140 84.05);
   --secondary-foreground: 222 47% 11%;
 
   --muted: 210 20% 96%;

@@ -1,0 +1,110 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Globe, Menu, X } from 'lucide-react';
+
+export default function Navbar() {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    return (
+        <nav className="fixed top-0 left-0 right-0 z-50 w-full py-4  ">
+            <div className="max-w-6xl mx-auto backdrop-blur-xl bg-background/10  rounded-[2rem]  border-white/10 transition-all duration-300 px-4  sm:px-6 ">
+                <div className="flex items-center justify-between h-16">
+
+                    {/* Logo Section */}
+                    <div className="flex-shrink-0 flex items-center">
+                        <Link href="/" className="flex items-center gap-2">
+                            <div className="relative h-14 w-32 md:w-40">
+                                <Image
+                                    src="/image/logo.webp"
+                                    alt="Logo"
+                                    fill
+                                    className="object-contain object-left"
+                                    priority
+                                />
+                            </div>
+                        </Link>
+                    </div>
+
+                    {/* Desktop Menu - Centered */}
+                    <div className="hidden lg:flex items-center justify-center flex-1">
+                        <div className="flex items-center gap-8">
+                            <Link href="/" className="px-4 py-2 rounded-full bg-primary text-primary-foreground font-medium text-sm transition-all shadow-md">
+                                Home
+                            </Link>
+                            <Link href="#" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                About Us
+                            </Link>
+                            <Link href="#" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                Property List
+                            </Link>
+                            <Link href="#" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                Contact Us
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Right Actions & Mobile Toggle */}
+                    <div className="flex items-center gap-4">
+
+                        {/* Language Selector - Desktop */}
+                        <button className="hidden sm:flex items-center gap-2 text-foreground font-medium hover:text-primary transition-colors">
+                            <Globe className="w-5 h-5" />
+                            <span className="text-sm">Eng</span>
+                        </button>
+
+                        {/* Sign Up Button */}
+                        <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 sm:px-7 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md transform hover:scale-105">
+                            Sign Up
+                        </button>
+
+                        {/* Mobile Menu Button */}
+                        <button
+                            onClick={toggleMenu}
+                            className="lg:hidden p-2 rounded-md text-foreground hover:bg-muted transition-colors focus:outline-none"
+                            aria-label="Toggle menu"
+                        >
+                            {isMobileMenuOpen ? (
+                                <X className="w-6 h-6" />
+                            ) : (
+                                <Menu className="w-6 h-6" />
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Menu Dropdown */}
+            {isMobileMenuOpen && (
+                <div className="lg:hidden absolute top-20 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-border shadow-lg animate-in slide-in-from-top-2">
+                    <div className="px-4 pt-2 pb-6 space-y-2">
+                        <Link href="/" className="block px-4 py-3 rounded-lg bg-primary/10 text-primary font-semibold text-base">
+                            Home
+                        </Link>
+                        <Link href="#" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
+                            About Us
+                        </Link>
+                        <Link href="#" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
+                            Property List
+                        </Link>
+                        <Link href="#" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
+                            Contact Us
+                        </Link>
+                        <div className="pt-4 border-t border-border mt-2 flex items-center justify-between px-2">
+                            <button className="flex items-center gap-2 text-foreground font-medium">
+                                <Globe className="w-5 h-5" />
+                                <span>English</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </nav>
+    );
+}
