@@ -8,11 +8,11 @@ export default function Hero() {
     return (
         <section className="relative overflow-hidden bg-white dark:bg-neutral-950 pt-6 pb-12 lg:pt-10 lg:pb-20 px-6">
 
-            {/* SVG Clip Path Definition - Refined for smoother curves */}
+            {/* SVG Clip Path Definition - Tabbed Shape */}
             <svg className="absolute w-0 h-0" aria-hidden="true">
                 <defs>
                     <clipPath id="hero-clip" clipPathUnits="objectBoundingBox">
-                        <path d="M 0.08 0 L 0.72 0 Q 0.77 0 0.77 0.05 L 0.77 0.15 Q 0.77 0.20 0.82 0.20 L 0.93 0.20 Q 0.98 0.20 0.98 0.25 L 0.98 0.62 Q 0.98 0.67 0.93 0.67 L 0.82 0.67 Q 0.77 0.67 0.77 0.72 L 0.77 0.92 Q 0.77 0.97 0.72 0.97 L 0.08 0.97 Q 0.03 0.97 0.03 0.92 L 0.03 0.05 Q 0.03 0 0.08 0 Z" />
+                        <path d="M 0.05 0 H 0.65 Q 0.7 0 0.7 0.05 V 0.15 Q 0.7 0.2 0.75 0.2 H 0.95 Q 1 0.2 1 0.25 V 0.70 Q 1 0.75 0.95 0.75 H 0.75 Q 0.7 0.75 0.7 0.80 V 0.95 Q 0.7 1 0.65 1 H 0.05 Q 0 1 0 0.95 V 0.05 Q 0 0 0.05 0 Z" />
                     </clipPath>
                 </defs>
             </svg>
@@ -89,7 +89,7 @@ export default function Hero() {
                 </div>
 
                 {/* Right Content */}
-                <div className="relative h-[450px] sm:h-[550px] lg:h-[650px] w-full flex items-center justify-center perspective-1000">
+                <div className="relative h-[400px] sm:h-[450px] lg:h-[500px] w-full flex items-center justify-center perspective-1000">
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -108,20 +108,20 @@ export default function Hero() {
                                 src="/hero-spiral.png"
                                 alt="Abstract 3D Shape"
                                 fill
-                                className="object-cover scale-110"
+                                className="object-cover scale-125 translate-x-10"
                                 priority
                             />
 
                             {/* Overlay Text inside the Image */}
-                            <div className="absolute bottom-[28%] sm:bottom-[32%] lg:bottom-[35%] left-[8%] lg:left-[10%] text-white z-10 w-full max-w-xs">
+                            <div className="absolute bottom-[28%] sm:bottom-[32%] lg:bottom-[28%] left-[8%] lg:left-[10%] text-white z-10 w-full max-w-xs">
                                 <h3 className="text-2xl sm:text-3xl font-medium leading-tight mb-2 drop-shadow-md">
                                     Your Partner in <br /> Progress
                                 </h3>
                             </div>
                         </div>
 
-                        {/* Floating Action Button */}
-                        <div className="absolute bottom-[4%] right-[8%] sm:right-[15%] lg:right-[5%] z-20">
+                        {/* Floating Action Button - Positioned in the bottom-right cutout */}
+                        <div className="absolute bottom-0 right-[2%] z-20">
                             <button className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-900 hover:scale-105 hover:shadow-xl transition-all duration-300 group">
                                 <ArrowUpRight className="w-6 h-6 sm:w-8 sm:h-8 font-light text-gray-600 group-hover:text-[#8B5CF6] transition-colors" strokeWidth={1.5} />
                             </button>
