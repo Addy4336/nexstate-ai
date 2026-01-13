@@ -17,8 +17,9 @@ export function QuickActions() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
+            className="h-full"
         >
-            <Card className="lg:col-span-1">
+            <Card className="h-full flex flex-col">
                 <CardHeader>
                     <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>

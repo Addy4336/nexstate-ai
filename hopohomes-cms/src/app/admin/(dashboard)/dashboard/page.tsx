@@ -16,17 +16,21 @@ export default async function DashboardPage() {
 
     return (
         <div className="space-y-6">
-            {/* Stats Grid */}
-            <DashboardStatsDisplay stats={stats} />
-
-            {/* Quick Actions & Recent Properties */}
+            {/* Top Section: Stats (2x2) and Quick Actions */}
             <div className="grid gap-6 lg:grid-cols-3">
-                {/* Quick Actions */}
-                <QuickActions />
+                {/* Stats Grid (Takes 2 columns) */}
+                <div className="lg:col-span-2">
+                    <DashboardStatsDisplay stats={stats} />
+                </div>
 
-                {/* Recent Properties */}
-                <RecentPropertiesList properties={recentProperties} />
+                {/* Quick Actions (Takes 1 column) */}
+                <div>
+                    <QuickActions />
+                </div>
             </div>
+
+            {/* Recent Properties (Full Width) */}
+            <RecentPropertiesList properties={recentProperties} />
         </div>
     );
 }

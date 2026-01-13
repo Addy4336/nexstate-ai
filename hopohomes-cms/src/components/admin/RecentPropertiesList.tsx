@@ -16,7 +16,6 @@ export function RecentPropertiesList({ properties }: RecentPropertiesListProps) 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="lg:col-span-2"
         >
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
@@ -33,7 +32,7 @@ export function RecentPropertiesList({ properties }: RecentPropertiesListProps) 
                             properties.map((property) => (
                                 <div
                                     key={property.id}
-                                    className="flex items-center justify-between p-4 rounded-lg bg-muted/50"
+                                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/50 gap-4 sm:gap-0"
                                 >
                                     <div>
                                         <p className="font-medium line-clamp-1">{property.title}</p>
@@ -41,7 +40,7 @@ export function RecentPropertiesList({ properties }: RecentPropertiesListProps) 
                                             {property.location}
                                         </p>
                                     </div>
-                                    <div className="text-right">
+                                    <div className="text-left sm:text-right">
                                         <p className="font-medium">
                                             AED {property.price.toLocaleString()}/mo
                                         </p>

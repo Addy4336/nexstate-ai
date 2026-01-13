@@ -129,17 +129,17 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
             <aside
                 className={cn(
                     "fixed top-0 left-0 z-40 h-screen bg-sidebar border-r border-sidebar-border transition-all duration-300 overflow-hidden",
-                    isCollapsed ? "w-[70px]" : "w-[260px]",
+                    isCollapsed ? "w-[70px]" : "w-[300px] lg:w-[260px]",
                     isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
                 )}
             >
                 <div className="flex flex-col h-full">
                     {/* Logo */}
-                    <div className="flex items-center gap-3 p-4 border-b border-sidebar-border">
+                    <div className="flex items-center gap-3 p-4 pl-16 lg:pl-4 border-b border-sidebar-border">
                         <Link href="/admin/dashboard" className="flex items-center gap-2">
                             <div className={cn(
                                 "relative h-8 flex-shrink-0 transition-all duration-300",
-                                isCollapsed ? "w-9" : "w-24"
+                                isCollapsed ? "w-9" : "w-20 lg:w-24"
                             )}>
                                 <Image
                                     src="/images/logo.webp"
@@ -152,7 +152,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
                                 />
                             </div>
                             {!isCollapsed && (
-                                <div className="flex items-center gap-1.5 text-lg font-bold whitespace-nowrap">
+                                <div className="flex items-center gap-1.5 text-base lg:text-lg font-bold whitespace-nowrap">
                                     <span className="text-primary">Admin</span>
                                     <span className="text-foreground">Panel</span>
                                 </div>
@@ -162,8 +162,8 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
 
                     {/* Navigation */}
                     <nav className={cn(
-                        "flex-1 space-y-2 overflow-y-auto overflow-x-hidden",
-                        isCollapsed ? "p-2" : "p-4"
+                        "flex-1 space-y-1 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-sidebar-border [&::-webkit-scrollbar-track]:bg-transparent",
+                        isCollapsed ? "p-2" : "p-3"
                     )}>
                         {visibleLinks.map((link) => {
                             const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
@@ -172,7 +172,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
                                     key={link.href}
                                     href={link.href}
                                     className={cn(
-                                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
+                                        "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
                                         isActive
                                             ? "bg-sidebar-accent text-sidebar-accent-foreground"
                                             : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
@@ -187,18 +187,16 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
                     </nav>
 
                     {/* User Section */}
-                    <div className="p-4 border-t border-sidebar-border">
+                    <div className="p-2 border-t border-sidebar-border">
                         {/* User Info with Role Badge */}
                         {!isCollapsed && session?.user && (
-                            <div className="mb-3 px-3 py-2">
-                                <p className="text-sm font-medium text-sidebar-foreground truncate">
+                            <div className="mb-1 px-2 py-1.5 flex items-center gap-2">
+                                <p className="text-sm font-medium text-sidebar-foreground truncate flex-1 min-w-0">
                                     {session.user.name}
                                 </p>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <Badge variant="outline" className={cn("text-xs capitalize border-sidebar-border text-sidebar-foreground/70")}>
-                                        {userRole}
-                                    </Badge>
-                                </div>
+                                <Badge variant="outline" className={cn("text-[10px] h-5 px-1.5 capitalize border-sidebar-border text-sidebar-foreground/70 shrink-0")}>
+                                    {userRole}
+                                </Badge>
                             </div>
                         )}
 
@@ -206,22 +204,22 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
                         <Link
                             href="/"
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors mb-2",
+                                "flex items-center gap-3 px-2 py-2 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors mb-1",
                             )}
                         >
                             <Home className="w-5 h-5 flex-shrink-0" />
-                            {!isCollapsed && <span className="font-medium">Back to Site</span>}
+                            {!isCollapsed && <span className="font-medium text-sm">Back to Site</span>}
                         </Link>
 
                         {/* Sign Out */}
                         <button
                             onClick={handleSignOut}
                             className={cn(
-                                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-colors",
+                                "w-full flex items-center gap-3 px-2 py-2 rounded-lg text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-colors",
                             )}
                         >
                             <LogOut className="w-5 h-5 flex-shrink-0" />
-                            {!isCollapsed && <span className="font-medium">Sign Out</span>}
+                            {!isCollapsed && <span className="font-medium text-sm">Sign Out</span>}
                         </button>
                     </div>
 
@@ -232,13 +230,14 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
                     >
                         <ChevronRight
                             className={cn(
-                                "w-5 h-5 transition-transform",
+                                "w-4 h-4 transition-transform",
                                 isCollapsed ? "" : "rotate-180"
                             )}
                         />
                     </button>
                 </div>
             </aside>
+
         </>
     );
 }

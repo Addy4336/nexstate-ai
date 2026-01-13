@@ -29,7 +29,7 @@ export function AdminTopNav() {
     };
 
     return (
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background pl-16 pr-6 lg:px-6">
             {/* Page Title */}
             <div className="flex-1">
                 <h1 className="text-xl font-semibold text-foreground capitalize">
