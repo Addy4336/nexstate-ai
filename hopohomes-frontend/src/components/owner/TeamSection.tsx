@@ -69,7 +69,7 @@ export default function TeamSection() {
                         >
                             {/* Image Container */}
                             <div
-                                className={`relative w-full overflow-hidden rounded-3xl mb-6 ${member.hasCardBackground ? 'aspect-[4/3]' : 'aspect-[3/4]'
+                                className={`relative w-full overflow-hidden rounded-3xl mb-6 ${member.hasCardBackground ? 'aspect-4/3' : 'aspect-3/4'
                                     } ${member.isGrayscale ? 'grayscale hover:grayscale-0 transition-all duration-500' : ''}`}
                             >
                                 <Image
