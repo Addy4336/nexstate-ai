@@ -18,7 +18,7 @@ const tools = [
         description: "Help property owners estimate rental returns based on rent, expenses, and financing.",
         icon: TrendingUp,
         href: "/tools/roi-calculator",
-        color: "from-amber-400 to-amber-600",
+        color: "bg-chart-4",
         stats: { label: "Investments analyzed", value: "—" },
     },
     {
@@ -26,7 +26,7 @@ const tools = [
         description: "Enable tenants to compare rental costs across different stay durations.",
         icon: Wallet,
         href: "/tools/cost-calculator",
-        color: "from-blue-400 to-blue-600",
+        color: "bg-chart-1",
         stats: { label: "Cost comparisons", value: "—" },
     },
     {
@@ -34,7 +34,7 @@ const tools = [
         description: "Location radius, property type, budget, sharing options, amenities, and more.",
         icon: SlidersHorizontal,
         href: "/properties",
-        color: "from-green-400 to-green-600",
+        color: "bg-chart-2",
         stats: { label: "Search filters", value: "10+" },
     },
     {
@@ -42,7 +42,7 @@ const tools = [
         description: "Cross-sell and upsell suggestions based on user search behavior and preferences.",
         icon: Sparkles,
         href: "/properties",
-        color: "from-purple-400 to-purple-600",
+        color: "bg-chart-5",
         stats: { label: "Recommendation types", value: "4" },
     },
 ];
@@ -63,7 +63,7 @@ export default async function ToolsPage() {
             <div className="grid gap-6 md:grid-cols-2">
                 {tools.map((tool) => (
                     <Card key={tool.title} className="overflow-hidden">
-                        <CardHeader className={`bg-gradient-to-r ${tool.color} text-white`}>
+                        <CardHeader className={`${tool.color} text-white`}>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-white/20 rounded-lg">
@@ -139,7 +139,7 @@ export default async function ToolsPage() {
                     <div className="grid gap-4 md:grid-cols-2">
                         <div className="space-y-2">
                             <h4 className="font-semibold flex items-center gap-2">
-                                <TrendingUp className="w-4 h-4 text-amber-500" />
+                                <TrendingUp className="w-4 h-4 text-chart-4" />
                                 Owner ROI Calculator
                             </h4>
                             <ul className="text-sm text-muted-foreground space-y-1 ml-6">
@@ -152,7 +152,7 @@ export default async function ToolsPage() {
                         </div>
                         <div className="space-y-2">
                             <h4 className="font-semibold flex items-center gap-2">
-                                <Wallet className="w-4 h-4 text-blue-500" />
+                                <Wallet className="w-4 h-4 text-chart-1" />
                                 Tenant Cost Calculator
                             </h4>
                             <ul className="text-sm text-muted-foreground space-y-1 ml-6">
@@ -165,7 +165,7 @@ export default async function ToolsPage() {
                         </div>
                         <div className="space-y-2">
                             <h4 className="font-semibold flex items-center gap-2">
-                                <SlidersHorizontal className="w-4 h-4 text-green-500" />
+                                <SlidersHorizontal className="w-4 h-4 text-chart-2" />
                                 Advanced Filters
                             </h4>
                             <ul className="text-sm text-muted-foreground space-y-1 ml-6">
@@ -181,7 +181,7 @@ export default async function ToolsPage() {
                         </div>
                         <div className="space-y-2">
                             <h4 className="font-semibold flex items-center gap-2">
-                                <Sparkles className="w-4 h-4 text-purple-500" />
+                                <Sparkles className="w-4 h-4 text-chart-5" />
                                 Cross-sell & Upsell
                             </h4>
                             <ul className="text-sm text-muted-foreground space-y-1 ml-6">

@@ -72,7 +72,7 @@ export function ZohoResetButton() {
                             href="https://accounts.zoho.in/home#security/connectedapps"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className="text-primary hover:underline"
                         >
                             Zoho Connected Apps
                         </a>

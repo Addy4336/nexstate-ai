@@ -90,16 +90,16 @@ function getFaqCategoryLabel(category: string) {
 
 function getFaqCategoryColor(category: string) {
     const colors: Record<string, string> = {
-        "general": "bg-gray-100 text-gray-700",
-        "properties": "bg-blue-100 text-blue-700",
-        "investment": "bg-green-100 text-green-700",
-        "buying": "bg-purple-100 text-purple-700",
-        "selling": "bg-orange-100 text-orange-700",
-        "renting": "bg-cyan-100 text-cyan-700",
-        "legal": "bg-red-100 text-red-700",
-        "finance": "bg-amber-100 text-amber-700",
+        "general": "bg-muted text-muted-foreground",
+        "properties": "bg-chart-1/10 text-chart-1",
+        "investment": "bg-chart-2/10 text-chart-2",
+        "buying": "bg-chart-3/10 text-chart-3",
+        "selling": "bg-chart-4/10 text-chart-4",
+        "renting": "bg-chart-5/10 text-chart-5",
+        "legal": "bg-destructive/10 text-destructive",
+        "finance": "bg-primary/10 text-primary",
     };
-    return colors[category] || "bg-gray-100 text-gray-700";
+    return colors[category] || "bg-muted text-muted-foreground";
 }
 
 export default async function MarketingPage() {
@@ -136,7 +136,7 @@ export default async function MarketingPage() {
                 <TabsContent value="blogs" className="space-y-6">
                     <div className="flex justify-end">
                         <Link href="/admin/marketing/blogs/new">
-                            <Button className="btn-primary">
+                            <Button>
                                 <Plus className="mr-2 h-4 w-4" /> Add Blog Post
                             </Button>
                         </Link>
@@ -202,7 +202,7 @@ export default async function MarketingPage() {
                             <div className="col-span-full py-12 text-center text-muted-foreground bg-card rounded-xl border border-dashed">
                                 <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
                                 <p>No blog posts found.</p>
-                                <Link href="/admin/marketing/blogs/new" className="text-accent hover:underline mt-2 inline-block">
+                                <Link href="/admin/marketing/blogs/new" className="text-primary hover:underline mt-2 inline-block">
                                     Create your first blog post
                                 </Link>
                             </div>
@@ -214,7 +214,7 @@ export default async function MarketingPage() {
                 <TabsContent value="faqs" className="space-y-6">
                     <div className="flex justify-end">
                         <Link href="/admin/marketing/faqs/new">
-                            <Button className="btn-primary">
+                            <Button>
                                 <Plus className="mr-2 h-4 w-4" /> Add FAQ
                             </Button>
                         </Link>
@@ -232,7 +232,7 @@ export default async function MarketingPage() {
                                 <div className="py-12 text-center text-muted-foreground">
                                     <HelpCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
                                     <p>No FAQs found.</p>
-                                    <Link href="/admin/marketing/faqs/new" className="text-accent hover:underline mt-2 inline-block">
+                                    <Link href="/admin/marketing/faqs/new" className="text-primary hover:underline mt-2 inline-block">
                                         Create your first FAQ
                                     </Link>
                                 </div>

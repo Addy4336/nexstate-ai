@@ -20,9 +20,9 @@ import { DeleteLeadButton } from "@/components/admin/DeleteLeadButton";
 
 function getTypeColor(type: string) {
     switch (type) {
-        case 'tenant_enquiry': return 'bg-blue-500/10 text-blue-600 border-blue-500/20';
-        case 'owner_submission': return 'bg-green-500/10 text-green-600 border-green-500/20';
-        case 'general_contact': return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
+        case 'tenant_enquiry': return 'bg-chart-2/10 text-chart-2 border-chart-2/20';
+        case 'owner_submission': return 'bg-chart-1/10 text-chart-1 border-chart-1/20';
+        case 'general_contact': return 'bg-muted text-muted-foreground border-border';
         default: return 'bg-secondary text-foreground';
     }
 }
@@ -49,7 +49,7 @@ export default async function LeadsPage() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">New Leads</CardTitle>
-                        <MessageSquare className="h-4 w-4 text-blue-600" />
+                        <MessageSquare className="h-4 w-4 text-chart-2" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stats.new_count}</div>
@@ -59,17 +59,17 @@ export default async function LeadsPage() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">In Progress</CardTitle>
-                        <Clock className="h-4 w-4 text-purple-600" />
+                        <Clock className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{parseInt(stats.contacted_count) + parseInt(stats.in_progress_count)}</div>
+                        <div className="text-2xl font-bold">{stats.contacted_count + stats.in_progress_count}</div>
                         <p className="text-xs text-muted-foreground">Being handled</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Converted</CardTitle>
-                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <CheckCircle className="h-4 w-4 text-chart-1" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stats.converted_count}</div>
@@ -138,7 +138,7 @@ export default async function LeadsPage() {
                                         </TableCell>
                                         <TableCell className="max-w-[250px]">
                                             {enquiry.property_title && (
-                                                <div className="text-xs font-semibold mb-1 text-accent">
+                                                <div className="text-xs font-semibold mb-1 text-primary">
                                                     Re: {enquiry.property_title}
                                                 </div>
                                             )}
@@ -147,13 +147,13 @@ export default async function LeadsPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <LeadStatusSelect 
-                                                enquiryId={enquiry.id} 
-                                                currentStatus={enquiry.status} 
+                                            <LeadStatusSelect
+                                                enquiryId={enquiry.id}
+                                                currentStatus={enquiry.status}
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <LeadAssignSelect 
+                                            <LeadAssignSelect
                                                 enquiryId={enquiry.id}
                                                 currentAssignee={enquiry.assigned_to || null}
                                                 staffUsers={staffUsers}

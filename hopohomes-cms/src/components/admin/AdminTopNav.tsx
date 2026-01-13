@@ -29,7 +29,7 @@ export function AdminTopNav() {
     };
 
     return (
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-card/50 backdrop-blur-sm px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background px-6">
             {/* Page Title */}
             <div className="flex-1">
                 <h1 className="text-xl font-semibold text-foreground capitalize">
@@ -38,7 +38,7 @@ export function AdminTopNav() {
             </div>
 
             {/* Search */}
-            <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary border border-border">
+            <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg  border border-border">
                 <Search className="w-4 h-4 text-muted-foreground" />
                 <input
                     type="text"

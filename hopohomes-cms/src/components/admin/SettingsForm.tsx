@@ -121,7 +121,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
                             />
                         </div>
 
-                        <Button type="submit" disabled={isUpdatingProfile} className="btn-primary">
+                        <Button type="submit" disabled={isUpdatingProfile}>
                             {isUpdatingProfile ? (
                                 <>
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -186,7 +186,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
                             />
                         </div>
 
-                        <Button type="submit" variant="destructive" disabled={isUpdatingPassword}>
+                        <Button type="submit" disabled={isUpdatingPassword}>
                             {isUpdatingPassword ? (
                                 <>
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

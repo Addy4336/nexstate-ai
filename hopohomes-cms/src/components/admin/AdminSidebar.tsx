@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
@@ -83,9 +84,13 @@ const roleColors: Record<UserRole, string> = {
     editor: "bg-green-500/10 text-green-600 border-green-500/20",
 };
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+    isCollapsed: boolean;
+    onToggle: () => void;
+}
+
+export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
     const pathname = usePathname();
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const { data: session } = useSession();
 
@@ -106,7 +111,7 @@ export function AdminSidebar() {
         <>
             {/* Mobile Menu Button */}
             <button
-                className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border shadow-sm"
+                className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-sidebar border border-sidebar-border shadow-sm text-sidebar-foreground"
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
             >
                 {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -123,28 +128,43 @@ export function AdminSidebar() {
             {/* Sidebar */}
             <aside
                 className={cn(
-                    "fixed top-0 left-0 z-40 h-screen bg-card border-r border-border transition-all duration-300",
+                    "fixed top-0 left-0 z-40 h-screen bg-sidebar border-r border-sidebar-border transition-all duration-300 overflow-hidden",
                     isCollapsed ? "w-[70px]" : "w-[260px]",
                     isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
                 )}
             >
                 <div className="flex flex-col h-full">
                     {/* Logo */}
-                    <div className="flex items-center gap-3 p-4 border-b border-border">
+                    <div className="flex items-center gap-3 p-4 border-b border-sidebar-border">
                         <Link href="/admin/dashboard" className="flex items-center gap-2">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-gold flex items-center justify-center flex-shrink-0">
-                                <span className="text-accent-foreground font-bold text-xl">H</span>
+                            <div className={cn(
+                                "relative h-8 flex-shrink-0 transition-all duration-300",
+                                isCollapsed ? "w-9" : "w-24"
+                            )}>
+                                <Image
+                                    src="/images/logo.webp"
+                                    alt="HOPO Homes"
+                                    fill
+                                    className={cn(
+                                        "object-left transition-all duration-300",
+                                        isCollapsed ? "object-cover" : "object-contain"
+                                    )}
+                                />
                             </div>
                             {!isCollapsed && (
-                                <span className="text-lg font-bold text-foreground">
-                                    HOPO<span className="text-accent">Admin</span>
-                                </span>
+                                <div className="flex items-center gap-1.5 text-lg font-bold whitespace-nowrap">
+                                    <span className="text-primary">Admin</span>
+                                    <span className="text-foreground">Panel</span>
+                                </div>
                             )}
                         </Link>
                     </div>
 
                     {/* Navigation */}
-                    <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                    <nav className={cn(
+                        "flex-1 space-y-2 overflow-y-auto overflow-x-hidden",
+                        isCollapsed ? "p-2" : "p-4"
+                    )}>
                         {visibleLinks.map((link) => {
                             const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
                             return (
@@ -154,8 +174,8 @@ export function AdminSidebar() {
                                     className={cn(
                                         "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
                                         isActive
-                                            ? "bg-accent text-accent-foreground"
-                                            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                                            ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                     )}
                                     onClick={() => setIsMobileOpen(false)}
                                 >
@@ -167,15 +187,15 @@ export function AdminSidebar() {
                     </nav>
 
                     {/* User Section */}
-                    <div className="p-4 border-t border-border">
+                    <div className="p-4 border-t border-sidebar-border">
                         {/* User Info with Role Badge */}
                         {!isCollapsed && session?.user && (
                             <div className="mb-3 px-3 py-2">
-                                <p className="text-sm font-medium text-foreground truncate">
+                                <p className="text-sm font-medium text-sidebar-foreground truncate">
                                     {session.user.name}
                                 </p>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <Badge variant="outline" className={cn("text-xs capitalize", roleColors[userRole])}>
+                                    <Badge variant="outline" className={cn("text-xs capitalize border-sidebar-border text-sidebar-foreground/70")}>
                                         {userRole}
                                     </Badge>
                                 </div>
@@ -186,7 +206,7 @@ export function AdminSidebar() {
                         <Link
                             href="/"
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors mb-2",
+                                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors mb-2",
                             )}
                         >
                             <Home className="w-5 h-5 flex-shrink-0" />
@@ -197,7 +217,7 @@ export function AdminSidebar() {
                         <button
                             onClick={handleSignOut}
                             className={cn(
-                                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors",
+                                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-colors",
                             )}
                         >
                             <LogOut className="w-5 h-5 flex-shrink-0" />
@@ -207,8 +227,8 @@ export function AdminSidebar() {
 
                     {/* Collapse Toggle */}
                     <button
-                        className="hidden lg:flex items-center justify-center p-2 border-t border-border text-muted-foreground hover:text-foreground transition-colors"
-                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        className="hidden lg:flex items-center justify-center p-2 border-t border-sidebar-border text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+                        onClick={onToggle}
                     >
                         <ChevronRight
                             className={cn(

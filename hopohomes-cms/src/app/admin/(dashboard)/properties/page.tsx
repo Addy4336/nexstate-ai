@@ -54,7 +54,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 <div className="flex items-center gap-3">
                     <StatusFilter defaultValue={statusFilter} />
                     <Link href="/admin/properties/new">
-                        <Button className="btn-primary">
+                        <Button>
                             <Plus className="mr-2 h-4 w-4" /> Add Property
                         </Button>
                     </Link>
@@ -79,7 +79,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                             )}
                             {property.featured && (
                                 <div className="absolute top-2 left-2">
-                                    <Badge className="bg-gradient-gold text-white border-0">Featured</Badge>
+                                    <Badge className="bg-primary text-primary-foreground border-0">Featured</Badge>
                                 </div>
                             )}
                             <div className="absolute top-2 right-2">
@@ -110,8 +110,8 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                                     <Edit className="w-4 h-4 mr-2" /> Edit
                                 </Button>
                             </Link>
-                            <ArchivePropertyButton 
-                                id={property.id} 
+                            <ArchivePropertyButton
+                                id={property.id}
                                 title={property.title}
                                 isArchived={property.status === 'archived'}
                             />
@@ -123,7 +123,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 {properties.length === 0 && (
                     <div className="col-span-full py-12 text-center text-muted-foreground bg-card rounded-xl border border-dashed">
                         <p>No properties found.</p>
-                        <Link href="/admin/properties/new" className="text-accent hover:underline mt-2 inline-block">
+                        <Link href="/admin/properties/new" className="text-primary hover:underline mt-2 inline-block">
                             Create your first property
                         </Link>
                     </div>

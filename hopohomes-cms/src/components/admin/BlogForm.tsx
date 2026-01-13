@@ -183,7 +183,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
             </div>
 
             <div className="flex justify-end">
-                <Button type="submit" className="btn-primary" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? (
                         <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     ) : (

@@ -14,7 +14,9 @@ export default async function NewBlogPage() {
                 </p>
             </div>
 
-            <BlogForm />
+            <div className="bg-card p-6 rounded-xl border shadow-sm">
+                <BlogForm />
+            </div>
         </div>
     );
 }

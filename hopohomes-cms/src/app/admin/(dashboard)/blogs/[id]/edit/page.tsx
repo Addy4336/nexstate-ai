@@ -42,7 +42,9 @@ export default async function EditBlogPage({ params }: EditBlogPageProps) {
                 </p>
             </div>
 
-            <BlogForm initialData={blog} />
+            <div className="bg-card p-6 rounded-xl border shadow-sm">
+                <BlogForm initialData={blog} />
+            </div>
         </div>
     );
 }

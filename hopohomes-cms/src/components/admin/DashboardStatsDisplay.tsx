@@ -24,7 +24,6 @@ export function DashboardStatsDisplay({ stats }: DashboardStatsDisplayProps) {
         }
         return `AED ${amount.toLocaleString()}`;
     };
-
     const statItems = [
         {
             title: "Total Properties",
@@ -32,8 +31,8 @@ export function DashboardStatsDisplay({ stats }: DashboardStatsDisplayProps) {
             change: "+12%", // Mock trend for now
             trend: "up",
             icon: Building2,
-            color: "text-blue-500",
-            bgColor: "bg-blue-500/10",
+            color: "text-chart-1",
+            bgColor: "bg-chart-1/10",
         },
         {
             title: "Active Tenants",
@@ -41,8 +40,8 @@ export function DashboardStatsDisplay({ stats }: DashboardStatsDisplayProps) {
             change: "+8%", // Mock trend
             trend: "up",
             icon: Users,
-            color: "text-green-500",
-            bgColor: "bg-green-500/10",
+            color: "text-chart-2",
+            bgColor: "bg-chart-2/10",
         },
         {
             title: "Monthly Revenue",
@@ -50,8 +49,8 @@ export function DashboardStatsDisplay({ stats }: DashboardStatsDisplayProps) {
             change: "+23%", // Mock trend
             trend: "up",
             icon: DollarSign,
-            color: "text-accent",
-            bgColor: "bg-accent/10",
+            color: "text-primary",
+            bgColor: "bg-primary/10",
         },
         {
             title: "Occupancy Rate",
@@ -59,8 +58,8 @@ export function DashboardStatsDisplay({ stats }: DashboardStatsDisplayProps) {
             change: "-2%", // Mock trend
             trend: "down",
             icon: TrendingUp,
-            color: "text-purple-500",
-            bgColor: "bg-purple-500/10",
+            color: "text-chart-5",
+            bgColor: "bg-chart-5/10",
         },
     ];
 

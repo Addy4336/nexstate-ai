@@ -33,7 +33,7 @@ export function RecentPropertiesList({ properties }: RecentPropertiesListProps) 
                             properties.map((property) => (
                                 <div
                                     key={property.id}
-                                    className="flex items-center justify-between p-4 rounded-lg bg-secondary/50"
+                                    className="flex items-center justify-between p-4 rounded-lg bg-muted/50"
                                 >
                                     <div>
                                         <p className="font-medium line-clamp-1">{property.title}</p>
@@ -47,10 +47,10 @@ export function RecentPropertiesList({ properties }: RecentPropertiesListProps) 
                                         </p>
                                         <span
                                             className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize ${property.status === "rented"
-                                                    ? "bg-green-500/10 text-green-500"
-                                                    : property.status === "available"
-                                                        ? "bg-blue-500/10 text-blue-500"
-                                                        : "bg-yellow-500/10 text-yellow-500"
+                                                ? "bg-chart-2/10 text-chart-2"
+                                                : property.status === "available"
+                                                    ? "bg-chart-1/10 text-chart-1"
+                                                    : "bg-chart-5/10 text-chart-5"
                                                 }`}
                                         >
                                             {property.status}

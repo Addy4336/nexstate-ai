@@ -33,11 +33,11 @@ export default async function IntegrationsPage() {
                         <div className="flex items-center gap-2">
                             Status:
                             {isConnected ? (
-                                <span className="text-green-600 flex items-center gap-1 font-medium">
+                                <span className="text-chart-2 flex items-center gap-1 font-medium">
                                     <CheckCircle className="h-4 w-4" /> Connected
                                 </span>
                             ) : (
-                                <span className="text-yellow-600 flex items-center gap-1 font-medium">
+                                <span className="text-chart-4 flex items-center gap-1 font-medium">
                                     <AlertCircle className="h-4 w-4" /> Not Connected
                                 </span>
                             )}
@@ -66,11 +66,11 @@ export default async function IntegrationsPage() {
                         <div className="flex items-center gap-2">
                             Status:
                             {isZohoConnected ? (
-                                <span className="text-green-600 flex items-center gap-1 font-medium">
+                                <span className="text-chart-2 flex items-center gap-1 font-medium">
                                     <CheckCircle className="h-4 w-4" /> Connected
                                 </span>
                             ) : (
-                                <span className="text-yellow-600 flex items-center gap-1 font-medium">
+                                <span className="text-chart-4 flex items-center gap-1 font-medium">
                                     <AlertCircle className="h-4 w-4" /> Not Connected
                                 </span>
                             )}

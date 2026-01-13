@@ -157,11 +157,10 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
                                 <Badge
                                     key={amenity}
                                     variant={isSelected ? "default" : "outline"}
-                                    className={`cursor-pointer transition-all ${
-                                        isSelected 
-                                            ? "bg-primary text-primary-foreground" 
+                                    className={`cursor-pointer transition-all ${isSelected
+                                            ? "hover:bg-primary/90"
                                             : "hover:bg-muted"
-                                    }`}
+                                        }`}
                                     onClick={() => toggleAmenity(amenity)}
                                 >
                                     {isSelected && <Check className="w-3 h-3 mr-1" />}
@@ -188,7 +187,7 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
             </div>
 
             <div className="flex justify-end">
-                <Button type="submit" className="btn-primary" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? (
                         <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     ) : (

@@ -31,7 +31,7 @@ async function getUsers() {
 export default async function UsersPage() {
     // Verify admin access
     await requireAdmin();
-    
+
     const users = await getUsers();
 
     return (
@@ -78,9 +78,9 @@ export default async function UsersPage() {
                                     </TableCell>
                                     <TableCell>
                                         {user.email_verified ? (
-                                            <span className="text-green-600 font-medium text-xs">Verified</span>
+                                            <span className="text-chart-2 font-medium text-xs">Verified</span>
                                         ) : (
-                                            <span className="text-amber-600 font-medium text-xs">Pending</span>
+                                            <span className="text-chart-4 font-medium text-xs">Pending</span>
                                         )}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground text-sm">
@@ -98,9 +98,9 @@ export default async function UsersPage() {
                 </CardContent>
             </Card>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-800">
+            <div className="bg-muted border border-border rounded-lg p-4 text-sm text-muted-foreground">
                 <strong>Tip:</strong> To create a new user, you can currently use the
-                <code className="bg-amber-100 px-1 py-0.5 rounded mx-1">/admin/setup</code> page
+                <code className="bg-background px-1 py-0.5 rounded mx-1">/admin/setup</code> page
                 in an Incognito/Private window (to avoid logging out).
                 Full user creation inside the dashboard is coming soon.
             </div>

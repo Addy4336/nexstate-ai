@@ -41,7 +41,9 @@ export default async function EditFaqPage({ params }: EditFaqPageProps) {
                 </p>
             </div>
 
-            <FaqForm initialData={faq} />
+            <div className="bg-card p-6 rounded-xl border shadow-sm">
+                <FaqForm initialData={faq} />
+            </div>
         </div>
     );
 }

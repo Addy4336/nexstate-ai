@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
@@ -61,12 +62,18 @@ export default function LoginPage() {
                 >
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 mb-8">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-gold flex items-center justify-center">
-                            <span className="text-accent-foreground font-bold text-xl">H</span>
+                        <div className="relative w-24 h-8">
+                            <Image
+                                src="/images/logo.webp"
+                                alt="HOPO Homes"
+                                fill
+                                className="object-contain object-left"
+                            />
                         </div>
-                        <span className="text-xl font-bold text-foreground">
-                            HOPO<span className="text-accent">Admin</span>
-                        </span>
+                        <div className="flex items-center gap-1.5 text-lg font-bold whitespace-nowrap">
+                            <span className="text-primary">Admin</span>
+                            <span className="text-foreground">Portal</span>
+                        </div>
                     </Link>
 
                     <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back</h1>
@@ -114,7 +121,7 @@ export default function LoginPage() {
                             </div>
                         </div>
 
-                        <Button type="submit" className="btn-primary w-full" disabled={isLoading}>
+                        <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (
@@ -129,11 +136,11 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side - Decorative */}
-            <div className="hidden lg:flex flex-1 bg-gradient-dark items-center justify-center p-12 relative overflow-hidden">
+            <div className="hidden lg:flex flex-1 bg-muted items-center justify-center p-12 relative overflow-hidden">
                 {/* Background Patterns */}
                 <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 left-0 w-96 h-96 bg-accent rounded-full blur-3xl opacity-50" />
-                    <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500 rounded-full blur-3xl opacity-30" />
+                    <div className="absolute top-0 left-0 w-96 h-96 bg-primary rounded-full blur-3xl opacity-50" />
+                    <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-chart-1 rounded-full blur-3xl opacity-30" />
                 </div>
 
                 <div className="max-w-lg text-center relative z-10">
@@ -142,13 +149,18 @@ export default function LoginPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <div className="w-24 h-24 rounded-2xl bg-gradient-gold flex items-center justify-center mx-auto mb-8 shadow-gold">
-                            <span className="text-accent-foreground font-bold text-5xl">H</span>
+                        <div className="relative w-48 h-16 mx-auto mb-8">
+                            <Image
+                                src="/images/logo.webp"
+                                alt="HOPO Homes"
+                                fill
+                                className="object-contain"
+                            />
                         </div>
-                        <h2 className="text-3xl font-bold text-primary-foreground mb-4">
+                        <h2 className="text-3xl font-bold text-foreground mb-4">
                             HOPO Homes Admin Portal
                         </h2>
-                        <p className="text-primary-foreground/70 text-lg leading-relaxed">
+                        <p className="text-muted-foreground text-lg leading-relaxed">
                             Manage properties, tenants, and bookings with our powerful admin dashboard.
                             Secure, efficient, and AI-powered.
                         </p>
