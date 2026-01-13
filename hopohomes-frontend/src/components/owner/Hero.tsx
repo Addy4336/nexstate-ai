@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 export default function Hero() {
     return (
-        <section className="relative overflow-hidden  bg-white dark:bg-neutral-950 pt-0 pb-12 lg:pt-4 lg:pb-24 px-6 md:px-12">
+        <section className="relative overflow-hidden bg-background pt-0 pb-12 lg:pt-4 lg:pb-24 px-6 md:px-12">
 
             {/* SVG Clip Path Definition - Tabbed Shape */}
             <svg className="absolute w-0 h-0" aria-hidden="true">
@@ -21,21 +21,21 @@ export default function Hero() {
 
                 {/* Header Section (Full Width) */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left mt-4 gap-2">
-                    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-gray-900 dark:text-white">
-                        <span className="text-[#8B5CF6]">Unlocking</span> Potential,
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
+                        <span className="text-primary">Unlocking</span> Potential,
                     </h1>
 
                     <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 lg:gap-x-8 gap-y-4 w-full">
                         <div className="flex items-center gap-3">
-                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-purple-50 text-[#8B5CF6] text-sm lg:text-base font-medium border border-purple-100">Business</span>
-                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-purple-50 text-[#8B5CF6] text-sm lg:text-base font-medium border border-purple-100">Finance</span>
-                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-[#8B5CF6] text-white text-sm lg:text-base font-medium flex items-center gap-2 shadow-sm">
+                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-sm lg:text-base font-medium border border-primary/20">Business</span>
+                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-sm lg:text-base font-medium border border-primary/20">Finance</span>
+                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary text-primary-foreground text-sm lg:text-base font-medium flex items-center gap-2 shadow-sm">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="m19 9-5 5-4-4-3 3" /></svg>
                                 Growth
                             </span>
                         </div>
 
-                        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-gray-900 dark:text-white">
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
                             Maximizing Profit<span className="text-yellow-400">.</span>
                         </h1>
                     </div>
@@ -46,32 +46,32 @@ export default function Hero() {
 
                     {/* Left Column: Description & CTAs */}
                     <div className="flex flex-col gap-8 lg:pb-8 relative z-10 text-center lg:text-left">
-                        <p className="text-xl text-gray-500 dark:text-gray-400 max-w-lg leading-relaxed mx-auto lg:mx-0">
+                        <p className="text-xl text-muted-foreground max-w-lg leading-relaxed mx-auto lg:mx-0">
                             Strategic financial services designed to maximize your business's earning potential.
                         </p>
 
                         <div className="flex items-center justify-center lg:justify-start gap-6">
-                            <button className="bg-black text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition-colors flex items-center gap-2">
+                            <button className="bg-primary text-primary-foreground px-8 py-4 rounded-full font-medium hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-lg hover:shadow-primary/25">
                                 Get Started
                             </button>
-                            <button className="text-gray-900 font-medium underline decoration-1 underline-offset-4 hover:text-gray-600 dark:text-gray-200">
+                            <button className="text-foreground font-medium underline decoration-1 underline-offset-4 hover:text-primary transition-colors">
                                 How it works
                             </button>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-between max-w-md pt-8 border-t border-gray-100 dark:border-gray-800 mt-2 mx-auto lg:mx-0 gap-8 sm:gap-0 lg:mr-10">
+                        <div className="flex flex-col sm:flex-row items-center justify-between max-w-md pt-8 border-t border-border mt-2 mx-auto lg:mx-0 gap-8 sm:gap-0 lg:mr-10">
                             <div className="flex flex-col items-center sm:items-start">
-                                <span className="text-sm text-gray-500 font-medium mb-1">Trusted by_</span>
+                                <span className="text-sm text-muted-foreground font-medium mb-1">Trusted by_</span>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-bold text-gray-900 dark:text-white">320</span>
-                                    <span className="text-4xl font-bold text-[#8B5CF6]">K+</span>
+                                    <span className="text-4xl font-bold text-foreground">320</span>
+                                    <span className="text-4xl font-bold text-primary">K+</span>
                                 </div>
-                                <span className="text-sm text-gray-500">Happy customers</span>
+                                <span className="text-sm text-muted-foreground">Happy customers</span>
                             </div>
 
                             <div className="flex flex-col gap-2 items-center sm:items-start">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-bold">5.0</span>
+                                    <span className="text-2xl font-bold text-foreground">5.0</span>
                                     <div className="flex gap-0.5 text-yellow-400">
                                         {[...Array(5)].map((_, i) => (
                                             <Star key={i} size={16} fill="currentColor" />
@@ -80,7 +80,7 @@ export default function Hero() {
                                 </div>
                                 <div className="flex -space-x-3">
                                     {[1, 2, 3, 4].map((i) => (
-                                        <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden relative">
+                                        <div key={i} className="w-10 h-10 rounded-full border-2 border-background bg-muted overflow-hidden relative">
                                             <Image
                                                 src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 40}.jpg`}
                                                 alt="User"
@@ -89,7 +89,7 @@ export default function Hero() {
                                             />
                                         </div>
                                     ))}
-                                    <div className="w-10 h-10 rounded-full border-2 border-white bg-[#8B5CF6] flex items-center justify-center text-white z-10">
+                                    <div className="w-10 h-10 rounded-full border-2 border-background bg-primary flex items-center justify-center text-primary-foreground z-10">
                                         <Plus size={16} />
                                     </div>
                                 </div>
@@ -107,7 +107,7 @@ export default function Hero() {
                         >
                             {/* Custom Clipped Image Container */}
                             <div
-                                className="relative w-full h-full bg-purple-50 transition-all duration-500"
+                                className="relative w-full h-full bg-primary/5 transition-all duration-500"
                                 style={{
                                     clipPath: 'url(#hero-clip)',
                                     WebkitClipPath: 'url(#hero-clip)',
@@ -131,8 +131,8 @@ export default function Hero() {
 
                             {/* Floating Action Button - Positioned in the bottom-right cutout */}
                             <div className="absolute bottom-0 right-[2%] z-20">
-                                <button className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-900 hover:scale-105 hover:shadow-xl transition-all duration-300 group">
-                                    <ArrowUpRight className="w-6 h-6 sm:w-8 sm:h-8 font-light text-gray-600 group-hover:text-[#8B5CF6] transition-colors" strokeWidth={1.5} />
+                                <button className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-background border border-border flex items-center justify-center text-foreground hover:scale-105 hover:shadow-xl transition-all duration-300 group">
+                                    <ArrowUpRight className="w-6 h-6 sm:w-8 sm:h-8 font-light text-muted-foreground group-hover:text-primary transition-colors" strokeWidth={1.5} />
                                 </button>
                             </div>
                         </motion.div>

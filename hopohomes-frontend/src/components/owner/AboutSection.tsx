@@ -5,26 +5,26 @@ import { ArrowUpRight } from 'lucide-react';
 
 export default function AboutSection() {
     return (
-        <section className="bg-[#F8F9FB] dark:bg-neutral-950 py-20 px-6 md:px-12 relative overflow-hidden">
+        <section className="bg-muted/30 dark:bg-neutral-950 py-20 px-6 md:px-12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto space-y-12">
 
                 {/* Top Header Section */}
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                     <div className="space-y-6 max-w-3xl">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-[#EEEBFF] text-[#7C3AED] text-sm font-medium">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
                             About
                         </span>
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#1A1A1A] dark:text-white leading-[1.1]">
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">
                             Profit Crafted,<br />
                             Goals Achieved
                         </h2>
                     </div>
 
                     <div className="flex flex-wrap gap-4 pb-2">
-                        <button className="px-6 py-3 rounded-xl bg-[#8B5CF6] text-white font-medium flex items-center gap-2 hover:bg-[#7c4dff] transition-colors shadow-lg shadow-purple-200 dark:shadow-none">
+                        <button className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none">
                             Get Started <ArrowUpRight size={18} />
                         </button>
-                        <button className="px-6 py-3 rounded-xl bg-white text-[#1A1A1A] font-medium border border-gray-100 shadow-sm hover:bg-gray-50 transition-colors">
+                        <button className="px-6 py-3 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors">
                             Learn more
                         </button>
                     </div>
@@ -37,26 +37,26 @@ export default function AboutSection() {
                     <div className="flex-1 space-y-10">
 
                         <div className="space-y-4">
-                            <h3 className="text-xl font-semibold text-[#1A1A1A] dark:text-white">Your Growth, Our Business</h3>
-                            <p className="text-gray-500 leading-relaxed max-w-md">
+                            <h3 className="text-xl font-semibold text-foreground">Your Growth, Our Business</h3>
+                            <p className="text-muted-foreground leading-relaxed max-w-md">
                                 Empowering your financial journey with tailored solutions that ensure sustainable growth.
                             </p>
                         </div>
 
                         <div className="flex gap-8 sm:gap-24 pt-8">
                             <div>
-                                <div className="text-4xl md:text-6xl font-medium text-[#1A1A1A] dark:text-white flex items-start leading-none tracking-tight">
+                                <div className="text-4xl md:text-6xl font-medium text-foreground flex items-start leading-none tracking-tight">
                                     798
-                                    <span className="text-[#8B5CF6] text-2xl md:text-4xl mt-1 font-normal">M+</span>
+                                    <span className="text-primary text-2xl md:text-4xl mt-1 font-normal">M+</span>
                                 </div>
-                                <p className="text-gray-500 text-sm mt-3 ml-1 font-medium">Happy client</p>
+                                <p className="text-muted-foreground text-sm mt-3 ml-1 font-medium">Happy client</p>
                             </div>
                             <div className="pt-12 md:pt-16">
-                                <div className="text-4xl md:text-6xl font-medium text-[#1A1A1A] dark:text-white flex items-start leading-none tracking-tight">
+                                <div className="text-4xl md:text-6xl font-medium text-foreground flex items-start leading-none tracking-tight">
                                     99.9
-                                    <span className="text-[#8B5CF6] text-2xl md:text-4xl mt-1 font-normal">%</span>
+                                    <span className="text-primary text-2xl md:text-4xl mt-1 font-normal">%</span>
                                 </div>
-                                <p className="text-gray-500 text-sm mt-3 ml-1 font-medium">Growth Financial</p>
+                                <p className="text-muted-foreground text-sm mt-3 ml-1 font-medium">Growth Financial</p>
                             </div>
                         </div>
 
@@ -88,7 +88,7 @@ export default function AboutSection() {
                             {/* Main Image with Clip Path */}
                             <div className="absolute inset-0 z-10 w-full h-full">
                                 <div
-                                    className="w-full h-full relative overflow-hidden bg-purple-100"
+                                    className="w-full h-full relative overflow-hidden bg-primary/10"
                                     style={{
                                         clipPath: 'url(#about-mask-precise)',
                                         WebkitClipPath: 'url(#about-mask-precise)',
@@ -101,7 +101,7 @@ export default function AboutSection() {
                                         className="object-cover scale-110"
                                     />
                                     {/* Purple Overlay to match the aesthetic */}
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-[#8B5CF6]/40 to-transparent mix-blend-multiply"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent mix-blend-multiply"></div>
                                 </div>
                             </div>
                         </div>
