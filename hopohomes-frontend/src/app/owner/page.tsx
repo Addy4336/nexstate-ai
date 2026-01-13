@@ -2,6 +2,7 @@ import Navbar from "@/components/owner/Navbar";
 import Hero from "@/components/owner/Hero";
 import ServicesSection from "@/components/owner/ServicesSection";
 import AboutSection from "@/components/owner/AboutSection";
+import GrowthSection from "@/components/owner/GrowthSection";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Hero />
       <ServicesSection />
       <AboutSection />
+      <GrowthSection />
     </main>
   );
 }
