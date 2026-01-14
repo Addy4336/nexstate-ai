@@ -17,7 +17,7 @@ interface FavoriteButtonProps {
 // Helper to get/set guest user ID in localStorage
 function getGuestUserId(): string {
     if (typeof window === "undefined") return "";
-    
+
     let guestId = localStorage.getItem("guest_user_id");
     if (!guestId) {
         guestId = `guest_${crypto.randomUUID()}`;
@@ -26,11 +26,11 @@ function getGuestUserId(): string {
     return guestId;
 }
 
-export function FavoriteButton({ 
-    propertyId, 
+export function FavoriteButton({
+    propertyId,
     initialFavorited = false,
     variant = "icon",
-    className 
+    className
 }: FavoriteButtonProps) {
     const [isFav, setIsFav] = useState(initialFavorited);
     const [isLoading, setIsLoading] = useState(false);
@@ -52,12 +52,12 @@ export function FavoriteButton({
     const handleToggle = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         setIsLoading(true);
         try {
             const userId = getGuestUserId();
             const result = await toggleFavorite(propertyId, userId);
-            
+
             if (result.success && result.isFavorited !== undefined) {
                 setIsFav(result.isFavorited);
                 toast.success(result.isFavorited ? "Added to favorites" : "Removed from favorites");
@@ -81,8 +81,8 @@ export function FavoriteButton({
                 onClick={handleToggle}
                 disabled={isLoading}
                 className={cn(
-                    "p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-sm hover:bg-white transition-all",
-                    isFav && "text-red-500",
+                    "p-2 rounded-full bg-card/90 backdrop-blur-sm shadow-sm hover:bg-card transition-all",
+                    isFav && "text-destructive",
                     className
                 )}
                 aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
@@ -101,7 +101,7 @@ export function FavoriteButton({
             onClick={handleToggle}
             disabled={isLoading}
             variant={isFav ? "default" : "outline"}
-            className={cn(isFav && "bg-red-500 hover:bg-red-600", className)}
+            className={cn(isFav && "bg-destructive hover:bg-destructive/90", className)}
         >
             {isLoading ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

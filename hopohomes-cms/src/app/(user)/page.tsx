@@ -18,7 +18,7 @@ export default async function HomePage() {
     }
 
     return (
-        <>
+        <main className="min-h-screen w-full bg-background text-foreground">
             <Hero />
             <Stats />
             <FeaturedProperties properties={properties} />
@@ -27,6 +27,6 @@ export default async function HomePage() {
             <Locations />
             <ROICalculator />
             <CTA />
-        </>
+        </main>
     );
 }

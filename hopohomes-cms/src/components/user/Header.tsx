@@ -38,14 +38,14 @@ export function Header() {
     return (
         <header className="fixed top-0 left-0 right-0 z-50">
             <div className="mx-4 mt-4">
-                <nav className="glass rounded-2xl px-6 py-4 shadow-md">
+                <nav className="bg-background border border-border rounded-2xl px-6 py-4 shadow-md">
                     <div className="flex items-center justify-between">
                         {/* Logo */}
                         <Link href="/" className="flex items-center gap-2">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-gold flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
                                 <span className="text-accent-foreground font-bold text-xl">H</span>
                             </div>
-                            <span className="text-xl font-bold text-foreground">HOPO<span className="text-accent">Homes</span></span>
+                            <span className="text-xl font-bold text-foreground">HOPO<span className="text-secondary">Homes</span></span>
                         </Link>
 
                         {/* Desktop Navigation */}
@@ -71,7 +71,7 @@ export function Header() {
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, y: 10 }}
-                                                className="absolute top-full left-0 mt-2 w-48 glass rounded-xl p-2 shadow-lg"
+                                                className="absolute top-full left-0 mt-2 w-48 bg-background border border-border rounded-xl p-2 shadow-lg"
                                             >
                                                 {item.submenu.map((subItem) => (
                                                     <Link

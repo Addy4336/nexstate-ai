@@ -42,7 +42,7 @@ export function Hero() {
           >
             Find Your Perfect
             <br />
-            <span className="text-gradient-gold">Furnished Home</span>
+            <span className="text-secondary">Furnished Home</span>
             <br />
             in Dubai
           </motion.h1>

@@ -16,7 +16,7 @@ export function ROICalculator() {
   const netIncome = annualRevenue - serviceCost;
 
   return (
-    <section className="section-padding bg-gradient-dark text-primary-foreground" id="roi">
+    <section className="section-padding bg-primary text-primary-foreground" id="roi">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
@@ -32,7 +32,7 @@ export function ROICalculator() {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Calculate Your
               <br />
-              <span className="text-gradient-gold">Rental Returns</span>
+              <span className="text-secondary">Rental Returns</span>
             </h2>
             <p className="text-primary-foreground/70 mb-8 max-w-lg">
               Estimate your property's earning potential with our AI-powered ROI calculator. Get insights on rent optimization, occupancy rates, and net returns.

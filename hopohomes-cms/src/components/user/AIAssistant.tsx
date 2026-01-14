@@ -50,7 +50,7 @@ export function AIAssistant() {
       <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-gold shadow-gold flex items-center justify-center hover:scale-105 transition-transform animate-pulse-gold"
+        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-accent shadow-md flex items-center justify-center hover:scale-105 transition-transform"
         onClick={() => setIsOpen(true)}
       >
         <MessageCircle className="w-7 h-7 text-accent-foreground" />
@@ -66,7 +66,7 @@ export function AIAssistant() {
             className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] bg-card rounded-2xl shadow-lg border border-border overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-gradient-gold p-4 flex items-center justify-between">
+            <div className="bg-accent p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-accent-foreground/20 flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-accent-foreground" />
@@ -95,8 +95,8 @@ export function AIAssistant() {
                 >
                   <div
                     className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === "user"
-                        ? "bg-accent text-accent-foreground rounded-br-md"
-                        : "bg-secondary text-secondary-foreground rounded-bl-md"
+                      ? "bg-accent text-accent-foreground rounded-br-md"
+                      : "bg-secondary text-secondary-foreground rounded-bl-md"
                       }`}
                   >
                     {msg.content}

@@ -12,7 +12,7 @@ export function CTA() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative rounded-3xl bg-gradient-dark overflow-hidden"
+          className="relative rounded-3xl bg-primary overflow-hidden"
         >
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
@@ -40,7 +40,7 @@ export function CTA() {
             >
               Ready to Find Your
               <br />
-              <span className="text-gradient-gold">Perfect Home in Dubai?</span>
+              <span className="text-secondary">Perfect Home in Dubai?</span>
             </motion.h2>
 
             <motion.p

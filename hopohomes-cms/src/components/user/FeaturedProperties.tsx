@@ -115,11 +115,10 @@ export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
                           Featured
                         </span>
                       )}
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
-                        property.status === 'available' 
-                          ? 'bg-green-500/90 text-white' 
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${property.status === 'available'
+                          ? 'bg-secondary text-secondary-foreground'
                           : 'bg-card/90 text-foreground'
-                      }`}>
+                        }`}>
                         {property.status}
                       </span>
                     </div>
