@@ -30,21 +30,21 @@ export function AdminTopNav() {
 
     return (
         <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background pl-16 pr-6 lg:px-6">
-            {/* Page Title */}
+            {/* Page Title - Commented out */}
             <div className="flex-1">
-                <h1 className="text-xl font-semibold text-foreground capitalize">
+                {/* <h1 className="text-xl font-semibold text-foreground capitalize">
                     {getPageTitle()}
-                </h1>
-            </div>
+                </h1> */}
 
-            {/* Search */}
-            <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg  border border-border">
-                <Search className="w-4 h-4 text-muted-foreground" />
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    className="w-48 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-                />
+                {/* Search - Moved here */}
+                <div className="w-full max-w-md flex items-center gap-2 px-3 py-2 rounded-md border border-input bg-muted/40 focus-within:bg-background focus-within:ring-1 focus-within:ring-ring transition-colors">
+                    <Search className="w-4 h-4 text-muted-foreground" />
+                    <input
+                        type="text"
+                        placeholder="Search anything..."
+                        className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                    />
+                </div>
             </div>
 
             {/* Notifications */}
