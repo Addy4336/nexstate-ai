@@ -79,10 +79,10 @@ export function FaqForm({ initialData }: FaqFormProps) {
     };
 
     return (
-        <form action={handleSubmit} className="space-y-6 max-w-3xl">
+        <form action={handleSubmit} className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>FAQ Details</CardTitle>
+                    <CardTitle>FAQ Content</CardTitle>
                     <CardDescription>
                         Enter the question and answer for this FAQ.
                     </CardDescription>
@@ -105,16 +105,23 @@ export function FaqForm({ initialData }: FaqFormProps) {
                             id="answer"
                             name="answer"
                             placeholder="Provide a detailed answer to the question..."
-                            className="min-h-[200px]"
+                            className="min-h-[300px] resize-y"
                             required
                             defaultValue={initialData?.answer}
                         />
-                        <p className="text-xs text-muted-foreground">
-                            You can use markdown for formatting.
+                        <p className="text-xs text-muted-foreground text-right">
+                            Markdown supported
                         </p>
                     </div>
+                </CardContent>
+            </Card>
 
-                    <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Publishing Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <Label htmlFor="category">Category</Label>
                             <Select name="category" defaultValue={initialData?.category || "general"}>
@@ -142,16 +149,16 @@ export function FaqForm({ initialData }: FaqFormProps) {
                                 defaultValue={initialData?.sort_order || 0}
                             />
                             <p className="text-xs text-muted-foreground">
-                                Lower numbers appear first.
+                                FAQs are sorted by this number (lowest first).
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between rounded-lg border p-4">
+                    <div className="flex items-center justify-between rounded-lg border p-4 bg-muted/20">
                         <div className="space-y-0.5">
-                            <Label htmlFor="is_active">Active Status</Label>
+                            <Label htmlFor="is_active" className="text-base font-medium">Active Status</Label>
                             <p className="text-sm text-muted-foreground">
-                                Only active FAQs are visible on the website.
+                                Only active FAQs are visible to users.
                             </p>
                         </div>
                         <Switch
@@ -163,7 +170,7 @@ export function FaqForm({ initialData }: FaqFormProps) {
                 </CardContent>
             </Card>
 
-            <div className="flex justify-end gap-4">
+            <div className="flex justify-end gap-4 pt-4">
                 <Button
                     type="button"
                     variant="outline"
@@ -172,13 +179,13 @@ export function FaqForm({ initialData }: FaqFormProps) {
                 >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting} className="min-w-[150px]">
                     {isSubmitting ? (
                         <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     ) : (
                         <Save className="w-4 h-4 mr-2" />
                     )}
-                    {initialData ? "Update FAQ" : "Create FAQ"}
+                    {initialData ? "Update FAQ" : "Publish FAQ"}
                 </Button>
             </div>
         </form>

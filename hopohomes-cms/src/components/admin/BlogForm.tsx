@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { createBlogPost, updateBlogPost } from "@/actions/blog-actions";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, Globe, FileText, Image as ImageIcon, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -18,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 interface BlogFormProps {
     initialData?: any;
@@ -79,7 +80,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
                 toast.error(result.error);
             } else {
                 toast.success(initialData ? "Blog post updated!" : "Blog post created!");
-                router.push("/admin/blogs");
+                router.push("/admin/marketing");
             }
         } catch (e: any) {
             console.error("Form error:", e);
@@ -90,107 +91,160 @@ export function BlogForm({ initialData }: BlogFormProps) {
     };
 
     return (
-        <form action={handleSubmit} className="space-y-8 max-w-4xl">
-            <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="title">Blog Title</Label>
-                    <Input
-                        id="title"
-                        name="title"
-                        placeholder="e.g. Top 10 Investment Opportunities in Dubai"
-                        required
-                        value={title}
-                        onChange={handleTitleChange}
-                    />
-                </div>
+        <form action={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
+            {/* Main Content Column */}
+            <div className="lg:col-span-2 space-y-6">
+                <Card className="border shadow-sm">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <FileText className="h-5 w-5 text-muted-foreground" />
+                            Post Details
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="title">Blog Title</Label>
+                                <Input
+                                    id="title"
+                                    name="title"
+                                    placeholder="e.g. Top 10 Investment Opportunities in Dubai"
+                                    required
+                                    value={title}
+                                    onChange={handleTitleChange}
+                                    className="text-base md:text-lg font-medium"
+                                />
+                            </div>
 
-                <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="slug">URL Slug</Label>
-                    <Input
-                        id="slug"
-                        name="slug"
-                        placeholder="auto-generated-from-title"
-                        value={slug}
-                        onChange={(e) => setSlug(e.target.value)}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                        The URL will be: /blog/{slug || "your-post-slug"}
-                    </p>
-                </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="slug">URL Slug</Label>
+                                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-input focus-within:ring-2 focus-within:ring-inset focus-within:ring-ring overflow-hidden">
+                                    <span className="flex select-none items-center pl-3 pr-1 bg-muted/30 text-muted-foreground text-sm whitespace-nowrap border-r">
+                                        hopohomes.com/blog/
+                                    </span>
+                                    <input
+                                        type="text"
+                                        name="slug"
+                                        id="slug"
+                                        className="block flex-1 border-0 bg-transparent py-2 pl-2 text-foreground placeholder:text-muted-foreground focus:ring-0 sm:text-sm sm:leading-6 min-w-0 w-full"
+                                        placeholder="your-post-slug"
+                                        value={slug}
+                                        onChange={(e) => setSlug(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
 
-                <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="excerpt">Excerpt</Label>
-                    <Textarea
-                        id="excerpt"
-                        name="excerpt"
-                        placeholder="A short summary of the blog post..."
-                        className="h-20"
-                        defaultValue={initialData?.excerpt}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                        This will be shown in blog listings and previews.
-                    </p>
-                </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="excerpt">Excerpt</Label>
+                            <Textarea
+                                id="excerpt"
+                                name="excerpt"
+                                placeholder="A short summary of the blog post shown in previews..."
+                                className="h-24 resize-y min-h-[80px]"
+                                defaultValue={initialData?.excerpt}
+                            />
+                        </div>
 
-                <div className="space-y-2 md:col-span-2">
-                    <Label>Content</Label>
-                    <RichTextEditor
-                        content={content}
-                        onChange={setContent}
-                        placeholder="Write your blog content here..."
-                    />
-                    <input type="hidden" name="content" value={content} />
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="category">Category</Label>
-                    <Select name="category" defaultValue={initialData?.category || "general"}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {categories.map((cat) => (
-                                <SelectItem key={cat.value} value={cat.value}>
-                                    {cat.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="status">Status</Label>
-                    <Select name="status" defaultValue={initialData?.status || "draft"}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="draft">Draft</SelectItem>
-                            <SelectItem value="published">Published</SelectItem>
-                            <SelectItem value="archived">Archived</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div className="space-y-2 md:col-span-2">
-                    <ImageUpload
-                        onImagesChange={setImages}
-                        onFolderIdChange={setFolderId}
-                        defaultImages={initialData?.images}
-                        folderName={title ? `blog-${title}` : "blog-images"}
-                    />
-                </div>
+                        <div className="space-y-2">
+                            <Label>Content</Label>
+                            <div className="min-h-[400px] border rounded-md focus-within:ring-1 focus-within:ring-ring">
+                                <RichTextEditor
+                                    content={content}
+                                    onChange={setContent}
+                                    placeholder="Write your blog content here..."
+                                    className="border-0 shadow-none rounded-none"
+                                />
+                                <input type="hidden" name="content" value={content} />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
-            <div className="flex justify-end">
-                <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    ) : (
-                        <Save className="w-4 h-4 mr-2" />
-                    )}
-                    {initialData ? "Update Blog Post" : "Create Blog Post"}
-                </Button>
+            {/* Sidebar Column */}
+            <div className="space-y-6">
+                {/* Publishing Settings */}
+                <Card className="border shadow-sm">
+                    <CardHeader className="bg-muted/30 pb-4">
+                        <CardTitle className="text-base font-medium flex items-center gap-2">
+                            <Settings className="h-4 w-4" />
+                            Publishing Settings
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6 space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="status">Status</Label>
+                            <Select name="status" defaultValue={initialData?.status || "draft"}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="draft">Draft</SelectItem>
+                                    <SelectItem value="published">Published</SelectItem>
+                                    <SelectItem value="archived">Archived</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="category">Category</Label>
+                            <Select name="category" defaultValue={initialData?.category || "general"}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select Category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {categories.map((cat) => (
+                                        <SelectItem key={cat.value} value={cat.value}>
+                                            {cat.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Featured Media */}
+                <Card className="border shadow-sm">
+                    <CardHeader className="bg-muted/30 pb-4">
+                        <CardTitle className="text-base font-medium flex items-center gap-2">
+                            <ImageIcon className="h-4 w-4" />
+                            Featured Media
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6">
+                        <div className="space-y-2">
+                            <ImageUpload
+                                onImagesChange={setImages}
+                                onFolderIdChange={setFolderId}
+                                defaultImages={initialData?.images}
+                                folderName={title ? `blog-${title}` : "blog-images"}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Actions */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => router.back()}
+                        disabled={isSubmitting}
+                        className="w-full"
+                    >
+                        Cancel
+                    </Button>
+                    <Button type="submit" disabled={isSubmitting} className="w-full">
+                        {isSubmitting ? (
+                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : (
+                            <Save className="w-4 h-4 mr-2" />
+                        )}
+                        {initialData ? "Update" : "Publish"}
+                    </Button>
+                </div>
             </div>
         </form>
     );

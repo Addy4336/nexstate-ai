@@ -2,7 +2,7 @@ import { supabaseAdmin } from "@/lib/db";
 import { requireStaff } from "@/lib/auth-utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, FileText, HelpCircle, Eye } from "lucide-react";
+import { Plus, Edit, FileText, HelpCircle, Calendar, ArrowRight, Table as TableIcon, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
@@ -90,14 +90,14 @@ function getFaqCategoryLabel(category: string) {
 
 function getFaqCategoryColor(category: string) {
     const colors: Record<string, string> = {
-        "general": "bg-muted text-muted-foreground",
-        "properties": "bg-chart-1/10 text-chart-1",
-        "investment": "bg-chart-2/10 text-chart-2",
-        "buying": "bg-chart-3/10 text-chart-3",
-        "selling": "bg-chart-4/10 text-chart-4",
-        "renting": "bg-chart-5/10 text-chart-5",
-        "legal": "bg-destructive/10 text-destructive",
-        "finance": "bg-primary/10 text-primary",
+        "general": "bg-slate-100 text-slate-700 hover:bg-slate-100/80 border-slate-200",
+        "properties": "bg-indigo-50 text-indigo-700 hover:bg-indigo-50/80 border-indigo-200",
+        "investment": "bg-emerald-50 text-emerald-700 hover:bg-emerald-50/80 border-emerald-200",
+        "buying": "bg-blue-50 text-blue-700 hover:bg-blue-50/80 border-blue-200",
+        "selling": "bg-amber-50 text-amber-700 hover:bg-amber-50/80 border-amber-200",
+        "renting": "bg-pink-50 text-pink-700 hover:bg-pink-50/80 border-pink-200",
+        "legal": "bg-rose-50 text-rose-700 hover:bg-rose-50/80 border-rose-200",
+        "finance": "bg-purple-50 text-purple-700 hover:bg-purple-50/80 border-purple-200",
     };
     return colors[category] || "bg-muted text-muted-foreground";
 }
@@ -108,102 +108,119 @@ export default async function MarketingPage() {
     const [blogs, faqs] = await Promise.all([getBlogs(), getFaqs()]);
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Marketing</h1>
-                <p className="text-muted-foreground">
-                    Manage your blog posts and frequently asked questions.
+        <div className="space-y-6 max-w-5xl mx-auto pb-10">
+            <div className="space-y-1">
+                <h1 className="text-2xl font-bold tracking-tight">Marketing</h1>
+                <p className="text-sm text-muted-foreground">
+                    Content management for your blog posts and knowledge base.
                 </p>
             </div>
 
-            <Tabs defaultValue="blogs" className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <TabsList className="grid w-[300px] grid-cols-2">
-                        <TabsTrigger value="blogs" className="flex items-center gap-2">
-                            <FileText className="h-4 w-4" />
+            <Tabs defaultValue="blogs" className="space-y-8">
+                <div className="flex items-center justify-between pb-4 border-b">
+                    <TabsList className="h-10 p-1 bg-muted/50 rounded-lg">
+                        <TabsTrigger value="blogs" className="gap-2 px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                            <LayoutGrid className="h-4 w-4" />
                             Blogs ({blogs.length})
                         </TabsTrigger>
-                        <TabsTrigger value="faqs" className="flex items-center gap-2">
-                            <HelpCircle className="h-4 w-4" />
+                        <TabsTrigger value="faqs" className="gap-2 px-4 rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                            <TableIcon className="h-4 w-4" />
                             FAQs ({faqs.length})
                         </TabsTrigger>
                     </TabsList>
 
-                    {/* Dynamic action button based on tab - handled by separate components */}
+                    <div className="flex items-center gap-2">
+                        {/* Contextual actions could go here */}
+                    </div>
                 </div>
 
                 {/* Blogs Tab */}
-                <TabsContent value="blogs" className="space-y-6">
-                    <div className="flex justify-end">
+                <TabsContent value="blogs" className="space-y-6 mt-0">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-lg font-semibold tracking-tight">Recent Posts</h2>
                         <Link href="/admin/marketing/blogs/new">
-                            <Button>
-                                <Plus className="mr-2 h-4 w-4" /> Add Blog Post
+                            <Button size="sm" className="gap-2">
+                                <Plus className="h-4 w-4" /> Create Post
                             </Button>
                         </Link>
                     </div>
 
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {blogs.map((blog) => (
-                            <div key={blog.id} className="bg-card rounded-xl border overflow-hidden shadow-sm flex flex-col">
-                                <div className="relative aspect-video">
+                            <div key={blog.id} className="group bg-card rounded-xl border shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden">
+                                <Link href={`/admin/marketing/blogs/${blog.id}/edit`} className="block relative aspect-[16/9] bg-muted overflow-hidden">
                                     {blog.cover_image ? (
                                         <Image
                                             src={blog.cover_image}
                                             alt={blog.title}
                                             fill
-                                            className="object-cover"
+                                            className="object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
                                     ) : (
-                                        <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">
-                                            No Cover Image
+                                        <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50 bg-secondary/30">
+                                            <FileText className="h-10 w-10 mb-2" />
+                                            <span className="text-xs font-medium">No Cover Image</span>
                                         </div>
                                     )}
-                                    <div className="absolute top-2 left-2">
-                                        <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm">
+                                    <div className="absolute top-3 left-3 z-10">
+                                        <Badge variant="secondary" className="bg-background/95 backdrop-blur-md shadow-sm text-xs font-semibold px-2 py-0.5 border-none">
                                             {getBlogCategoryLabel(blog.category)}
                                         </Badge>
                                     </div>
-                                    <div className="absolute top-2 right-2">
-                                        <Badge variant={getStatusVariant(blog.status)}>
+                                </Link>
+
+                                <div className="p-4 flex-1 flex flex-col space-y-3">
+                                    <div className="flex-1 space-y-2">
+                                        <Link href={`/admin/marketing/blogs/${blog.id}/edit`} className="block">
+                                            <h3 className="font-semibold text-base leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                                                {blog.title}
+                                            </h3>
+                                        </Link>
+                                        {blog.excerpt && (
+                                            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                                                {blog.excerpt}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-3 border-t">
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                            <Calendar className="h-3.5 w-3.5" />
+                                            {blog.published_at ? (
+                                                <span>{formatDistanceToNow(new Date(blog.published_at), { addSuffix: true })}</span>
+                                            ) : (
+                                                <span>Draft • {formatDistanceToNow(new Date(blog.created_at), { addSuffix: true })}</span>
+                                            )}
+                                        </div>
+                                        <Badge variant={getStatusVariant(blog.status)} className="h-5 px-1.5 text-[10px] uppercase font-bold tracking-wider rounded-sm">
                                             {blog.status}
                                         </Badge>
                                     </div>
                                 </div>
 
-                                <div className="p-4 flex-1 flex flex-col">
-                                    <h3 className="font-semibold text-lg line-clamp-2">{blog.title}</h3>
-                                    {blog.excerpt && (
-                                        <p className="text-muted-foreground text-sm mt-1 line-clamp-2">
-                                            {blog.excerpt}
-                                        </p>
-                                    )}
-
-                                    <div className="mt-auto pt-4 text-xs text-muted-foreground">
-                                        {blog.published_at ? (
-                                            <span>Published {formatDistanceToNow(new Date(blog.published_at), { addSuffix: true })}</span>
-                                        ) : (
-                                            <span>Created {formatDistanceToNow(new Date(blog.created_at), { addSuffix: true })}</span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="p-4 pt-0 flex gap-2">
+                                <div className="p-3 bg-muted/20 border-t flex items-center justify-between gap-2">
                                     <Link href={`/admin/marketing/blogs/${blog.id}/edit`} className="flex-1">
-                                        <Button variant="outline" className="w-full">
-                                            <Edit className="w-4 h-4 mr-2" /> Edit
+                                        <Button variant="ghost" size="sm" className="w-full h-8 text-xs font-medium hover:bg-background hover:shadow-sm">
+                                            Edit Post
                                         </Button>
                                     </Link>
+                                    <div className="w-[1px] h-4 bg-border"></div>
                                     <DeleteBlogButton id={blog.id} title={blog.title} />
                                 </div>
                             </div>
                         ))}
 
                         {blogs.length === 0 && (
-                            <div className="col-span-full py-12 text-center text-muted-foreground bg-card rounded-xl border border-dashed">
-                                <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                <p>No blog posts found.</p>
-                                <Link href="/admin/marketing/blogs/new" className="text-primary hover:underline mt-2 inline-block">
-                                    Create your first blog post
+                            <div className="col-span-full py-16 text-center bg-muted/10 border-2 border-dashed border-muted rounded-2xl">
+                                <div className="bg-muted/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <FileText className="h-8 w-8 text-muted-foreground/60" />
+                                </div>
+                                <h3 className="text-lg font-semibold text-foreground">No posts yet</h3>
+                                <p className="text-muted-foreground max-w-sm mx-auto mt-1 mb-6">
+                                    Start writing your first blog post to engage your audience.
+                                </p>
+                                <Link href="/admin/marketing/blogs/new">
+                                    <Button>Create Post</Button>
                                 </Link>
                             </div>
                         )}
@@ -211,58 +228,61 @@ export default async function MarketingPage() {
                 </TabsContent>
 
                 {/* FAQs Tab */}
-                <TabsContent value="faqs" className="space-y-6">
-                    <div className="flex justify-end">
+                <TabsContent value="faqs" className="space-y-6 mt-0">
+                    <div className="flex justify-between items-center">
+                        <div className="space-y-1">
+                            <h2 className="text-lg font-semibold tracking-tight">FAQ Management</h2>
+                            <p className="text-sm text-muted-foreground">Manage questions and answers for your help center.</p>
+                        </div>
                         <Link href="/admin/marketing/faqs/new">
-                            <Button>
-                                <Plus className="mr-2 h-4 w-4" /> Add FAQ
+                            <Button size="sm" className="gap-2">
+                                <Plus className="h-4 w-4" /> Add Question
                             </Button>
                         </Link>
                     </div>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>All FAQs</CardTitle>
-                            <CardDescription>
-                                Manage frequently asked questions displayed on your website.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
+                    <Card className="border shadow-sm overflow-hidden">
+                        <div className="overflow-x-auto">
                             {faqs.length === 0 ? (
-                                <div className="py-12 text-center text-muted-foreground">
-                                    <HelpCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                    <p>No FAQs found.</p>
-                                    <Link href="/admin/marketing/faqs/new" className="text-primary hover:underline mt-2 inline-block">
-                                        Create your first FAQ
+                                <div className="py-16 text-center">
+                                    <div className="bg-muted/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <HelpCircle className="h-8 w-8 text-muted-foreground/60" />
+                                    </div>
+                                    <h3 className="text-lg font-semibold">No questions found</h3>
+                                    <p className="text-muted-foreground max-w-sm mx-auto mt-1 mb-6">
+                                        Create common questions and answers to help your users.
+                                    </p>
+                                    <Link href="/admin/marketing/faqs/new">
+                                        <Button>Add FAQ</Button>
                                     </Link>
                                 </div>
                             ) : (
                                 <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="w-[50px]">#</TableHead>
-                                            <TableHead>Question</TableHead>
-                                            <TableHead className="w-[120px]">Category</TableHead>
-                                            <TableHead className="w-[100px]">Status</TableHead>
-                                            <TableHead className="w-[150px] text-right">Actions</TableHead>
+                                    <TableHeader className="bg-muted/40">
+                                        <TableRow className="hover:bg-transparent">
+                                            <TableHead className="w-[60px] pl-4">#</TableHead>
+                                            <TableHead className="w-[45%]">Question</TableHead>
+                                            <TableHead>Category</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead className="text-right pr-4">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {faqs.map((faq, index) => (
-                                            <TableRow key={faq.id}>
-                                                <TableCell className="font-medium text-muted-foreground">
+                                            <TableRow key={faq.id} className="group hover:bg-muted/30">
+                                                <TableCell className="font-medium text-muted-foreground pl-4">
                                                     {index + 1}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="space-y-1">
-                                                        <p className="font-medium line-clamp-1">{faq.question}</p>
-                                                        <p className="text-sm text-muted-foreground line-clamp-1">
-                                                            {faq.answer.substring(0, 80)}...
+                                                    <div className="space-y-1 py-1">
+                                                        <p className="font-medium text-sm text-foreground">{faq.question}</p>
+                                                        <p className="text-xs text-muted-foreground line-clamp-1 max-w-md">
+                                                            {faq.answer}
                                                         </p>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge className={getFaqCategoryColor(faq.category)}>
+                                                    <Badge variant="outline" className={getFaqCategoryColor(faq.category)}>
                                                         {getFaqCategoryLabel(faq.category)}
                                                     </Badge>
                                                 </TableCell>
@@ -272,10 +292,10 @@ export default async function MarketingPage() {
                                                         isActive={faq.is_active}
                                                     />
                                                 </TableCell>
-                                                <TableCell className="text-right">
+                                                <TableCell className="text-right pr-4">
                                                     <div className="flex items-center justify-end gap-2">
                                                         <Link href={`/admin/marketing/faqs/${faq.id}/edit`}>
-                                                            <Button variant="outline" size="sm">
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
                                                                 <Edit className="h-4 w-4" />
                                                             </Button>
                                                         </Link>
@@ -287,7 +307,7 @@ export default async function MarketingPage() {
                                     </TableBody>
                                 </Table>
                             )}
-                        </CardContent>
+                        </div>
                     </Card>
                 </TabsContent>
             </Tabs>

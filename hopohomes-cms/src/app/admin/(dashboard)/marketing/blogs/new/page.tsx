@@ -5,17 +5,15 @@ export default async function NewBlogPage() {
     await requireStaff();
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Create Blog Post</h1>
-                <p className="text-muted-foreground">
-                    Add a new blog post to your website.
+        <div className="pb-10">
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold tracking-tight">Create Blog Post</h1>
+                <p className="text-sm text-muted-foreground">
+                    Draft a new article for your audience.
                 </p>
             </div>
 
-            <div className="bg-card p-6 rounded-xl border shadow-sm">
-                <BlogForm />
-            </div>
+            <BlogForm />
         </div>
     );
 }

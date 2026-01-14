@@ -13,9 +13,7 @@ export default async function NewFaqPage() {
                 </p>
             </div>
 
-            <div className="bg-card p-6 rounded-xl border shadow-sm">
-                <FaqForm />
-            </div>
+            <FaqForm />
         </div>
     );
 }
