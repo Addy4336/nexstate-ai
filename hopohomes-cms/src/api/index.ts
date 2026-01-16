@@ -6,6 +6,7 @@ import { enquiriesRoutes } from "./routes/enquiries";
 import { favoritesRoutes } from "./routes/favorites";
 import { blogsRoutes } from "./routes/blogs";
 import { faqsRoutes } from "./routes/faqs";
+import { storageRoutes } from "./routes/storage";
 
 // Create the main Elysia application
 // Prefix with /api to match Next.js catch-all route at /api/[[...slugs]]
@@ -38,6 +39,7 @@ export const api = new Elysia({ prefix: "/api" })
                 { name: "Favorites", description: "Saved properties endpoints" },
                 { name: "Blogs", description: "Blog content endpoints" },
                 { name: "FAQs", description: "FAQ content endpoints" },
+                { name: "Storage", description: "Image storage endpoints" },
             ],
         },
     }))
@@ -60,7 +62,8 @@ export const api = new Elysia({ prefix: "/api" })
     .use(enquiriesRoutes)
     .use(favoritesRoutes)
     .use(blogsRoutes)
-    .use(faqsRoutes);
+    .use(faqsRoutes)
+    .use(storageRoutes);
 
 // Export the type for Eden Treaty client
 export type Api = typeof api;
