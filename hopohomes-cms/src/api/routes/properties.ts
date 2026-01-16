@@ -208,4 +208,374 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             summary: "Get property locations",
             description: "Get list of unique property locations for filtering",
         },
+    })
+    
+    // Advanced search with filters and pagination
+    .post("/search/advanced", async ({ body }) => {
+        const { 
+            filters = {}, 
+            page = 1, 
+            pageSize = 12 
+        } = body;
+        
+        let query = supabaseAdmin
+            .from("property")
+            .select("*", { count: "exact" })
+            .eq("status", "available");
+        
+        // Location filter
+        if (filters.location) {
+            query = query.ilike("location", `%${filters.location}%`);
+        }
+        
+        // Property type
+        if (filters.propertyType && filters.propertyType !== "all") {
+            query = query.eq("property_type", filters.propertyType);
+        }
+        
+        // Budget range
+        if (filters.budgetMin && filters.budgetMin > 0) {
+            query = query.gte("price", filters.budgetMin);
+        }
+        
+        if (filters.budgetMax && filters.budgetMax < 50000) {
+            query = query.lte("price", filters.budgetMax);
+        }
+        
+        // Sharing type
+        if (filters.sharingType && filters.sharingType !== "all") {
+            query = query.eq("sharing_type", filters.sharingType);
+        }
+        
+        // Furnishing
+        if (filters.furnishing && filters.furnishing !== "all") {
+            query = query.eq("furnishing", filters.furnishing);
+        }
+        
+        // Gender preference
+        if (filters.genderPreference && filters.genderPreference !== "all") {
+            query = query.eq("gender_preference", filters.genderPreference);
+        }
+        
+        // Bedrooms
+        if (filters.bedrooms && filters.bedrooms.length > 0) {
+            query = query.in("bedrooms", filters.bedrooms);
+        }
+        
+        // Bathrooms
+        if (filters.bathrooms && filters.bathrooms.length > 0) {
+            query = query.in("bathrooms", filters.bathrooms);
+        }
+        
+        // Amenities (array contains)
+        if (filters.amenities && filters.amenities.length > 0) {
+            query = query.contains("amenities", filters.amenities);
+        }
+        
+        // Available from
+        if (filters.availableFrom) {
+            query = query.lte("available_from", filters.availableFrom);
+        }
+        
+        // Pagination
+        const offset = (page - 1) * pageSize;
+        query = query
+            .order("featured", { ascending: false })
+            .order("created_at", { ascending: false })
+            .range(offset, offset + pageSize - 1);
+        
+        const { data, error, count } = await query;
+        
+        if (error) {
+            return { 
+                success: false, 
+                error: error.message, 
+                data: { properties: [], total: 0, page, pageSize } 
+            };
+        }
+        
+        return { 
+            success: true, 
+            data: {
+                properties: data || [],
+                total: count || 0,
+                page,
+                pageSize,
+            }
+        };
+    }, {
+        body: t.Object({
+            filters: t.Optional(t.Object({
+                location: t.Optional(t.String()),
+                propertyType: t.Optional(t.String()),
+                budgetMin: t.Optional(t.Number()),
+                budgetMax: t.Optional(t.Number()),
+                sharingType: t.Optional(t.String()),
+                furnishing: t.Optional(t.String()),
+                genderPreference: t.Optional(t.String()),
+                bedrooms: t.Optional(t.Array(t.Number())),
+                bathrooms: t.Optional(t.Array(t.Number())),
+                amenities: t.Optional(t.Array(t.String())),
+                availableFrom: t.Optional(t.String()),
+            })),
+            page: t.Optional(t.Number()),
+            pageSize: t.Optional(t.Number()),
+        }),
+        detail: {
+            tags: ["Properties"],
+            summary: "Advanced property search",
+            description: "Search properties with advanced filters including property type, furnishing, amenities, and pagination",
+        },
+    })
+    
+    // Get similar properties
+    .get("/:id/similar", async ({ params, query }) => {
+        const limit = query.limit ? parseInt(query.limit) : 4;
+        
+        // First get the current property
+        const { data: property, error: propError } = await supabaseAdmin
+            .from("property")
+            .select("location, price")
+            .eq("id", params.id)
+            .single();
+        
+        if (propError || !property) {
+            return { success: false, error: "Property not found", data: [] };
+        }
+        
+        const minPrice = property.price * 0.8;
+        const maxPrice = property.price * 1.2;
+        
+        const { data, error } = await supabaseAdmin
+            .from("property")
+            .select("*")
+            .neq("id", params.id)
+            .ilike("location", `%${property.location}%`)
+            .gte("price", minPrice)
+            .lte("price", maxPrice)
+            .eq("status", "available")
+            .limit(limit);
+        
+        if (error) {
+            return { success: false, error: error.message, data: [] };
+        }
+        
+        return { success: true, data: data || [] };
+    }, {
+        params: t.Object({
+            id: t.String(),
+        }),
+        query: t.Object({
+            limit: t.Optional(t.String()),
+        }),
+        detail: {
+            tags: ["Properties"],
+            summary: "Get similar properties",
+            description: "Get properties similar to the specified one based on location and price",
+        },
+    })
+    
+    // Get upgrade properties (higher price range)
+    .get("/:id/upgrades", async ({ params, query }) => {
+        const limit = query.limit ? parseInt(query.limit) : 4;
+        
+        // First get the current property
+        const { data: property, error: propError } = await supabaseAdmin
+            .from("property")
+            .select("price")
+            .eq("id", params.id)
+            .single();
+        
+        if (propError || !property) {
+            return { success: false, error: "Property not found", data: [] };
+        }
+        
+        const minPrice = property.price * 1.1;
+        const maxPrice = property.price * 1.4;
+        
+        const { data, error } = await supabaseAdmin
+            .from("property")
+            .select("*")
+            .neq("id", params.id)
+            .gte("price", minPrice)
+            .lte("price", maxPrice)
+            .eq("status", "available")
+            .order("price", { ascending: true })
+            .limit(limit);
+        
+        if (error) {
+            return { success: false, error: error.message, data: [] };
+        }
+        
+        return { success: true, data: data || [] };
+    }, {
+        params: t.Object({
+            id: t.String(),
+        }),
+        query: t.Object({
+            limit: t.Optional(t.String()),
+        }),
+        detail: {
+            tags: ["Properties"],
+            summary: "Get upgrade properties",
+            description: "Get higher-priced alternatives to the specified property",
+        },
+    })
+    
+    // Get budget-friendly alternatives (lower price range)
+    .get("/:id/budget", async ({ params, query }) => {
+        const limit = query.limit ? parseInt(query.limit) : 4;
+        
+        // First get the current property
+        const { data: property, error: propError } = await supabaseAdmin
+            .from("property")
+            .select("price")
+            .eq("id", params.id)
+            .single();
+        
+        if (propError || !property) {
+            return { success: false, error: "Property not found", data: [] };
+        }
+        
+        const minPrice = property.price * 0.6;
+        const maxPrice = property.price * 0.9;
+        
+        const { data, error } = await supabaseAdmin
+            .from("property")
+            .select("*")
+            .neq("id", params.id)
+            .gte("price", minPrice)
+            .lte("price", maxPrice)
+            .eq("status", "available")
+            .order("price", { ascending: false })
+            .limit(limit);
+        
+        if (error) {
+            return { success: false, error: error.message, data: [] };
+        }
+        
+        return { success: true, data: data || [] };
+    }, {
+        params: t.Object({
+            id: t.String(),
+        }),
+        query: t.Object({
+            limit: t.Optional(t.String()),
+        }),
+        detail: {
+            tags: ["Properties"],
+            summary: "Get budget-friendly properties",
+            description: "Get lower-priced alternatives to the specified property",
+        },
+    })
+    
+    // Get popular properties in an area
+    .get("/area/:location/popular", async ({ params, query }) => {
+        const limit = query.limit ? parseInt(query.limit) : 4;
+        const excludeId = query.excludeId;
+        
+        let queryBuilder = supabaseAdmin
+            .from("property")
+            .select("*")
+            .ilike("location", `%${params.location}%`)
+            .eq("status", "available")
+            .order("featured", { ascending: false })
+            .order("created_at", { ascending: false })
+            .limit(limit);
+        
+        if (excludeId) {
+            queryBuilder = queryBuilder.neq("id", excludeId);
+        }
+        
+        const { data, error } = await queryBuilder;
+        
+        if (error) {
+            return { success: false, error: error.message, data: [] };
+        }
+        
+        return { success: true, data: data || [] };
+    }, {
+        params: t.Object({
+            location: t.String(),
+        }),
+        query: t.Object({
+            limit: t.Optional(t.String()),
+            excludeId: t.Optional(t.String()),
+        }),
+        detail: {
+            tags: ["Properties"],
+            summary: "Get popular properties in area",
+            description: "Get popular/featured properties in a specific location",
+        },
+    })
+    
+    // Get property types (for filter dropdowns)
+    .get("/meta/types", async () => {
+        const types = [
+            { value: "apartment", label: "Apartment" },
+            { value: "villa", label: "Villa" },
+            { value: "townhouse", label: "Townhouse" },
+            { value: "penthouse", label: "Penthouse" },
+            { value: "studio", label: "Studio" },
+            { value: "duplex", label: "Duplex" },
+        ];
+        
+        return { success: true, data: types };
+    }, {
+        detail: {
+            tags: ["Properties"],
+            summary: "Get property types",
+            description: "Get list of available property types for filtering",
+        },
+    })
+    
+    // Get amenities list (for filter dropdowns)
+    .get("/meta/amenities", async () => {
+        const amenities = [
+            "Swimming Pool",
+            "Gym",
+            "Parking",
+            "Balcony",
+            "Garden",
+            "Security",
+            "CCTV",
+            "Elevator",
+            "Central AC",
+            "Built-in Wardrobes",
+            "Maid's Room",
+            "Study Room",
+            "Private Pool",
+            "Beach Access",
+            "Golf Course View",
+            "Sea View",
+            "City View",
+            "Concierge",
+            "Children's Play Area",
+            "BBQ Area",
+        ];
+        
+        return { success: true, data: amenities };
+    }, {
+        detail: {
+            tags: ["Properties"],
+            summary: "Get amenities list",
+            description: "Get list of available amenities for filtering",
+        },
+    })
+    
+    // Get furnishing options
+    .get("/meta/furnishing", async () => {
+        const options = [
+            { value: "furnished", label: "Furnished" },
+            { value: "unfurnished", label: "Unfurnished" },
+            { value: "semi-furnished", label: "Semi-Furnished" },
+        ];
+        
+        return { success: true, data: options };
+    }, {
+        detail: {
+            tags: ["Properties"],
+            summary: "Get furnishing options",
+            description: "Get list of furnishing options for filtering",
+        },
     });
