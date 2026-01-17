@@ -59,7 +59,7 @@ export default function ConsultationSection() {
     };
 
     return (
-        <section className="relative py-16 md:py-28 px-4 sm:px-6 md:px-12 overflow-hidden">
+        <section id="consultation-form" className="relative py-16 md:py-28 px-4 sm:px-6 md:px-12 overflow-hidden">
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @media (min-width: 1024px) {
@@ -267,6 +267,184 @@ export default function ConsultationSection() {
 
                 </div>
             </div>
+
+            {/* Mobile Drawer & Sticky Trigger */}
+            <MobileDrawerForm
+                formData={formData}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+            />
         </section>
+    );
+}
+
+// Sub-component for Mobile Drawer Form to keep things clean
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronUp, X } from 'lucide-react';
+
+function MobileDrawerForm({ formData, handleChange, handleSubmit }: {
+    formData: any,
+    handleChange: (e: any) => void,
+    handleSubmit: (e: any) => void
+}) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <>
+            {/* Sticky Trigger Bar (Always Visible on Mobile) */}
+            <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-background border-t border-border p-4 z-40 flex items-center justify-between shadow-[0_-5px_20px_rgba(0,0,0,0.1)]">
+                <div>
+                    <span className="block text-sm font-bold text-foreground">Free Consultation</span>
+                    <span className="text-xs text-muted-foreground">Maximize your rental yield</span>
+                </div>
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="h-10 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-semibold text-sm shadow-md transition-all flex items-center gap-2"
+                >
+                    Claim Now
+                    <ChevronUp className="w-4 h-4" />
+                </button>
+            </div>
+
+            {/* Backdrop & Drawer */}
+            <AnimatePresence>
+                {isOpen && (
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsOpen(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+                        />
+
+                        {/* Drawer */}
+                        <motion.div
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed bottom-0 left-0 right-0 bg-background z-[51] rounded-t-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] lg:hidden will-change-transform"
+                        >
+                            {/* Drawer Header */}
+                            <div className="p-4 border-b border-border flex items-center justify-between bg-muted/30">
+                                <div>
+                                    <h3 className="font-bold text-base">Property Consultation</h3>
+                                    <p className="text-xs text-muted-foreground">Fill in details below</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="p-2 bg-muted rounded-full hover:bg-muted/80 transition-colors"
+                                >
+                                    <X className="w-5 h-5 text-muted-foreground" />
+                                </button>
+                            </div>
+
+                            {/* Scrollable Form Content */}
+                            <div className="p-5 overflow-y-auto">
+                                <form onSubmit={(e) => {
+                                    handleSubmit(e);
+                                    setIsOpen(false);
+                                }} className="space-y-4">
+
+                                    {/* Property Type */}
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium ml-1">Property Type</label>
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                                <Home size={18} />
+                                            </div>
+                                            <select
+                                                name="propertyType"
+                                                value={formData.propertyType}
+                                                onChange={handleChange}
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl bg-muted/50 border border-border text-foreground appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                                            >
+                                                {propertyTypes.map((option) => (
+                                                    <option key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {/* Bedrooms & City Grid */}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium ml-1">Bedrooms</label>
+                                            <div className="relative">
+                                                <select
+                                                    name="bedrooms"
+                                                    value={formData.bedrooms}
+                                                    onChange={handleChange}
+                                                    className="w-full px-3 py-3 rounded-xl bg-muted/50 border border-border text-foreground appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                                                >
+                                                    {bedroomOptions.map((option) => (
+                                                        <option key={option.value} value={option.value}>
+                                                            {option.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium ml-1">City</label>
+                                            <div className="relative">
+                                                <select
+                                                    name="city"
+                                                    value={formData.city}
+                                                    onChange={handleChange}
+                                                    className="w-full px-3 py-3 rounded-xl bg-muted/50 border border-border text-foreground appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                                                >
+                                                    {cityOptions.map((option) => (
+                                                        <option key={option.value} value={option.value}>
+                                                            {option.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Name */}
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        placeholder="Your Full Name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                                    />
+
+                                    {/* Phone */}
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        placeholder="Phone Number (+971)"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                                    />
+
+                                    {/* Submit */}
+                                    <button
+                                        type="submit"
+                                        className="w-full py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all mt-2"
+                                    >
+                                        Claim Free Consultation
+                                        <ArrowRight size={18} />
+                                    </button>
+
+                                    <div className="h-6" /> {/* Spacer for bottom safe area */}
+                                </form>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+        </>
     );
 }
