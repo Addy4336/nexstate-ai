@@ -7,6 +7,7 @@ import ClientTestimonials from "@/components/tenants/ClientTestimonials";
 import FAQSection from "@/components/tenants/FAQSection";
 import CTASection from "@/components/tenants/CTASection";
 import LocationSection from "@/components/tenants/LocationSection";
+import CalculatorsSection from "@/components/CalculatorsSection";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <LocationSection />
       <MapFeatures />
       <PremierHouses />
+      <CalculatorsSection />
 
       <FAQSection />
       <ClientTestimonials />
