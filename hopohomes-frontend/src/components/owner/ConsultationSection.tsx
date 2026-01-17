@@ -242,7 +242,7 @@ export default function ConsultationSection() {
                                 {/* Submit Button */}
                                 <button
                                     type="submit"
-                                    className="w-full py-4 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-primary/25 transition-all group"
+                                    className="w-full py-4 px-8 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-secondary/25 transition-all group"
                                 >
                                     Claim Free Consultation
                                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />

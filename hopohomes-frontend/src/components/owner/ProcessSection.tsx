@@ -55,7 +55,7 @@ export default function ProcessSection() {
                     </h2>
 
                     <div className="flex flex-col items-start lg:items-end space-y-4 md:space-y-6 max-w-sm">
-                        <span className="inline-block px-5 py-2 rounded-full bg-background border border-border shadow-sm text-primary text-sm font-medium">
+                        <span className="inline-block px-5 py-2 rounded-full bg-secondary border border-border shadow-sm text-secondary-foreground text-sm font-medium">
                             How It Works
                         </span>
                         <p className="text-muted-foreground text-base md:text-lg leading-relaxed lg:text-right">

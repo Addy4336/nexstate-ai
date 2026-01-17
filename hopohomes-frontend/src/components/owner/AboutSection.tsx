@@ -18,7 +18,7 @@ export default function AboutSection() {
                 {/* Top Header Section */}
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-8">
                     <div className="space-y-4 md:space-y-6 max-w-3xl">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs md:text-sm font-medium">
                             About HopoHomes
                         </span>
                         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">

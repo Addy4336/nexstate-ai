@@ -27,12 +27,12 @@ export default function Hero() {
 
                     <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-2 sm:gap-x-4 lg:gap-x-8 gap-y-3 w-full">
                         <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
-                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm lg:text-base font-medium border border-primary/20">
+                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-secondary text-secondary-foreground text-xs sm:text-sm lg:text-base font-medium">
                                 <Building2 size={14} className="inline mr-1.5 sm:w-4 sm:h-4" />
                                 Villas
                             </span>
-                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm lg:text-base font-medium border border-primary/20">Apartments</span>
-                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm lg:text-base font-medium flex items-center gap-2 shadow-sm">
+                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-secondary text-secondary-foreground text-xs sm:text-sm lg:text-base font-medium">Apartments</span>
+                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-secondary text-secondary-foreground text-xs sm:text-sm lg:text-base font-medium flex items-center gap-2 shadow-sm">
                                 <MapPin size={14} className="sm:w-4 sm:h-4" />
                                 Dubai
                             </span>

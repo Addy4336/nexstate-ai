@@ -29,7 +29,7 @@ export default function GrowthSection() {
 
                 {/* Centered Heading */}
                 <div className="text-center max-w-4xl mx-auto space-y-4 md:space-y-6">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium border border-primary/20">
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs md:text-sm font-medium border border-secondary/20">
                         Featured Properties
                     </span>
                     <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.2]">

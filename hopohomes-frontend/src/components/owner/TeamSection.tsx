@@ -35,7 +35,7 @@ export default function TeamSection() {
                 {/* Header Section */}
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-8 lg:gap-12">
                     <div className="max-w-2xl space-y-4 md:space-y-6">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs md:text-sm font-medium">
                             Expert Team
                         </span>
                         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">
