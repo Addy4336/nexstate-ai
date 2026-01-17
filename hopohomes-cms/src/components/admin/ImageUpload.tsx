@@ -4,7 +4,6 @@ import { useState } from "react";
 import { X, Upload, Loader2, ImagePlus, Star } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { uploadImageToDriveAction } from "@/actions/google-drive-actions";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
@@ -15,7 +14,7 @@ interface ImageUploadProps {
     folderName?: string; // Optional folder name (e.g. Property Title)
 }
 
-export function ImageUpload({ onImagesChange, onFolderIdChange, defaultImages = [], folderName = "Properties" }: ImageUploadProps) {
+export function ImageUpload({ onImagesChange, onFolderIdChange, defaultImages = [], folderName = "properties" }: ImageUploadProps) {
     const [uploading, setUploading] = useState(false);
     // images[0] is always treated as Cover Image
     const [images, setImages] = useState<string[]>(defaultImages);
@@ -28,25 +27,48 @@ export function ImageUpload({ onImagesChange, onFolderIdChange, defaultImages = 
             const files = Array.from(e.target.files);
             const newUploadedUrls: string[] = [];
 
-            // Parallel uploads
+            // Convert files to base64 and upload via API
             const uploadPromises = files.map(async (file) => {
-                const formData = new FormData();
-                formData.append("file", file);
-                // Sanitize folder name: remove special chars
-                const cleanFolderName = folderName.replace(/[^a-zA-Z0-9 ]/g, "").trim() || "Properties";
-                formData.append("folderName", cleanFolderName);
+                // Convert file to base64
+                const base64 = await new Promise<string>((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result as string);
+                    reader.readAsDataURL(file);
+                });
 
-                const result = await uploadImageToDriveAction(formData);
-                if (!result.success || !result.url) {
+                // Sanitize folder name: lowercase, alphanumeric and hyphens only
+                const cleanFolderName = folderName
+                    .toLowerCase()
+                    .replace(/[^a-z0-9-_]/g, "-")
+                    .replace(/-+/g, "-")
+                    .trim() || "properties";
+
+                // Upload via API route
+                const response = await fetch('/api/storage/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        file: {
+                            data: base64,
+                            name: file.name,
+                            type: file.type,
+                        },
+                        folderName: cleanFolderName,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (!result.success || !result.data?.url) {
                     throw new Error(`Failed to upload ${file.name}: ${result.error}`);
                 }
 
-                // Notify parent about the folder ID (only needs to happen once really)
-                if (result.parentId && onFolderIdChange) {
-                    onFolderIdChange(result.parentId);
+                // Notify parent about the folder path (for compatibility with old interface)
+                if (result.data.path && onFolderIdChange) {
+                    onFolderIdChange(cleanFolderName);
                 }
 
-                return result.url;
+                return result.data.url;
             });
 
             const results = await Promise.all(uploadPromises);

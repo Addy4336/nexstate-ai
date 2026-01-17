@@ -654,6 +654,217 @@ GET /api/health
 
 ---
 
+## Storage Endpoints
+
+**NEW: Supabase Storage for Images**
+
+Starting from this implementation, all property images are stored in **Supabase Storage** instead of Google Drive for better performance (instant loading vs 20+ seconds).
+
+### Initialize Storage Bucket
+
+Create the `property-images` bucket if it doesn't exist.
+
+```http
+POST /api/storage/init
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Storage bucket ready"
+}
+```
+
+**Frontend Usage:**
+```typescript
+// Usually called once during setup, or automatically by ImageUpload component
+const res = await fetch('/api/storage/init', { method: 'POST' });
+```
+
+---
+
+### Upload Image
+
+Upload a single image to Supabase Storage (base64 encoded).
+
+```http
+POST /api/storage/upload
+```
+
+**Request Body:**
+```json
+{
+  "file": {
+    "data": "data:image/jpeg;base64,/9j/4AAQ...",
+    "name": "property-image.jpg",
+    "type": "image/jpeg"
+  },
+  "folderName": "dubai-marina-apartment"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "url": "https://xxx.supabase.co/storage/v1/object/public/property-images/dubai-marina-apartment/1705392000-abc123.jpg",
+    "path": "dubai-marina-apartment/1705392000-abc123.jpg",
+    "fileName": "1705392000-abc123.jpg"
+  }
+}
+```
+
+**Frontend Usage:**
+```typescript
+// Convert file to base64
+const base64 = await new Promise<string>((resolve) => {
+  const reader = new FileReader();
+  reader.onloadend = () => resolve(reader.result as string);
+  reader.readAsDataURL(file);
+});
+
+// Upload
+const res = await fetch('/api/storage/upload', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    file: {
+      data: base64,
+      name: file.name,
+      type: file.type
+    },
+    folderName: 'property-folder'
+  })
+});
+const { data } = await res.json();
+// data.url is ready to save to database
+```
+
+**Constraints:**
+- Max file size: 10MB
+- Allowed types: `image/jpeg`, `image/png`, `image/webp`, `image/gif`
+- Folder names are sanitized (lowercase, alphanumeric + hyphens)
+- File names are auto-generated with timestamp + random string
+
+---
+
+### Delete Image
+
+Delete an image from Supabase Storage.
+
+```http
+DELETE /api/storage/delete
+```
+
+**Request Body:**
+```json
+{
+  "path": "dubai-marina-apartment/1705392000-abc123.jpg"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Image deleted"
+}
+```
+
+**Frontend Usage:**
+```typescript
+const res = await fetch('/api/storage/delete', {
+  method: 'DELETE',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ path: 'folder/filename.jpg' })
+});
+```
+
+---
+
+### Get Signed URL
+
+Generate a temporary signed URL for private image access (optional, bucket is public by default).
+
+```http
+POST /api/storage/signed-url
+```
+
+**Request Body:**
+```json
+{
+  "path": "dubai-marina-apartment/1705392000-abc123.jpg",
+  "expiresIn": 3600
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "url": "https://xxx.supabase.co/storage/v1/object/sign/property-images/..."
+  }
+}
+```
+
+---
+
+### List Images in Folder
+
+Get all images in a specific folder.
+
+```http
+GET /api/storage/list/:folder?limit=100&offset=0
+```
+
+**Parameters:**
+- `folder` (path): Folder name
+- `limit` (query): Max results (default: 100)
+- `offset` (query): Skip results (default: 0)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "name": "1705392000-abc123.jpg",
+      "id": "uuid",
+      "created_at": "2026-01-16T12:00:00.000Z",
+      "metadata": {},
+      "url": "https://xxx.supabase.co/storage/v1/object/public/property-images/folder/1705392000-abc123.jpg"
+    }
+  ]
+}
+```
+
+**Frontend Usage:**
+```typescript
+const res = await fetch('/api/storage/list/dubai-marina?limit=50');
+const { data } = await res.json();
+// data = array of files with public URLs
+```
+
+---
+
+### Image URL Utility
+
+Use the `getImageUrl()` utility to handle both legacy Google Drive URLs and new Supabase Storage URLs:
+
+```typescript
+import { getImageUrl } from '@/lib/utils';
+
+// Handles both formats automatically:
+const url1 = getImageUrl('https://xxx.supabase.co/storage/...');  // Supabase
+const url2 = getImageUrl('property-images/folder/file.jpg');      // Path only
+const url3 = getImageUrl('https://drive.google.com/...');         // Google Drive (legacy)
+```
+
+---
+
 ## Error Handling
 
 All endpoints return consistent error responses:
@@ -723,6 +934,11 @@ const { data: property } = await api.api.properties({ id: 'uuid' }).get();
 | Favorites | `/favorites/check/:propertyId/:userId` | GET | Check if favorited |
 | Enquiries | `/enquiries` | POST | Submit enquiry |
 | Enquiries | `/enquiries/types` | GET | Get enquiry types |
+| Storage | `/storage/init` | POST | Initialize storage bucket |
+| Storage | `/storage/upload` | POST | Upload image (base64) |
+| Storage | `/storage/delete` | DELETE | Delete image |
+| Storage | `/storage/signed-url` | POST | Get signed URL |
+| Storage | `/storage/list/:folder` | GET | List images in folder |
 | System | `/health` | GET | Health check |
 | Docs | `/docs` | GET | Swagger UI |
 
