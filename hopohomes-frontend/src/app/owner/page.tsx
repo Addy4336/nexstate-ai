@@ -19,7 +19,7 @@ export default function Home() {
       <GrowthSection />
       <ConsultationSection />
       <TeamSection />
-      <FooterSection />
+      {/* <FooterSection /> */}
 
     </main>
   );
