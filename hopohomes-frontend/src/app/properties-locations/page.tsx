@@ -128,44 +128,44 @@ export default function PropertiesLocations() {
                         <Loader2 className="w-10 h-10 animate-spin text-primary" />
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 md:gap-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                         {filteredLocations.map((location, index) => (
-                            <div
+                            <Link
                                 key={index}
-                                className="w-full flex flex-col items-center group cursor-pointer"
+                                href={`/properties/${location.toLowerCase().replace(/\s+/g, '-')}`}
+                                className="group relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer"
                             >
-                                <Link
-                                    href={`/properties/${location.toLowerCase().replace(/\s+/g, '-')}`}
-                                    className="w-full flex flex-col items-center gap-5"
-                                >
-                                    <div className="relative w-full aspect-[3/4] rounded-[1000px] overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-500 ring-1 ring-border group-hover:ring-primary/50 bg-muted">
-                                        <Image
-                                            src={getLocationImage(location)}
-                                            alt={location}
-                                            fill
-                                            className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                                        />
-                                        {/* Gradient Overlay */}
-                                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                                {/* Background Image */}
+                                <Image
+                                    src={getLocationImage(location)}
+                                    alt={location}
+                                    fill
+                                    className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                                />
 
-                                        {/* Hover Icon */}
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
-                                            <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 text-white">
-                                                <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
-                                            </div>
-                                        </div>
-                                    </div>
+                                {/* Gradient Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
-                                    <div className="flex flex-col items-center gap-1.5 text-center">
-                                        <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                                            {location}
-                                        </h3>
-                                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-1">
-                                            <MapPin className="w-3 h-3" /> Dubai
-                                        </span>
-                                    </div>
-                                </Link>
-                            </div>
+                                {/* Top Left Badge */}
+                                <div className="absolute top-4 left-4">
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md text-black text-xs font-bold shadow-sm">
+                                        <MapPin className="w-3.5 h-3.5 text-primary" />
+                                        <span>Exclusive</span>
+                                    </span>
+                                </div>
+
+                                {/* Bottom Content */}
+                                <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-4">
+                                    <h3 className="text-2xl font-bold text-white leading-tight">
+                                        {location}
+                                    </h3>
+
+                                    <button className="bg-white text-black px-5 py-2.5 rounded-full text-sm font-bold flex items-center justify-center gap-2 w-fit group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                        Explore
+                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    </button>
+                                </div>
+                            </Link>
                         ))}
                     </div>
                 )}
