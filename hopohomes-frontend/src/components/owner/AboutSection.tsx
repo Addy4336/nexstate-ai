@@ -1,62 +1,81 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Check } from 'lucide-react';
+
+const highlights = [
+    "RERA Licensed Property Management",
+    "Dedicated Account Manager",
+    "Guaranteed Rental Income",
+    "24/7 Maintenance Support",
+];
 
 export default function AboutSection() {
     return (
-        <section className="bg-muted/30 dark:bg-neutral-950 py-20 px-6 md:px-12 relative overflow-hidden">
-            <div className="max-w-7xl mx-auto space-y-12">
+        <section className="bg-muted/30 dark:bg-neutral-950 py-24 px-6 md:px-12 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto space-y-16">
 
                 {/* Top Header Section */}
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                     <div className="space-y-6 max-w-3xl">
                         <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                            About
+                            About HopoHomes
                         </span>
                         <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">
-                            Profit Crafted,<br />
-                            Goals Achieved
+                            Dubai's Trusted<br />
+                            Property Partners
                         </h2>
                     </div>
 
                     <div className="flex flex-wrap gap-4 pb-2">
-                        <button className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none">
+                        <button className="px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none">
                             Get Started <ArrowUpRight size={18} />
                         </button>
-                        <button className="px-6 py-3 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors">
+                        <button className="px-6 py-3.5 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors">
                             Learn more
                         </button>
                     </div>
                 </div>
 
                 {/* Main Content Split */}
-                <div className="flex flex-col lg:flex-row items-center gap-16">
+                <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
 
-                    {/* Left Content (Description usage) */}
+                    {/* Left Content */}
                     <div className="flex-1 space-y-10">
 
                         <div className="space-y-4">
-                            <h3 className="text-xl font-semibold text-foreground">Your Growth, Our Business</h3>
-                            <p className="text-muted-foreground leading-relaxed max-w-md">
-                                Empowering your financial journey with tailored solutions that ensure sustainable growth.
+                            <h3 className="text-2xl font-semibold text-foreground">Your Property, Our Priority</h3>
+                            <p className="text-muted-foreground leading-relaxed max-w-md text-lg">
+                                Since 2014, we've been transforming property ownership in Dubai. Our expertise in luxury real estate ensures your investment performs at its peak.
                             </p>
                         </div>
 
-                        <div className="flex gap-8 sm:gap-24 pt-8">
+                        {/* Highlights */}
+                        <div className="space-y-4">
+                            {highlights.map((item, index) => (
+                                <div key={index} className="flex items-center gap-4">
+                                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <Check className="w-4 h-4 text-primary" />
+                                    </div>
+                                    <span className="text-foreground">{item}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex gap-12 sm:gap-20 pt-8">
                             <div>
-                                <div className="text-4xl md:text-6xl font-medium text-foreground flex items-start leading-none tracking-tight">
-                                    798
-                                    <span className="text-primary text-2xl md:text-4xl mt-1 font-normal">M+</span>
+                                <div className="text-4xl md:text-5xl font-semibold text-foreground flex items-start leading-none tracking-tight">
+                                    98
+                                    <span className="text-primary text-2xl md:text-3xl mt-1 font-medium">%</span>
                                 </div>
-                                <p className="text-muted-foreground text-sm mt-3 ml-1 font-medium">Happy client</p>
+                                <p className="text-muted-foreground text-sm mt-3 font-medium">Occupancy Rate</p>
                             </div>
-                            <div className="pt-12 md:pt-16">
-                                <div className="text-4xl md:text-6xl font-medium text-foreground flex items-start leading-none tracking-tight">
-                                    99.9
-                                    <span className="text-primary text-2xl md:text-4xl mt-1 font-normal">%</span>
+                            <div>
+                                <div className="text-4xl md:text-5xl font-semibold text-foreground flex items-start leading-none tracking-tight">
+                                    12.5
+                                    <span className="text-primary text-2xl md:text-3xl mt-1 font-medium">%</span>
                                 </div>
-                                <p className="text-muted-foreground text-sm mt-3 ml-1 font-medium">Growth Financial</p>
+                                <p className="text-muted-foreground text-sm mt-3 font-medium">Avg. Annual ROI</p>
                             </div>
                         </div>
 
@@ -68,7 +87,6 @@ export default function AboutSection() {
                         <svg className="absolute w-0 h-0" aria-hidden="true">
                             <defs>
                                 <clipPath id="about-mask-precise" clipPathUnits="objectBoundingBox">
-                                    {/* Top Left Cutout */}
                                     <path d="
                                         M 0.08 0 
                                         L 0.92 0 Q 1 0 1 0.08 
@@ -95,13 +113,13 @@ export default function AboutSection() {
                                     }}
                                 >
                                     <Image
-                                        src="/hero-spiral.png"
-                                        alt="Growth Chart"
+                                        src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=800&auto=format&fit=crop"
+                                        alt="Luxury Dubai Villa"
                                         fill
-                                        className="object-cover scale-110"
+                                        className="object-cover"
                                     />
-                                    {/* Purple Overlay to match the aesthetic */}
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent mix-blend-multiply"></div>
+                                    {/* Gradient Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-transparent mix-blend-multiply"></div>
                                 </div>
                             </div>
                         </div>

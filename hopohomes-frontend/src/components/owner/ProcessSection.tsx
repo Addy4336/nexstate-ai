@@ -7,24 +7,24 @@ import Image from 'next/image';
 const steps = [
     {
         id: "01",
-        category: "Initial Consultation",
-        title: <>Understanding <br /> Your Needs</>,
-        description: "We begin by discussing your business goals, challenges, and financial landscape.",
-        image: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=800&auto=format&fit=crop"
+        category: "Property Assessment",
+        title: <>Evaluate Your <br /> Property Value</>,
+        description: "Our experts conduct a comprehensive assessment of your property, evaluating market positioning and rental potential.",
+        image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=800&auto=format&fit=crop"
     },
     {
         id: "02",
-        category: "Security & Safety",
-        title: <>Automatic Backups & <br /> Disaster Recovery</>,
-        description: "Ensuring your financial data is secure, redundant, and recoverable at any moment.",
-        image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop"
+        category: "Professional Marketing",
+        title: <>Global Listing <br /> & Exposure</>,
+        description: "We create stunning visual content including professional photography and virtual tours distributed across top platforms.",
+        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop"
     },
     {
         id: "03",
-        category: "Strategic Growth",
-        title: <>Customized <br /> Financial Planning</>,
-        description: "Developing a tailored roadmap to achieve your long-term success and legacy.",
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop"
+        category: "Ongoing Management",
+        title: <>Hassle-Free <br /> Property Care</>,
+        description: "From tenant acquisition to maintenance coordination, we handle every aspect while you enjoy exceptional returns.",
+        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800&auto=format&fit=crop"
     }
 ];
 
@@ -50,16 +50,16 @@ export default function ProcessSection() {
                 {/* Header */}
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-8 md:gap-12">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1] max-w-xl">
-                        Mastering Money, <br />
-                        Elevating You
+                        Simple Process, <br />
+                        Maximum Returns
                     </h2>
 
                     <div className="flex flex-col items-start lg:items-end space-y-4 md:space-y-6 max-w-sm">
                         <span className="inline-block px-5 py-2 rounded-full bg-background border border-border shadow-sm text-primary text-sm font-medium">
-                            How its Works
+                            How It Works
                         </span>
                         <p className="text-muted-foreground text-base md:text-lg leading-relaxed lg:text-right">
-                            We simplify finances, so you can focus on building your legacy with confidence.
+                            We simplify property management so you can enjoy hassle-free ownership and exceptional returns.
                         </p>
                     </div>
                 </div>
@@ -116,7 +116,7 @@ export default function ProcessSection() {
                                 {activeStep.description}
                             </p>
                             <button className="bg-primary hover:bg-primary/90 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-medium transition-colors inline-flex items-center gap-2 w-fit shadow-lg shadow-primary/25 text-sm md:text-base">
-                                Get Started
+                                List Your Property
                                 <ArrowUpRight size={20} />
                             </button>
                         </div>
