@@ -1,164 +1,290 @@
 import React from 'react';
 import TripExperienceClient from './trip-experience-client';
-
+import { notFound } from 'next/navigation';
 
 interface TripExperiencePageProps {
   params: Promise<{
-    experienceId: string;
+    slug: string;
+    id: string;
   }>;
 }
 
-// Sample property experience data
-const getPropertyData = (experienceId: string) => {
-  // Parse the experience ID (e.g., "experience-agra-4" -> destination: "agra", id: "4")
-  const match = experienceId ? experienceId.match(/^experience-(.+)-(\d+)$/) : null;
-  const locationName = match ? match[1] : 'dubai-marina';
-  const propertyId = match ? match[2] : '1';
-  
-  const formattedName = locationName ? locationName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Property Experience';
-  
+// API base URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+// Fetch property data from API
+async function getPropertyData(id: string) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/properties/${id}`, {
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch property:', response.status);
+      return null;
+    }
+
+    const result = await response.json();
+
+    if (!result.success || !result.data) {
+      console.error('Property not found or error:', result.error);
+      return null;
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error('Error fetching property:', error);
+    return null;
+  }
+}
+
+// Transform API data to component format
+function transformPropertyData(property: any) {
+  // Get images - cover_image is text[], images is text[]
+  const images: string[] = [];
+
+  // Add cover images first (cover_image is an array)
+  if (property.cover_image && Array.isArray(property.cover_image)) {
+    images.push(...property.cover_image);
+  }
+
+  // Add additional images
+  if (property.images && Array.isArray(property.images)) {
+    images.push(...property.images);
+  }
+
+  // Remove duplicates
+  const uniqueImages = [...new Set(images)];
+
+  // Ensure we have at least 5 images for the gallery
+  const fallbackImage = 'https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=800&auto=format&fit=crop';
+  while (uniqueImages.length < 5) {
+    uniqueImages.push(uniqueImages[0] || fallbackImage);
+  }
+
+  // Format location name
+  const formattedLocation = property.location
+    ? property.location.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())
+    : 'Dubai';
+
+  // Convert bedrooms number to text
+  const bedroomText = (() => {
+    const num = property.bedrooms;
+    if (num === 0) return 'Studio';
+    if (num === 1) return 'One';
+    if (num === 2) return 'Two';
+    if (num === 3) return 'Three';
+    if (num === 4) return 'Four';
+    if (num === 5) return 'Five';
+    return `${num}`;
+  })();
+
+  // Convert bathrooms number to text
+  const bathroomText = (() => {
+    const num = property.bathrooms;
+    if (num === 1) return 'One';
+    if (num === 2) return 'Two';
+    if (num === 3) return 'Three';
+    if (num === 4) return 'Four';
+    return `${num}`;
+  })();
+
+  // Parse amenities
+  const amenitiesList = property.amenities || [];
+  const insideAmenities = amenitiesList
+    .filter((a: string) => ['Central AC', 'Built-in Wardrobes', 'Study Room', 'Elevator'].some(i => a.includes(i)) ||
+      ['WiFi', 'TV', 'Kitchen', 'Bathroom', 'Bedroom', 'AC', 'Laundry'].some(i => a.toLowerCase().includes(i.toLowerCase())))
+    .map((a: string) => ({ icon: '✓', text: a }));
+
+  const outsideAmenities = amenitiesList
+    .filter((a: string) => ['Pool', 'Gym', 'Parking', 'Garden', 'Security', 'CCTV', 'BBQ', 'Beach', 'Golf', 'Play Area', 'Concierge'].some(i => a.includes(i)))
+    .map((a: string) => ({ icon: '✓', text: a }));
+
+  // If amenities are not categorized, distribute them
+  if (insideAmenities.length === 0 && outsideAmenities.length === 0) {
+    amenitiesList.forEach((a: string, index: number) => {
+      if (index % 2 === 0) {
+        insideAmenities.push({ icon: '✓', text: a });
+      } else {
+        outsideAmenities.push({ icon: '✓', text: a });
+      }
+    });
+  }
+
+  // Default amenities if none provided
+  const defaultInsideAmenities = [
+    { icon: '❄️', text: 'Air conditioning in all rooms' },
+    { icon: '📺', text: 'Smart TV with streaming services' },
+    { icon: '📶', text: 'High-speed WiFi internet' },
+    { icon: '🛁', text: 'Modern bathroom facilities' },
+  ];
+
+  const defaultOutsideAmenities = [
+    { icon: '🏊‍♂️', text: 'Swimming pool access' },
+    { icon: '🚗', text: 'Parking available' },
+    { icon: '🛡️', text: '24/7 Security' },
+  ];
+
   return {
-    title: `Beautiful Villa in ${formattedName}`,
-    images: [
-      'https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dmlsbGFzfGVufDB8fDB8fHww',
-      'https://images.unsplash.com/photo-1601221998768-c0cdf463a393?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHZpbGxhcyUyMHJvb21zfGVufDB8fDB8fHww',
-      'https://images.unsplash.com/photo-1601760562234-9814eea6663a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dmlsbGFzJTIwa2l0Y2hlbnxlbnwwfHwwfHx8MA%3D%3D',
-      'https://plus.unsplash.com/premium_photo-1720486620020-c70516e9b69f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fHZpbGxhcyUyMGJhdGhyb29tfGVufDB8fDB8fHww',
-      'https://plus.unsplash.com/premium_photo-1687996107444-10614a7de48a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHZpbGxhcyUyMGJhbGNvbnl8ZW58MHx8MHx8fDA%3D'
-    ],
+    title: property.title || `Property in ${formattedLocation}`,
+    images: uniqueImages.slice(0, 5),
     summary: {
-      location: formattedName,
-      propertyType: 'Villa',
-      bedrooms: '4 Bedrooms'
+      location: formattedLocation,
+      propertyType: property.property_type
+        ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1)
+        : 'Villa',
+      bedrooms: bedroomText,
+      bathrooms: bathroomText,
+      area: property.area_sqft ? `${property.area_sqft.toLocaleString()} sqft` : '1,024 ft',
+      parking: property.parking || 'Available'
     },
     highlights: [
-      { icon: '🏊‍♂️', text: 'Private swimming pool with stunning city views' },
-      { icon: '🚗', text: 'Dedicated parking space for 2 cars with security' },
-      { icon: '🏋️‍♀️', text: 'Access to fully equipped fitness center and spa' },
-      { icon: '🛡️', text: '24/7 security and concierge service' },
-      { icon: '🌳', text: 'Beautiful garden and outdoor entertainment area' },
-      { icon: '📶', text: 'High-speed WiFi and smart home technology' }
+      { icon: '🏠', text: `${property.property_type || 'Villa'} in ${formattedLocation}` },
+      { icon: '🛏️', text: `${property.bedrooms || 4} Bedrooms, ${property.bathrooms || 3} Bathrooms` },
+      { icon: '📐', text: property.area_sqft ? `${property.area_sqft.toLocaleString()} sqft of living space` : 'Spacious living area' },
+      { icon: '✨', text: property.furnishing === 'furnished' ? 'Fully furnished and ready to move in' : 'Ready for move in' },
+      { icon: '📍', text: `Prime location in ${formattedLocation}` },
+      { icon: '🔑', text: property.available_from ? `Available from ${new Date(property.available_from).toLocaleDateString()}` : 'Available now' }
     ],
-    description: `Experience comfortable living in this spacious ${formattedName} villa. This well-appointed property features modern design, quality furnishings, and excellent amenities. Perfect for families or groups seeking a comfortable stay with easy access to local attractions, shopping, and dining.`,
+    description: property.description || `Experience comfort in this beautiful ${property.property_type || 'property'} located in ${formattedLocation}. Perfect for those seeking quality living with modern amenities.`,
     propertyRooms: [
-      { 
-        room: 'Living Room', 
-        description: 'Spacious living area with comfortable seating',
-        images: [
-          'https://plus.unsplash.com/premium_photo-1682094026083-fc4329ef6771?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHZpbGxhcyUyMGxpdmluZyUyMHJvb218ZW58MHx8MHx8fDA%3D',
-          'https://plus.unsplash.com/premium_photo-1733266961456-5bd3f7e5c8b5?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fHZpbGxhcyUyMGxpdmluZyUyMHJvb218ZW58MHx8MHx8fDA%3D'
-        ],
-        amenities: [
-          'Smart TV with streaming services',
-          'Air conditioning with climate control',
-          'Premium sound system',
-          'Floor-to-ceiling windows with city views'
-        ]
+      {
+        room: 'Living Room',
+        description: 'Spacious living area',
+        images: uniqueImages.slice(1, 3),
+        amenities: ['Comfortable seating', 'Smart TV', 'Air conditioning']
       },
-      { 
-        room: 'Kitchen', 
-        description: 'Fully equipped modern kitchen with all appliances',
-        images: [
-          'https://images.unsplash.com/photo-1601760561441-16420502c7e0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8dmlsbGFzJTIwa2l0Y2hlbnxlbnwwfHwwfHx8MA%3D%3D',
-          'https://images.unsplash.com/photo-1713514021506-cdcbab2a7859?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fHZpbGxhcyUyMGtpdGNoZW58ZW58MHx8MHx8fDA%3D'
-        ],
-        amenities: [
-          'Full-size refrigerator and freezer',
-          'Electric cooking stove and oven',
-          'Microwave and dishwasher',
-          'Coffee machine and kettle',
-          'Complete cookware and utensils'
-        ]
+      {
+        room: 'Kitchen',
+        description: 'Fully equipped kitchen',
+        images: uniqueImages.slice(2, 4),
+        amenities: ['Full-size refrigerator', 'Cooking stove', 'Microwave']
       },
-      { 
-        room: 'Master Bedroom', 
-        description: 'Comfortable bedroom with en-suite bathroom',
-        images: [
-          'https://plus.unsplash.com/premium_photo-1675615667752-2ccda7042e7e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dmlsbGFzJTIwbWFzdGVyJTIwYmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D',
-          'https://plus.unsplash.com/premium_photo-1673014202228-65e0e9064a34?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHZpbGxhcyUyMG1hc3RlciUyMGJlZHJvb218ZW58MHx8MHx8fDA%3D'
-          
-        ],
-        amenities: [
-          'King-size bed with quality linens',
-          'Individual AC units in each room',
-          'Built-in wardrobes with ample storage',
-          'En-suite bathroom with shower',
-          'Work desk with high-speed WiFi'
-        ]
-      },
-      { 
-        room: 'Additional Bedrooms', 
-        description: 'Three comfortable bedrooms for guests',
-        images: [
-          'https://images.unsplash.com/photo-1592229505678-cf99a9908e03?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHZpbGxhcyUyMG1hc3RlciUyMGJlZHJvb20lMjBmb3IlMjBndWVzdHxlbnwwfHwwfHx8MA%3D%3D',
-          'https://images.unsplash.com/photo-1560598522-75edd73f8473?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHZpbGxhcyUyMG1hc3RlciUyMGJlZHJvb20lMjBmb3IlMjBndWVzdHxlbnwwfHwwfHx8MA%3D%3D'
-        ],
-        amenities: [
-          'Queen-size beds with fresh linens',
-          'Air conditioning in all rooms',
-          'Storage space and hangers',
-          'Shared bathroom facilities'
-        ]
+      {
+        room: 'Bedrooms',
+        description: `${property.bedrooms || 4} comfortable bedrooms`,
+        images: uniqueImages.slice(3, 5),
+        amenities: ['Quality beds', 'Air conditioning', 'Built-in wardrobes']
       }
     ],
-    insideAmenities: [
-      { icon: '❄️', text: 'Air conditioning in all rooms with individual controls' },
-      { icon: '🧊', text: 'Full-size refrigerator and freezer for food storage' },
-      { icon: '🍳', text: 'Electric cooking stove, oven, and microwave for meal preparation' },
-      { icon: '📺', text: 'Smart TV with cable channels and streaming services' },
-      { icon: '📶', text: 'High-speed WiFi internet throughout the property' },
-      { icon: '🛁', text: 'Hot water shower and modern bathroom facilities' },
-      { icon: '☕', text: 'Coffee machine, kettle, and complete kitchen utensils' },
-      { icon: '🧺', text: 'Washing machine and laundry facilities' }
-    ],
-    outsideAmenities: [
-      { icon: '🏊‍♂️', text: 'Swimming pool with pool deck and lounge chairs' },
-      { icon: '🏋️‍♀️', text: 'Fully equipped gym and fitness center access' },
-      { icon: '🚗', text: 'Dedicated parking space with 24/7 security' },
-      { icon: '🏪', text: 'On-site convenience store and pharmacy nearby' },
-      { icon: '🛡️', text: 'Round-the-clock security and concierge services' },
-      { icon: '🌳', text: 'Landscaped gardens and outdoor entertainment area' },
-      { icon: '🍽️', text: 'BBQ area and outdoor dining facilities' },
-      { icon: '🚲', text: 'Bicycle rental and recreational facilities' }
-    ],
+    insideAmenities: insideAmenities.length > 0 ? insideAmenities : defaultInsideAmenities,
+    outsideAmenities: outsideAmenities.length > 0 ? outsideAmenities : defaultOutsideAmenities,
     availableFor: [
       { icon: '👨‍💼', label: 'Single Men', description: 'Individual male guests welcome' },
       { icon: '👩‍💼', label: 'Single Women', description: 'Female-friendly accommodation' },
-      { icon: '💑', label: 'Couples', description: 'Perfect for romantic getaways' },
-      { icon: '👨‍👩‍👧‍👦', label: 'Families', description: 'Family-friendly with child amenities' }
+      { icon: '💑', label: 'Couples', description: 'Perfect for couples' },
+      { icon: '👨‍👩‍👧‍👦', label: 'Families', description: 'Family-friendly' }
     ],
     essentials: [
       { icon: '🔑', label: 'Key Access' },
       { icon: '🧼', label: 'Toiletries' },
       { icon: '🛏️', label: 'Fresh Linens' },
       { icon: '🧴', label: 'Towels' },
-      { icon: '🧽', label: 'Cleaning Supplies' }
     ],
     faqs: [
-      'What is the minimum stay duration for this property?',
-      'Is the property suitable for families with children?',
-      'What amenities and services are included in the rental?',
-      'How do I access the property and get the keys?',
-      'Is parking available and what are the arrangements?',
-      'Are pets allowed in this property?',
-      'What is the cancellation and refund policy?',
-      'Is there a security deposit required?'
+      'What is the minimum stay duration?',
+      'Is the property suitable for families?',
+      'What amenities are included?',
+      'How do I access the property?'
     ],
+    pricing: {
+      from: property.price || 2500,
+      currency: 'AED',
+      availableDates: [
+        {
+          dates: 'Current Month',
+          price: property.price || 2500,
+          available: true,
+          selected: true
+        },
+        {
+          dates: 'Next Month',
+          price: Math.round((property.price || 2500) * 0.95),
+          available: true,
+          selected: false
+        },
+        {
+          dates: 'In 2 Months',
+          price: Math.round((property.price || 2500) * 0.9),
+          available: true,
+          selected: false
+        }
+      ]
+    }
+  };
+}
+
+// Fallback data for when API fails
+function getFallbackData(slug: string) {
+  const formattedName = slug
+    ? slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    : 'Dubai Marina';
+
+  return {
+    title: `Beautiful Property in ${formattedName}`,
+    images: [
+      'https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1601221998768-c0cdf463a393?w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1601760562234-9814eea6663a?w=800&auto=format&fit=crop',
+      'https://plus.unsplash.com/premium_photo-1720486620020-c70516e9b69f?w=800&auto=format&fit=crop',
+      'https://plus.unsplash.com/premium_photo-1687996107444-10614a7de48a?w=800&auto=format&fit=crop'
+    ],
+    summary: {
+      location: formattedName,
+      propertyType: 'Villa',
+      bedrooms: 'Four',
+      bathrooms: 'Three',
+      area: '1,024 ft',
+      parking: 'Indoor'
+    },
+    highlights: [
+      { icon: '🏊‍♂️', text: 'Private swimming pool with stunning views' },
+      { icon: '🚗', text: 'Dedicated parking space' },
+      { icon: '🏋️‍♀️', text: 'Access to fitness center' },
+      { icon: '🛡️', text: '24/7 security' },
+    ],
+    description: `Experience comfortable living in this spacious ${formattedName} property.`,
+    propertyRooms: [],
+    insideAmenities: [
+      { icon: '❄️', text: 'Air conditioning' },
+      { icon: '📺', text: 'Smart TV' },
+      { icon: '📶', text: 'High-speed WiFi' },
+    ],
+    outsideAmenities: [
+      { icon: '🏊‍♂️', text: 'Swimming pool' },
+      { icon: '🚗', text: 'Parking' },
+    ],
+    availableFor: [
+      { icon: '👨‍💼', label: 'Single Men', description: 'Welcome' },
+      { icon: '👩‍💼', label: 'Single Women', description: 'Welcome' },
+      { icon: '💑', label: 'Couples', description: 'Welcome' },
+      { icon: '👨‍👩‍👧‍👦', label: 'Families', description: 'Welcome' }
+    ],
+    essentials: [
+      { icon: '🔑', label: 'Key Access' },
+      { icon: '🧼', label: 'Toiletries' },
+    ],
+    faqs: [],
     pricing: {
       from: 2500,
       currency: 'AED',
       availableDates: [
-        { dates: 'Dec 2025 - Jan 2026', price: 2800, available: true, selected: true },
-        { dates: 'Feb - Mar 2026', price: 2500, available: true, selected: false },
-        { dates: 'Apr - May 2026', price: 2650, available: true, selected: false }
+        { dates: 'Current Month', price: 2500, available: true, selected: true }
       ]
     }
   };
-};
+}
 
 export default async function PropertyDetailsPage({ params }: TripExperiencePageProps) {
-  const { experienceId } = await params;
-  const property = getPropertyData(experienceId);
+  const { slug, id } = await params;
 
-  return <TripExperienceClient trip={property} />;
+  // Fetch property from API
+  const propertyData = await getPropertyData(id);
+
+  // Use API data or fallback
+  const property = propertyData
+    ? transformPropertyData(propertyData)
+    : getFallbackData(slug);
+
+  return <TripExperienceClient trip={property} slug={slug} id={id} />;
 }

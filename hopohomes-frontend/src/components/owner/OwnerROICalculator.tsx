@@ -278,7 +278,7 @@ export default function OwnerROICalculator() {
     const roiStatus = getROIStatus(results.capRate);
 
     return (
-        <section className="py-20 md:py-32 bg-background relative overflow-hidden">
+        <section className="py-10 bg-background relative overflow-hidden">
 
             <div className="container relative z-10 px-4 md:px-6 mx-auto">
                 <div className="text-center space-y-6 mb-16 max-w-3xl mx-auto">
