@@ -83,7 +83,7 @@ export default function PropertiesLocations() {
                 <div className="absolute top-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
                 <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
-                    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium tracking-widest uppercase border border-primary/20">
+                    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium tracking-widest uppercase border border-secondary/20">
                         <MapPin className="w-3 h-3" /> Exclusive Locations
                     </span>
 
