@@ -8,7 +8,7 @@ export default function CalculatorsSection() {
     const [activeTab, setActiveTab] = useState<'tenant' | 'owner'>('tenant');
 
     return (
-        <section className="py-12 bg-background relative" id="calculator">
+        <section className="py-8 bg-background relative" id="calculator">
 
             {/* Tab Switcher (Centered in Container) */}
             <div className="container px-4 mx-auto relative z-20 mb-[-40px]">

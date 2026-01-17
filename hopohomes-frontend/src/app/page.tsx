@@ -1,5 +1,5 @@
-
 import Hero from "@/components/tenants/Hero";
+import UserToggle from "@/components/tenants/UserToggle";
 import PropertyShowcase from "@/components/tenants/PropertyShowcase";
 import MapFeatures from "@/components/tenants/MapFeatures";
 import PremierHouses from "@/components/tenants/PremierHouses";
@@ -14,6 +14,7 @@ export default function Home() {
     <main className="min-h-screen bg-background text-foreground relative font-sans">
       {/* <Navbar /> */}
       <Hero />
+      <UserToggle currentType="tenant" />
       <PropertyShowcase />
       <LocationSection />
       <MapFeatures />

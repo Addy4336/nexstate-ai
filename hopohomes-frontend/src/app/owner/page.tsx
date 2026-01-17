@@ -1,5 +1,6 @@
 
 import Hero from "@/components/owner/Hero";
+import UserToggle from "@/components/tenants/UserToggle";
 import ServicesSection from "@/components/owner/ServicesSection";
 import AboutSection from "@/components/owner/AboutSection";
 import ProcessSection from "@/components/owner/ProcessSection";
@@ -13,6 +14,7 @@ export default function Home() {
     <main className="min-h-screen pt-20 bg-white text-black dark:bg-neutral-950 dark:text-white selection:bg-purple-100 selection:text-purple-900">
 
       <Hero />
+      <UserToggle currentType="owner" />
       <ServicesSection />
       <AboutSection />
       <ProcessSection />

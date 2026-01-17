@@ -8,12 +8,7 @@ export default function FooterSection() {
         <div className='px-4 py-8 md:px-8 md:py-12'>
             <footer className="rounded-3xl md:rounded-[2.5rem] bg-foreground text-white py-12 md:py-20 relative overflow-hidden">
                 {/* Huge Fog Effect Background Text */}
-                <div className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden pb-4 md:pb-8">
-                    <h1 className="text-[13vw] md:text-[13.5vw] font-bold tracking-tighter leading-none text-white/[0.04] select-none whitespace-nowrap scale-y-125 translate-y-[20%] md:translate-y-[15%]">
-                        HOPO HOMES
-                    </h1>
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground via-transparent to-transparent opacity-50" />
-                </div>
+                {/* Huge Fog Effect Background Text REMOVED */}
 
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
 

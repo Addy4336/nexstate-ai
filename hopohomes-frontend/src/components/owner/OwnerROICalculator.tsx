@@ -278,29 +278,29 @@ export default function OwnerROICalculator() {
     const roiStatus = getROIStatus(results.capRate);
 
     return (
-        <section className="py-10 bg-background relative overflow-hidden">
+        <section className="py-6 bg-background relative overflow-hidden">
 
             <div className="container relative z-10 px-4 md:px-6 mx-auto">
-                <div className="text-center space-y-6 mb-16 max-w-3xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-foreground">
+                <div className="text-center space-y-3 mb-8 max-w-3xl mx-auto">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight text-foreground">
                         Project Your <span className="text-primary italic">Returns</span>
                     </h2>
-                    <p className="text-muted-foreground text-lg md:text-xl font-light">
+                    <p className="text-muted-foreground text-base md:text-lg font-light">
                         Use our advanced ROI calculator to estimate cash flow, cap rates, and long-term profitability.
                     </p>
                 </div>
 
                 {/* THE UNIFIED WIDGET */}
-                <div className="max-w-7xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl lg:rounded-[2.5rem] shadow-2xl overflow-hidden border border-border/50 flex flex-col lg:flex-row">
+                <div className="max-w-5xl mx-auto bg-white dark:bg-zinc-900 rounded-2xl lg:rounded-[2rem] shadow-xl overflow-hidden border border-border/50 flex flex-col lg:flex-row">
 
                     {/* LEFT PANEL: INPUTS (65%) */}
-                    <div className="flex-[1.5] p-5 md:p-10 flex flex-col gap-6 md:gap-10">
+                    <div className="flex-[1.5] p-4 md:p-8 flex flex-col gap-4 md:gap-8">
 
                         {/* 1. PROPERTY BASICS */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm shrink-0">1</span>
-                                <h3 className="text-lg md:text-xl font-semibold">Property Basics</h3>
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs shrink-0">1</span>
+                                <h3 className="text-base md:text-lg font-semibold">Property Basics</h3>
                             </div>
                             <div className="grid sm:grid-cols-2 gap-6">
                                 <InputGroup
@@ -347,10 +347,10 @@ export default function OwnerROICalculator() {
                         <div className="h-px bg-border/40 w-full" />
 
                         {/* 2. EXPENSES */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500/10 text-red-600 font-bold text-sm shrink-0">2</span>
-                                <h3 className="text-lg md:text-xl font-semibold">Annual Expenses</h3>
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-red-500/10 text-red-600 font-bold text-xs shrink-0">2</span>
+                                <h3 className="text-base md:text-lg font-semibold">Annual Expenses</h3>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                                 <InputGroup
@@ -377,10 +377,10 @@ export default function OwnerROICalculator() {
                         <div className="h-px bg-border/40 w-full" />
 
                         {/* 3. FINANCING */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-sm shrink-0">3</span>
-                                <h3 className="text-lg md:text-xl font-semibold">Financing (Optional)</h3>
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-xs shrink-0">3</span>
+                                <h3 className="text-base md:text-lg font-semibold">Financing (Optional)</h3>
                             </div>
                             <div className="grid sm:grid-cols-2 gap-6">
                                 <InputGroup
@@ -402,18 +402,18 @@ export default function OwnerROICalculator() {
                     </div>
 
                     {/* RIGHT PANEL: RESULTS (35%) - DARK THEME */}
-                    <div className="flex-1 bg-[#0A0A0A] text-white p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+                    <div className="flex-1 bg-[#0A0A0A] text-white p-5 md:p-8 flex flex-col justify-between relative overflow-hidden">
 
                         {/* Decorative Gradient */}
                         <div className="absolute top-0 right-0 w-80 h-80 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
 
-                        <div className="relative z-10 space-y-10">
+                        <div className="relative z-10 space-y-6">
                             <div>
-                                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-wider mb-8 ${roiStatus.color}`}>
+                                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider mb-4 ${roiStatus.color}`}>
                                     {roiStatus.label} Investment
                                 </div>
-                                <h3 className="text-white/60 font-medium text-lg mb-2">Cap Rate</h3>
-                                <div className="text-6xl md:text-7xl font-bold tracking-tight text-white mb-2">
+                                <h3 className="text-white/60 font-medium text-base mb-1">Cap Rate</h3>
+                                <div className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-1">
                                     {formatPercent(results.capRate)}
                                 </div>
                                 <p className="text-sm text-white/40 max-w-xs">
@@ -469,8 +469,8 @@ export default function OwnerROICalculator() {
                         </div>
 
                         {/* CTA */}
-                        <div className="relative z-10 mt-10">
-                            <button className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 group shadow-xl shadow-primary/20">
+                        <div className="relative z-10 mt-6 md:mt-8">
+                            <button className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 group shadow-xl shadow-primary/20 text-sm">
                                 View High Yield Properties
                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>

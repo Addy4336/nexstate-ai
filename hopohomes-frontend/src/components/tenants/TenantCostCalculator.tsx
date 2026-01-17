@@ -198,50 +198,50 @@ export default function TenantCostCalculator() {
     const savings = getSavingsVs6Month();
 
     return (
-        <section className="py-10 bg-background relative overflow-hidden">
+        <section className="py-6 bg-background relative overflow-hidden">
 
             <div className="container relative z-10 px-4 md:px-6 mx-auto">
-                <div className="text-center space-y-6 mb-16 max-w-3xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-foreground">
+                <div className="text-center space-y-3 mb-8 max-w-3xl mx-auto">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight text-foreground">
                         Calculate the <span className="text-primary italic">Real</span> Rent
                     </h2>
-                    <p className="text-muted-foreground text-lg md:text-xl font-light">
+                    <p className="text-muted-foreground text-base md:text-lg font-light">
                         Don't get blindsided by hidden fees. See exactly what you'll pay every month.
                     </p>
                 </div>
 
                 {/* THE UNIFIED WIDGET */}
-                <div className="max-w-7xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl lg:rounded-[2.5rem] shadow-2xl overflow-hidden border border-border/50 flex flex-col lg:flex-row">
+                <div className="max-w-5xl mx-auto bg-white dark:bg-zinc-900 rounded-2xl lg:rounded-[2rem] shadow-xl overflow-hidden border border-border/50 flex flex-col lg:flex-row">
 
                     {/* LEFT PANEL: INPUTS RE-IMAGINED (65%) */}
-                    <div className="flex-[1.5] p-5 md:p-10 flex flex-col gap-6 md:gap-8">
+                    <div className="flex-[1.5] p-4 md:p-8 flex flex-col gap-3 md:gap-6">
 
                         {/* 1. HERO RENT INPUT */}
                         <div>
                             <div className="flex items-center gap-2 mb-2">
-                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">1</span>
-                                <label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Monthly Rent</label>
+                                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">1</span>
+                                <label className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Monthly Rent</label>
                             </div>
                             <div className="relative max-w-sm">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-muted-foreground/30">AED</span>
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-muted-foreground/30">AED</span>
                                 <input
                                     type="number"
                                     value={inputs.monthlyRent}
                                     onChange={(e) => updateInput("monthlyRent", Number(e.target.value))}
-                                    className="w-full h-16 pl-16 pr-4 bg-muted/30 rounded-2xl text-3xl font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 hover:bg-muted/50 transition-all border border-transparent hover:border-border"
+                                    className="w-full h-10 md:h-12 pl-14 pr-4 bg-muted/30 rounded-xl text-xl md:text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 hover:bg-muted/50 transition-all border border-transparent hover:border-border"
                                 />
                             </div>
                         </div>
 
                         {/* 2. DURATION SELECTION */}
                         <div>
-                            <div className="flex items-center gap-2 mb-4">
-                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">2</span>
-                                <label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Select Lease Duration</label>
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">2</span>
+                                <label className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Select Lease Duration</label>
                             </div>
 
                             {/* Preset Duration Buttons */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-6">
                                 {results.durationComparison.map((item) => (
                                     <button
                                         key={item.months}
@@ -337,38 +337,41 @@ export default function TenantCostCalculator() {
                         {/* 3. ADDITIONAL COSTS GRID */}
                         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
                             {/* Hidden Costs */}
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-500/10 text-orange-600 font-bold text-xs">3</span>
-                                    <label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Hidden Fees</label>
+                                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-orange-500/10 text-orange-600 font-bold text-[10px]">3</span>
+                                    <label className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Hidden Fees</label>
                                 </div>
-                                <div className="space-y-3">
+                                <div className="space-y-2">
                                     <InputGroup
                                         label="Security Deposit"
                                         value={inputs.securityDeposit}
                                         onChange={(v) => updateInput("securityDeposit", v)}
                                         icon={Shield}
+                                        className="scale-95 origin-left"
                                     />
                                     <InputGroup
                                         label="Brokerage Fee"
                                         value={inputs.brokerageFee}
                                         onChange={(v) => updateInput("brokerageFee", v)}
                                         icon={Wallet}
+                                        className="scale-95 origin-left"
                                     />
                                     <InputGroup
                                         label="Move-in Costs"
                                         value={inputs.moveInCosts}
                                         onChange={(v) => updateInput("moveInCosts", v)}
                                         icon={Car}
+                                        className="scale-95 origin-left"
                                     />
                                 </div>
                             </div>
 
                             {/* Monthly Extras */}
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">4</span>
-                                    <label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Monthly Extras</label>
+                                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">4</span>
+                                    <label className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Monthly Extras</label>
                                 </div>
                                 <div className="space-y-3">
                                     <InputGroup
@@ -396,19 +399,19 @@ export default function TenantCostCalculator() {
                     </div>
 
                     {/* RIGHT PANEL: RESULTS (35%) - DARK THEME - UNCHANGED */}
-                    <div className="flex-1 bg-[#0A0A0A] text-white p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+                    <div className="flex-1 bg-[#0A0A0A] text-white p-5 md:p-8 flex flex-col justify-between relative overflow-hidden">
 
                         {/* Decorative Gradient Blob */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
 
-                        <div className="relative z-10 space-y-8">
+                        <div className="relative z-10 space-y-6">
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-xs font-medium text-white/80 mb-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-[10px] font-medium text-white/80 mb-4">
                                     <Clock className="w-3 h-3" />
                                     {inputs.stayDurationMonths} Month Lease
                                 </div>
-                                <h3 className="text-white/60 font-medium text-lg mb-2">Effective Monthly Cost</h3>
-                                <div className="text-5xl md:text-6xl font-bold tracking-tight text-white mb-2">
+                                <h3 className="text-white/60 font-medium text-base mb-1">Effective Monthly Cost</h3>
+                                <div className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-1">
                                     {formatCurrency(results.averageMonthlyCost)}
                                 </div>
                                 <p className="text-sm text-white/40">Includes all fees amortized over the lease.</p>
@@ -465,8 +468,8 @@ export default function TenantCostCalculator() {
                         </div>
 
                         {/* CTA / Footer of Card */}
-                        <div className="relative z-10 mt-10 pt-8 border-t border-white/10">
-                            <button className="w-full py-4 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 group">
+                        <div className="relative z-10 mt-8 pt-6 border-t border-white/10">
+                            <button className="w-full py-3 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 group text-sm">
                                 Find Properties matching Budget
                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>

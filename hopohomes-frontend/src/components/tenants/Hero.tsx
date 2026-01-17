@@ -41,7 +41,7 @@ export default function Hero() {
                     </div>
 
                     <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 sm:gap-6 lg:gap-8">
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium text-white tracking-tight leading-[1.15] sm:leading-[1.1]">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.15] sm:leading-[1.1]">
                             Build Your Future, One <br className="hidden xs:block" /> Property at a Time.
                         </h1>
 
@@ -52,17 +52,17 @@ export default function Hero() {
                 </div>
 
                 {/* Search Card Section */}
-                <div className="bg-background rounded-xl sm:rounded-2xl md:rounded-[2rem] p-4 sm:p-5 md:p-6 shadow-2xl w-full mt-6 sm:mt-8">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-4 sm:mb-5 md:mb-6">Find the best place</h2>
+                <div className="bg-background rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-2xl w-full mt-4 sm:mt-8">
+                    <h2 className="text-base sm:text-lg md:text-xl font-bold text-foreground mb-3 sm:mb-4">Find the best place</h2>
 
                     {/* Search Fields Grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 mb-4 sm:mb-5 md:mb-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-4">
 
                         {/* Looking For */}
-                        <div className="space-y-1.5 sm:space-y-2">
-                            <label className="text-xs sm:text-sm font-semibold text-foreground block">Looking for</label>
+                        <div className="space-y-1">
+                            <label className="text-[10px] sm:text-xs font-semibold text-foreground block">Looking for</label>
                             <Select>
-                                <SelectTrigger className="w-full bg-muted border-border rounded-lg sm:rounded-xl h-10 sm:h-11">
+                                <SelectTrigger className="w-full bg-muted border-border rounded-md sm:rounded-lg h-9 sm:h-10 text-xs sm:text-sm">
                                     <SelectValue placeholder="Select Type" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -77,10 +77,10 @@ export default function Hero() {
                         </div>
 
                         {/* Price */}
-                        <div className="space-y-1.5 sm:space-y-2">
-                            <label className="text-xs sm:text-sm font-semibold text-foreground block">Price</label>
+                        <div className="space-y-1">
+                            <label className="text-[10px] sm:text-xs font-semibold text-foreground block">Price</label>
                             <Select>
-                                <SelectTrigger className="w-full bg-muted border-border rounded-lg sm:rounded-xl h-10 sm:h-11">
+                                <SelectTrigger className="w-full bg-muted border-border rounded-md sm:rounded-lg h-9 sm:h-10 text-xs sm:text-sm">
                                     <SelectValue placeholder="Select Price" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -94,10 +94,10 @@ export default function Hero() {
                         </div>
 
                         {/* Locations */}
-                        <div className="space-y-1.5 sm:space-y-2">
-                            <label className="text-xs sm:text-sm font-semibold text-foreground block">Locations</label>
+                        <div className="space-y-1">
+                            <label className="text-[10px] sm:text-xs font-semibold text-foreground block">Locations</label>
                             <Select>
-                                <SelectTrigger className="w-full bg-muted border-border rounded-lg sm:rounded-xl h-10 sm:h-11">
+                                <SelectTrigger className="w-full bg-muted border-border rounded-md sm:rounded-lg h-9 sm:h-10 text-xs sm:text-sm">
                                     <SelectValue placeholder="Select Location" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -113,10 +113,10 @@ export default function Hero() {
                         </div>
 
                         {/* Number of rooms */}
-                        <div className="space-y-1.5 sm:space-y-2">
-                            <label className="text-xs sm:text-sm font-semibold text-foreground block">Number of rooms</label>
+                        <div className="space-y-1">
+                            <label className="text-[10px] sm:text-xs font-semibold text-foreground block">Number of rooms</label>
                             <Select>
-                                <SelectTrigger className="w-full bg-muted border-border rounded-lg sm:rounded-xl h-10 sm:h-11">
+                                <SelectTrigger className="w-full bg-muted border-border rounded-md sm:rounded-lg h-9 sm:h-10 text-xs sm:text-sm">
                                     <SelectValue placeholder="Select Bedrooms" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -133,17 +133,8 @@ export default function Hero() {
                     </div>
 
                     {/* Footer with Filters and Search Button */}
-                    <div className="flex justify-between gap-4 pt-3 sm:pt-4 border-t border-border">
-
-                        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                            <span className="font-semibold text-foreground text-xs sm:text-sm mr-0.5 sm:mr-1">Filter:</span>
-                            <button className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground text-[10px] sm:text-xs font-medium transition-colors">City</button>
-                            <button className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-background border border-border hover:bg-muted text-muted-foreground text-[10px] sm:text-xs font-medium transition-colors">House</button>
-                            <button className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-background border border-border hover:bg-muted text-muted-foreground text-[10px] sm:text-xs font-medium transition-colors">Residential</button>
-                            <button className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-background border border-border hover:bg-muted text-muted-foreground text-[10px] sm:text-xs font-medium transition-colors">Apartment</button>
-                        </div>
-
-                        <button className="bg-primary text-primary-foreground px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-all shadow-lg w-full sm:w-auto sm:self-end">
+                    <div className="flex justify-end gap-3 pt-2 sm:pt-3 border-t border-border">
+                        <button className="bg-primary text-primary-foreground px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-semibold hover:bg-primary/90 transition-all shadow-lg w-full sm:w-auto">
                             Search Properties
                         </button>
                     </div>

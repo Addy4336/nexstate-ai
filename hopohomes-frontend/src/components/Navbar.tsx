@@ -54,10 +54,10 @@ export default function Navbar() {
                     <div className="flex items-center gap-4">
 
                         {/* Language Selector - Desktop */}
-                        <button className="hidden sm:flex items-center gap-2 text-foreground font-medium hover:text-primary transition-colors">
+                        {/* <button className="hidden sm:flex items-center gap-2 text-foreground font-medium hover:text-primary transition-colors">
                             <Globe className="w-5 h-5" />
                             <span className="text-sm">Eng</span>
-                        </button>
+                        </button> */}
 
                         {/* Sign Up Button */}
                         <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 sm:px-7 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md transform hover:scale-105">
