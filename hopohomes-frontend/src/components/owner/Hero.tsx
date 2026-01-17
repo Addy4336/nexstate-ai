@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowUpRight, Plus, Star } from 'lucide-react';
+import { ArrowUpRight, Plus, Star, MapPin, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Hero() {
@@ -22,21 +22,24 @@ export default function Hero() {
                 {/* Header Section (Full Width) */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left mt-4 gap-2">
                     <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
-                        <span className="text-primary">Unlocking</span> Potential,
+                        <span className="text-primary">Maximize</span> Your
                     </h1>
 
                     <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 lg:gap-x-8 gap-y-4 w-full">
                         <div className="flex items-center gap-3">
-                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-sm lg:text-base font-medium border border-primary/20">Business</span>
-                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-sm lg:text-base font-medium border border-primary/20">Finance</span>
+                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-sm lg:text-base font-medium border border-primary/20">
+                                <Building2 size={16} className="inline mr-1.5" />
+                                Villas
+                            </span>
+                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-sm lg:text-base font-medium border border-primary/20">Apartments</span>
                             <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary text-primary-foreground text-sm lg:text-base font-medium flex items-center gap-2 shadow-sm">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="m19 9-5 5-4-4-3 3" /></svg>
-                                Growth
+                                <MapPin size={16} />
+                                Dubai
                             </span>
                         </div>
 
                         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
-                            Maximizing Profit<span className="text-yellow-400">.</span>
+                            Property Returns<span className="text-primary">.</span>
                         </h1>
                     </div>
                 </div>
@@ -47,12 +50,13 @@ export default function Hero() {
                     {/* Left Column: Description & CTAs */}
                     <div className="flex flex-col gap-8 lg:pb-8 relative z-10 text-center lg:text-left">
                         <p className="text-xl text-muted-foreground max-w-lg leading-relaxed mx-auto lg:mx-0">
-                            Strategic financial services designed to maximize your business's earning potential.
+                            Partner with Dubai's most trusted property management experts. We handle everything from Palm Jumeirah to Downtown while you enjoy exceptional returns.
                         </p>
 
                         <div className="flex items-center justify-center lg:justify-start gap-6">
                             <button className="bg-primary text-primary-foreground px-8 py-4 rounded-full font-medium hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-lg hover:shadow-primary/25">
-                                Get Started
+                                List Your Property
+                                <ArrowUpRight size={18} />
                             </button>
                             <button className="text-foreground font-medium underline decoration-1 underline-offset-4 hover:text-primary transition-colors">
                                 How it works
@@ -61,17 +65,17 @@ export default function Hero() {
 
                         <div className="flex flex-col sm:flex-row items-center justify-between max-w-md pt-8 border-t border-border mt-2 mx-auto lg:mx-0 gap-8 sm:gap-0 lg:mr-10">
                             <div className="flex flex-col items-center sm:items-start">
-                                <span className="text-sm text-muted-foreground font-medium mb-1">Trusted by_</span>
+                                <span className="text-sm text-muted-foreground font-medium mb-1">Properties Managed</span>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-bold text-foreground">320</span>
-                                    <span className="text-4xl font-bold text-primary">K+</span>
+                                    <span className="text-4xl font-bold text-foreground">2,500</span>
+                                    <span className="text-4xl font-bold text-primary">+</span>
                                 </div>
-                                <span className="text-sm text-muted-foreground">Happy customers</span>
+                                <span className="text-sm text-muted-foreground">Across Dubai</span>
                             </div>
 
                             <div className="flex flex-col gap-2 items-center sm:items-start">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-bold text-foreground">5.0</span>
+                                    <span className="text-2xl font-bold text-foreground">4.9</span>
                                     <div className="flex gap-0.5 text-yellow-400">
                                         {[...Array(5)].map((_, i) => (
                                             <Star key={i} size={16} fill="currentColor" />
@@ -83,7 +87,7 @@ export default function Hero() {
                                         <div key={i} className="w-10 h-10 rounded-full border-2 border-background bg-muted overflow-hidden relative">
                                             <Image
                                                 src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 40}.jpg`}
-                                                alt="User"
+                                                alt="Owner"
                                                 fill
                                                 className="object-cover"
                                             />
@@ -114,17 +118,19 @@ export default function Hero() {
                                 }}
                             >
                                 <Image
-                                    src="/hero-spiral.png"
-                                    alt="Abstract 3D Shape"
+                                    src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1000&auto=format&fit=crop"
+                                    alt="Dubai Marina Skyline"
                                     fill
-                                    className="object-cover scale-125 translate-x-10"
+                                    className="object-cover"
                                     priority
                                 />
+                                {/* Gradient overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
                                 {/* Overlay Text inside the Image */}
                                 <div className="absolute bottom-[28%] sm:bottom-[32%] lg:bottom-[28%] left-[8%] lg:left-[10%] text-white z-10 w-full max-w-xs">
                                     <h3 className="text-2xl sm:text-3xl font-medium leading-tight mb-2 drop-shadow-md">
-                                        Your Partner in <br /> Progress
+                                        Your Partner in <br /> Property Success
                                     </h3>
                                 </div>
                             </div>

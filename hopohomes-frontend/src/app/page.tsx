@@ -6,6 +6,7 @@ import PremierHouses from "@/components/tenants/PremierHouses";
 import ClientTestimonials from "@/components/tenants/ClientTestimonials";
 import FAQSection from "@/components/tenants/FAQSection";
 import CTASection from "@/components/tenants/CTASection";
+import LocationSection from "@/components/tenants/LocationSection";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       {/* <Navbar /> */}
       <Hero />
       <PropertyShowcase />
+      <LocationSection />
       <MapFeatures />
       <PremierHouses />
 

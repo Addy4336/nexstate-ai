@@ -1,0 +1,268 @@
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+import { ArrowRight, Bed, Home, MapPin, CheckCircle2, Shield, Clock, Sparkles } from 'lucide-react';
+
+const bedroomOptions = [
+    { value: '', label: 'Number of Bedrooms' },
+    { value: 'studio', label: 'Studio Apartment' },
+    { value: '1', label: '1 Bedroom' },
+    { value: '2', label: '2 Bedrooms' },
+    { value: '3', label: '3 Bedrooms' },
+    { value: '4', label: '4 Bedrooms' },
+    { value: '5+', label: '5+ Bedrooms' },
+];
+
+const propertyTypes = [
+    { value: '', label: 'Property Type' },
+    { value: 'villa', label: 'Villa' },
+    { value: 'penthouse', label: 'Penthouse' },
+    { value: 'townhouse', label: 'Townhouse' },
+    { value: 'apartment', label: 'Full Apartment' },
+    { value: 'building', label: 'Whole Building' },
+    { value: 'shared', label: 'Shared Accommodation' },
+];
+
+const cityOptions = [
+    { value: '', label: 'Select City' },
+    { value: 'dubai', label: 'Dubai' },
+    { value: 'abudhabi', label: 'Abu Dhabi' },
+    { value: 'sharjah', label: 'Sharjah' },
+    { value: 'ajman', label: 'Ajman' },
+    { value: 'rak', label: 'Ras Al Khaimah' },
+];
+
+const benefits = [
+    { icon: Shield, text: 'RERA Licensed' },
+    { icon: Clock, text: 'Response in 24hrs' },
+    { icon: CheckCircle2, text: 'Free Valuation' },
+];
+
+export default function ConsultationSection() {
+    const [formData, setFormData] = useState({
+        bedrooms: '',
+        propertyType: '',
+        city: '',
+        name: '',
+        phone: '',
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log('Consultation request:', formData);
+        // Handle form submission
+    };
+
+    return (
+        <section className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden">
+            {/* Background with Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/95 to-primary/90" />
+
+            {/* Decorative Pattern */}
+            <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                }} />
+            </div>
+
+            {/* SVG Clip Path Definition */}
+            <svg className="absolute w-0 h-0" aria-hidden="true">
+                <defs>
+                    <clipPath id="consultation-clip" clipPathUnits="objectBoundingBox">
+                        <path d="M 0.06 0 H 0.94 Q 1 0 1 0.08 L 1 0.72 Q 0.72 0.72 0.72 1 H 0.06 Q 0 1 0 0.92 V 0.08 Q 0 0 0.06 0 Z" />
+                    </clipPath>
+                    <clipPath id="form-clip" clipPathUnits="objectBoundingBox">
+                        <path d="M 0.04 0 H 0.96 Q 1 0 1 0.04 V 0.96 Q 1 1 0.96 1 H 0.28 Q 0.24 1 0.24 0.96 V 0.92 Q 0.24 0.88 0.2 0.88 H 0.04 Q 0 0.88 0 0.84 V 0.04 Q 0 0 0.04 0 Z" />
+                    </clipPath>
+                </defs>
+            </svg>
+
+            <div className="relative max-w-7xl mx-auto">
+                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+                    {/* Left Content */}
+                    <div className="space-y-8 text-white">
+                        <div className="space-y-6">
+                            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
+                                <Sparkles size={16} />
+                                Free Property Consultation
+                            </span>
+
+                            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.1]">
+                                Start Earning From <br />
+                                <span className="text-white/90">Your Property Today</span>
+                            </h2>
+
+                            <p className="text-xl text-white/80 max-w-md leading-relaxed">
+                                We guarantee long-term occupancy, verified tenants, and hassle-free management. Maximize your rental income now.
+                            </p>
+                        </div>
+
+                        {/* Benefits */}
+                        <div className="flex flex-wrap gap-4">
+                            {benefits.map((benefit, index) => (
+                                <div key={index} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                                    <benefit.icon size={18} className="text-white/90" />
+                                    <span className="text-sm font-medium text-white/90">{benefit.text}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Stats */}
+                        <div className="flex gap-12 pt-4">
+                            <div>
+                                <div className="text-4xl font-bold text-white">AED 2.5B+</div>
+                                <div className="text-white/60 text-sm mt-1">Assets Managed</div>
+                            </div>
+                            <div>
+                                <div className="text-4xl font-bold text-white">98%</div>
+                                <div className="text-white/60 text-sm mt-1">Occupancy Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Form with Clippath */}
+                    <div className="relative">
+                        {/* Decorative floating elements */}
+                        <div className="absolute -top-6 -right-6 w-24 h-24 bg-white/5 rounded-full blur-xl" />
+                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
+
+                        {/* Form Container with Clippath */}
+                        <div
+                            className="relative bg-white rounded-3xl p-8 md:p-10 shadow-2xl"
+                            style={{
+                                clipPath: 'url(#form-clip)',
+                                WebkitClipPath: 'url(#form-clip)',
+                            }}
+                        >
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="space-y-2">
+                                    <h3 className="text-2xl font-semibold text-foreground">Claim Free Consultation</h3>
+                                    <p className="text-muted-foreground text-sm">Fill in your property details to get started</p>
+                                </div>
+
+                                {/* Property Type */}
+                                <div className="relative">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                        <Home size={20} />
+                                    </div>
+                                    <select
+                                        name="propertyType"
+                                        value={formData.propertyType}
+                                        onChange={handleChange}
+                                        className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                    >
+                                        {propertyTypes.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                    </div>
+                                </div>
+
+                                {/* Two Column Grid */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Bedrooms */}
+                                    <div className="relative">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                            <Bed size={20} />
+                                        </div>
+                                        <select
+                                            name="bedrooms"
+                                            value={formData.bedrooms}
+                                            onChange={handleChange}
+                                            className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
+                                        >
+                                            {bedroomOptions.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                        </div>
+                                    </div>
+
+                                    {/* City */}
+                                    <div className="relative">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                            <MapPin size={20} />
+                                        </div>
+                                        <select
+                                            name="city"
+                                            value={formData.city}
+                                            onChange={handleChange}
+                                            className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
+                                        >
+                                            {cityOptions.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Name Input */}
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Your Full Name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className="w-full px-5 py-4 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                />
+
+                                {/* Phone Input */}
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    placeholder="Phone Number (+971)"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    className="w-full px-5 py-4 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                />
+
+                                {/* Submit Button */}
+                                <button
+                                    type="submit"
+                                    className="w-full py-4 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-primary/25 transition-all group"
+                                >
+                                    Claim Free Consultation
+                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                </button>
+
+                                <p className="text-center text-xs text-muted-foreground">
+                                    By submitting, you agree to our Terms & Privacy Policy
+                                </p>
+                            </form>
+                        </div>
+
+                        {/* Floating Image Card - Bottom Right Cutout */}
+                        <div className="absolute -bottom-12 left-3 w-28 h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white hidden lg:block">
+                            <Image
+                                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=200&auto=format&fit=crop"
+                                alt="Happy Property Owner"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    );
+}
