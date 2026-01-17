@@ -211,10 +211,10 @@ export default function TenantCostCalculator() {
                 </div>
 
                 {/* THE UNIFIED WIDGET */}
-                <div className="max-w-7xl mx-auto bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-border/50 flex flex-col lg:flex-row">
+                <div className="max-w-7xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl lg:rounded-[2.5rem] shadow-2xl overflow-hidden border border-border/50 flex flex-col lg:flex-row">
 
                     {/* LEFT PANEL: INPUTS RE-IMAGINED (65%) */}
-                    <div className="flex-[1.5] p-6 md:p-10 flex flex-col gap-8">
+                    <div className="flex-[1.5] p-5 md:p-10 flex flex-col gap-6 md:gap-8">
 
                         {/* 1. HERO RENT INPUT */}
                         <div>
@@ -356,12 +356,12 @@ export default function TenantCostCalculator() {
 
                             {/* Comparison Card (Integrated) */}
                             <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
-                                <div className="flex justify-between items-end mb-4">
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-4">
                                     <div>
                                         <div className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-1">Total Payment</div>
-                                        <div className="text-2xl font-bold">{formatCurrency(results.totalStayCost)}</div>
+                                        <div className="text-2xl font-bold text-white">{formatCurrency(results.totalStayCost)}</div>
                                     </div>
-                                    <div className="text-right">
+                                    <div className="text-left sm:text-right">
                                         <div className="text-[10px] uppercase tracking-wider text-white/40 font-bold mb-1">Upfront Cash</div>
                                         <div className="text-xl font-bold text-primary">{formatCurrency(results.upfrontCosts)}</div>
                                     </div>

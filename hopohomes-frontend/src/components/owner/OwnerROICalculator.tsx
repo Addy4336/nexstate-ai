@@ -175,20 +175,66 @@ function InputGroup({
             </label>
             <div className="relative group">
                 {type === 'range' ? (
-                    <div className={`flex h-12 w-full rounded-2xl border px-4 items-center gap-4 ${dark
-                        ? 'bg-white/10 border-white/10 text-white'
-                        : 'bg-muted/30 border-transparent text-foreground'
+                    <div className={`group/slider relative flex h-14 w-full rounded-2xl border px-5 items-center gap-5 transition-all duration-300 ${dark
+                        ? 'bg-white/5 border-white/10 text-white hover:bg-white/10'
+                        : 'bg-white border-border/50 text-foreground shadow-sm hover:border-primary/30 hover:shadow-md'
                         }`}>
-                        <span className="font-semibold w-12 shrink-0 text-right">{value}{suffix}</span>
-                        <input
-                            type="range"
-                            min={min}
-                            max={max}
-                            step={step}
-                            value={value}
-                            onChange={(e) => onChange(Number(e.target.value))}
-                            className="w-full h-1.5 bg-muted-foreground/20 rounded-lg appearance-none cursor-pointer accent-primary hover:accent-primary/80 transition-all"
-                        />
+
+                        <div className="flex flex-col items-end min-w-[3.5rem]">
+                            <span className="text-lg font-bold tracking-tight text-primary">
+                                {value}{suffix}
+                            </span>
+                        </div>
+
+                        <div className="relative w-full h-full flex items-center">
+                            <input
+                                type="range"
+                                min={min}
+                                max={max}
+                                step={step}
+                                value={value}
+                                onChange={(e) => onChange(Number(e.target.value))}
+                                className="w-full h-2 rounded-full appearance-none cursor-pointer focus:outline-none z-10 relative bg-transparent"
+                                style={{
+                                    backgroundImage: `linear-gradient(90deg, var(--primary) ${((value - (min || 0)) / ((max || 100) - (min || 0))) * 100}%, transparent ${((value - (min || 0)) / ((max || 100) - (min || 0))) * 100}%)`
+                                }}
+                            />
+                            {/* Custom Track Background (Gray Part) */}
+                            <div className="absolute top-1/2 left-0 w-full h-2 -translate-y-1/2 bg-muted/40 rounded-full z-0 overflow-hidden pointer-events-none"></div>
+                        </div>
+
+                        <style jsx>{`
+                            input[type=range]::-webkit-slider-thumb {
+                                -webkit-appearance: none;
+                                height: 24px;
+                                width: 24px;
+                                border-radius: 50%;
+                                background: white;
+                                border: 4px solid var(--primary); /* Primary Ring */
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                                cursor: grab;
+                                transition: transform 0.1s ease;
+                                margin-top: -2px; /* Center alignment adjustment if needed */
+                            }
+                            input[type=range]::-webkit-slider-thumb:hover {
+                                transform: scale(1.1);
+                            }
+                            input[type=range]::-webkit-slider-thumb:active {
+                                cursor: grabbing;
+                                transform: scale(0.95);
+                                box-shadow: 0 0 0 4px var(--primary-light, rgba(0,0,0,0.1));
+                            }
+                            input[type=range]::-moz-range-thumb {
+                                height: 24px;
+                                width: 24px;
+                                border-radius: 50%;
+                                background: white;
+                                border: 4px solid var(--primary);
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                                cursor: grab;
+                                border: none;
+                            }
+                        `}</style>
                     </div>
                 ) : (
                     <>
@@ -245,10 +291,10 @@ export default function OwnerROICalculator() {
                 </div>
 
                 {/* THE UNIFIED WIDGET */}
-                <div className="max-w-7xl mx-auto bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-border/50 flex flex-col lg:flex-row">
+                <div className="max-w-7xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl lg:rounded-[2.5rem] shadow-2xl overflow-hidden border border-border/50 flex flex-col lg:flex-row">
 
                     {/* LEFT PANEL: INPUTS (65%) */}
-                    <div className="flex-[1.5] p-6 md:p-10 flex flex-col gap-10">
+                    <div className="flex-[1.5] p-5 md:p-10 flex flex-col gap-6 md:gap-10">
 
                         {/* 1. PROPERTY BASICS */}
                         <div className="space-y-6">
