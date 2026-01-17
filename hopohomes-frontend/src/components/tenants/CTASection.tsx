@@ -29,7 +29,7 @@ export default function CTASection() {
                     Explore a curated selection of properties that align with your vision and goals.
                 </p>
 
-                <button className="bg-card text-card-foreground px-8 py-4 rounded-full text-base font-semibold inline-flex items-center gap-2 hover:bg-muted transition-colors mt-4 group">
+                <button className="bg-secondary text-secondary-foreground px-8 py-4 rounded-full text-base font-semibold inline-flex items-center gap-2 hover:bg-muted transition-colors mt-4 group">
                     Get Started
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>

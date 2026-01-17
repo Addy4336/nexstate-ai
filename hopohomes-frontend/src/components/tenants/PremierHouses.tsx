@@ -128,7 +128,7 @@ export default function PremierHouses() {
                                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                                 {/* Badge */}
-                                <div className="absolute top-5 left-5 bg-card/95 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-semibold text-card-foreground shadow-sm">
+                                <div className="absolute top-5 left-5 bg-secondary px-4 py-1.5 rounded-full text-xs font-semibold text-secondary-foreground shadow-sm">
                                     {property.status === 'available' ? 'For Sale' : property.status}
                                 </div>
                             </div>

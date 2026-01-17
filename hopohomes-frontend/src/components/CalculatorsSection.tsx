@@ -17,8 +17,8 @@ export default function CalculatorsSection() {
                         <button
                             onClick={() => setActiveTab('tenant')}
                             className={`px-6 md:px-8 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold transition-all duration-300 ${activeTab === 'tenant'
-                                ? 'bg-primary text-primary-foreground shadow-md scale-100'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-primary/5'
+                                ? 'bg-secondary text-secondary-foreground shadow-md scale-100'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-secondary/10'
                                 }`}
                         >
                             <span className="flex items-center gap-2">
@@ -28,8 +28,8 @@ export default function CalculatorsSection() {
                         <button
                             onClick={() => setActiveTab('owner')}
                             className={`px-6 md:px-8 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold transition-all duration-300 ${activeTab === 'owner'
-                                ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-100'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-primary/5'
+                                ? 'bg-secondary text-secondary-foreground shadow-md shadow-secondary/20 scale-100'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-secondary/10'
                                 }`}
                         >
                             <span className="flex items-center gap-2">

@@ -69,7 +69,7 @@ const LocationSection = () => {
         <section className=" bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex flex-col items-center text-center mb-16 space-y-4">
-                    <span className="text-primary font-semibold tracking-widest text-xs uppercase bg-primary/10 px-3 py-1 rounded-full">
+                    <span className="text-secondary-foreground font-semibold tracking-widest text-xs uppercase bg-secondary/10 px-3 py-1 rounded-full">
                         Featured Areas
                     </span>
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-foreground">

@@ -34,7 +34,7 @@ export default function Hero() {
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2 sm:gap-3 mb-3 sm:mb-4">
                         {['House', 'Apartment', 'Residential'].map((tag) => (
-                            <span key={tag} className="bg-background/95 backdrop-blur-sm text-foreground px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-background transition-colors cursor-pointer shadow-sm">
+                            <span key={tag} className="bg-secondary text-secondary-foreground px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-secondary/80 transition-colors cursor-pointer shadow-sm">
                                 {tag}
                             </span>
                         ))}
