@@ -198,7 +198,7 @@ export default function TenantCostCalculator() {
     const savings = getSavingsVs6Month();
 
     return (
-        <section className="py-20 md:py-32 bg-background relative overflow-hidden">
+        <section className="py-10 bg-background relative overflow-hidden">
 
             <div className="container relative z-10 px-4 md:px-6 mx-auto">
                 <div className="text-center space-y-6 mb-16 max-w-3xl mx-auto">
@@ -233,14 +233,15 @@ export default function TenantCostCalculator() {
                             </div>
                         </div>
 
-                        {/* 2. DURATION COMPARISON GRID (REPLACING SLIDER) */}
+                        {/* 2. DURATION SELECTION */}
                         <div>
                             <div className="flex items-center gap-2 mb-4">
                                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-xs">2</span>
                                 <label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Select Lease Duration</label>
                             </div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {/* Preset Duration Buttons */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                                 {results.durationComparison.map((item) => (
                                     <button
                                         key={item.months}
@@ -269,6 +270,65 @@ export default function TenantCostCalculator() {
                                         )}
                                     </button>
                                 ))}
+                            </div>
+
+                            {/* Custom Duration Slider - Clean & Minimal */}
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium text-muted-foreground">Or choose custom duration</span>
+                                    <span className="text-lg font-bold text-foreground">
+                                        {inputs.stayDurationMonths} <span className="text-sm font-normal text-muted-foreground">months</span>
+                                    </span>
+                                </div>
+
+                                {/* Slider with Primary Fill */}
+                                <div className="relative h-2">
+                                    {/* Background Track */}
+                                    <div className="absolute inset-0 bg-muted rounded-full" />
+
+                                    {/* Primary Color Fill */}
+                                    <div
+                                        className="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-100"
+                                        style={{ width: `${((inputs.stayDurationMonths - 1) / 47) * 100}%` }}
+                                    />
+
+                                    {/* Range Input */}
+                                    <input
+                                        type="range"
+                                        min={1}
+                                        max={48}
+                                        step={1}
+                                        value={inputs.stayDurationMonths}
+                                        onChange={(e) => updateInput("stayDurationMonths", Number(e.target.value))}
+                                        className="absolute inset-0 w-full h-full appearance-none bg-transparent cursor-pointer
+                                            [&::-webkit-slider-thumb]:appearance-none 
+                                            [&::-webkit-slider-thumb]:w-5 
+                                            [&::-webkit-slider-thumb]:h-5 
+                                            [&::-webkit-slider-thumb]:bg-primary 
+                                            [&::-webkit-slider-thumb]:rounded-full 
+                                            [&::-webkit-slider-thumb]:cursor-grab
+                                            [&::-webkit-slider-thumb]:shadow-lg
+                                            [&::-webkit-slider-thumb]:border-2
+                                            [&::-webkit-slider-thumb]:border-white
+                                            [&::-webkit-slider-thumb]:hover:scale-110
+                                            [&::-webkit-slider-thumb]:transition-transform
+                                            [&::-moz-range-thumb]:w-5 
+                                            [&::-moz-range-thumb]:h-5 
+                                            [&::-moz-range-thumb]:bg-primary 
+                                            [&::-moz-range-thumb]:rounded-full 
+                                            [&::-moz-range-thumb]:cursor-grab
+                                            [&::-moz-range-thumb]:border-2
+                                            [&::-moz-range-thumb]:border-white
+                                            [&::-moz-range-track]:bg-transparent
+                                            [&::-webkit-slider-runnable-track]:bg-transparent"
+                                    />
+                                </div>
+
+                                {/* Month Labels */}
+                                <div className="flex justify-between text-xs text-muted-foreground">
+                                    <span>1 month</span>
+                                    <span>48 months</span>
+                                </div>
                             </div>
                         </div>
 

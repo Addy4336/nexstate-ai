@@ -91,7 +91,7 @@ export default function PropertyShowcase() {
                         Your primary home might begin to feel left out.
                     </h2>
                     <div className="flex items-center  gap-3 sm:gap-4">
-                        <div className="relative w-28 h-14 sm:w-30 sm:h-16 rounded-full overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition-transform shadow-md">
+                        {/* <div className="relative w-28 h-14 sm:w-30 sm:h-16 rounded-full overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition-transform shadow-md">
                             <Image
                                 src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&auto=format"
                                 alt="Video Thumbnail"
@@ -103,7 +103,7 @@ export default function PropertyShowcase() {
                                     <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-foreground fill-current" />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <p className="text-xs sm:text-sm text-muted-foreground max-w-[200px] sm:max-w-[250px] leading-relaxed">
                             Each listing offers unique features, exceptional quality, and prime locations
                         </p>
