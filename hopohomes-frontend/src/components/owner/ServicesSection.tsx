@@ -5,7 +5,7 @@ import { ArrowDown, ArrowUpRight, Home, Key, Wallet } from 'lucide-react';
 
 export default function ServicesSection() {
     return (
-        <section className="bg-background py-16 px-6 md:px-12 relative z-10">
+        <section className="bg-background py-12 md:py-16 px-4 sm:px-6 md:px-12 relative z-10">
             <div className="max-w-7xl mx-auto">
 
                 {/* SVG Clip Path Definition for Card Images */}
@@ -18,30 +18,30 @@ export default function ServicesSection() {
                 </svg>
 
                 {/* Main Card Container */}
-                <div className="bg-secondary/50 dark:bg-card rounded-[2.5rem] p-8 md:p-12 lg:p-14 relative text-foreground overflow-visible border border-border/50">
+                <div className="bg-secondary/50 dark:bg-card rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-12 lg:p-14 relative text-foreground overflow-visible border border-border/50">
 
                     {/* Top Circular Button with Arrow */}
-                    <div className="absolute -top-14 left-1/2 -translate-x-1/2">
-                        <div className="w-30 h-30 rounded-full bg-background flex items-center justify-center p-1.5 shadow-xl">
+                    <div className="absolute -top-10 md:-top-14 left-1/2 -translate-x-1/2">
+                        <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-background flex items-center justify-center p-1.5 shadow-xl">
                             <div className="w-full h-full rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-                                <ArrowDown size={40} />
+                                <ArrowDown size={30} className="md:w-10 md:h-10" />
                             </div>
                         </div>
                     </div>
 
                     {/* Header Content */}
-                    <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-14 pt-6">
+                    <div className="flex flex-col lg:flex-row justify-between items-start gap-6 md:gap-8 mb-10 md:mb-14 pt-8 md:pt-6">
                         <div className="max-w-xl space-y-4">
-                            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium border border-primary/20">
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium border border-primary/20">
                                 Our Services
                             </span>
-                            <h2 className="text-4xl md:text-5xl font-medium leading-tight text-foreground">
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium leading-tight text-foreground">
                                 Expert Property<br />
                                 Management Solutions
                             </h2>
                         </div>
 
-                        <p className="text-muted-foreground max-w-xs text-right hidden lg:block self-end leading-relaxed">
+                        <p className="text-muted-foreground max-w-xs text-left lg:text-right hidden lg:block self-end leading-relaxed text-sm md:text-base">
                             From Palm Jumeirah to Downtown Dubai, we manage exceptional properties with excellence and care.
                         </p>
                     </div>
@@ -55,8 +55,8 @@ export default function ServicesSection() {
                             <div className="relative aspect-square w-full">
 
                                 {/* Icon Top Left */}
-                                <div className="absolute top-0 left-0 z-20 w-16 h-16 flex items-center justify-center border border-white/10 rounded-[1.2rem] text-primary-foreground bg-primary/90 backdrop-blur-sm">
-                                    <Home size={22} strokeWidth={1.5} />
+                                <div className="absolute top-0 left-0 z-20 w-14 h-14 md:w-16 md:h-16 flex items-center justify-center border border-white/10 rounded-[1rem] md:rounded-[1.2rem] text-primary-foreground bg-primary/90 backdrop-blur-sm">
+                                    <Home size={20} strokeWidth={1.5} className="md:w-[22px] md:h-[22px]" />
                                 </div>
 
                                 {/* Main Image with Clip Path */}
@@ -80,21 +80,21 @@ export default function ServicesSection() {
                                 </div>
 
                                 {/* Button Bottom Right */}
-                                <div className="absolute bottom-0 right-0 z-20 w-16 h-16 rounded-[1.2rem] bg-primary flex items-center justify-center text-primary-foreground shadow-lg group-hover:bg-primary/90 transition-colors">
-                                    <ArrowUpRight size={24} strokeWidth={1.5} />
+                                <div className="absolute bottom-0 right-0 z-20 w-14 h-14 md:w-16 md:h-16 rounded-[1rem] md:rounded-[1.2rem] bg-primary flex items-center justify-center text-primary-foreground shadow-lg group-hover:bg-primary/90 transition-colors">
+                                    <ArrowUpRight size={20} strokeWidth={1.5} className="md:w-6 md:h-6" />
                                 </div>
                             </div>
 
-                            <h3 className="text-xl font-medium text-card-foreground px-2 pb-2">Property Listing <br /> & Marketing</h3>
+                            <h3 className="text-lg md:text-xl font-medium text-card-foreground px-2 pb-2">Property Listing <br /> & Marketing</h3>
                         </div>
 
                         {/* Card 2: Tenant Management (Center) */}
                         <div className="bg-card rounded-2xl p-6 lg:p-8 flex flex-col items-center justify-center text-center space-y-6 hover:bg-muted/50 transition-colors duration-300 w-full h-full lg:h-auto shadow-sm border border-border min-h-[280px]">
-                            <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <Key size={24} className="text-primary" />
+                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <Key size={20} className="text-primary md:w-6 md:h-6" />
                             </div>
 
-                            <h3 className="text-xl font-medium text-card-foreground leading-tight">
+                            <h3 className="text-lg md:text-xl font-medium text-card-foreground leading-tight">
                                 Tenant Screening <br /> & Management
                             </h3>
 
@@ -112,8 +112,8 @@ export default function ServicesSection() {
                             {/* Image Container */}
                             <div className="relative aspect-square w-full">
                                 {/* Icon Top Left */}
-                                <div className="absolute top-0 left-0 z-20 w-16 h-16 flex items-center justify-center border border-white/10 rounded-[1.2rem] text-primary-foreground bg-primary/90 backdrop-blur-sm">
-                                    <Wallet size={22} strokeWidth={1.5} />
+                                <div className="absolute top-0 left-0 z-20 w-14 h-14 md:w-16 md:h-16 flex items-center justify-center border border-white/10 rounded-[1rem] md:rounded-[1.2rem] text-primary-foreground bg-primary/90 backdrop-blur-sm">
+                                    <Wallet size={20} strokeWidth={1.5} className="md:w-[22px] md:h-[22px]" />
                                 </div>
 
                                 {/* Main Image with Clip Path */}
@@ -137,11 +137,11 @@ export default function ServicesSection() {
                                 </div>
 
                                 {/* Button Bottom Right */}
-                                <div className="absolute bottom-0 right-0 z-20 w-16 h-16 rounded-[1.2rem] bg-primary flex items-center justify-center text-primary-foreground shadow-lg group-hover:bg-primary/90 transition-colors">
-                                    <ArrowUpRight size={24} strokeWidth={1.5} />
+                                <div className="absolute bottom-0 right-0 z-20 w-14 h-14 md:w-16 md:h-16 rounded-[1rem] md:rounded-[1.2rem] bg-primary flex items-center justify-center text-primary-foreground shadow-lg group-hover:bg-primary/90 transition-colors">
+                                    <ArrowUpRight size={20} strokeWidth={1.5} className="md:w-6 md:h-6" />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-medium text-card-foreground px-2 pb-2">Rent Collection <br /> & Reporting</h3>
+                            <h3 className="text-lg md:text-xl font-medium text-card-foreground px-2 pb-2">Rent Collection <br /> & Reporting</h3>
                         </div>
 
                     </div>
@@ -149,12 +149,12 @@ export default function ServicesSection() {
                 </div>
 
                 {/* Partner Logos Section */}
-                <div className="mt-20 flex flex-wrap justify-center md:justify-between items-center gap-10 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500 px-4">
-                    <span className="text-xl font-semibold text-muted-foreground tracking-wide">Emaar</span>
-                    <span className="text-xl font-semibold text-muted-foreground tracking-wide">DAMAC</span>
-                    <span className="text-xl font-semibold text-muted-foreground tracking-wide">Nakheel</span>
-                    <span className="text-xl font-semibold text-muted-foreground tracking-wide">Meraas</span>
-                    <span className="text-xl font-semibold text-muted-foreground tracking-wide">Dubai Properties</span>
+                <div className="mt-12 md:mt-20 flex flex-wrap justify-center md:justify-between items-center gap-x-8 gap-y-6 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500 px-4">
+                    <span className="text-base md:text-xl font-semibold text-muted-foreground tracking-wide">Emaar</span>
+                    <span className="text-base md:text-xl font-semibold text-muted-foreground tracking-wide">DAMAC</span>
+                    <span className="text-base md:text-xl font-semibold text-muted-foreground tracking-wide">Nakheel</span>
+                    <span className="text-base md:text-xl font-semibold text-muted-foreground tracking-wide">Meraas</span>
+                    <span className="text-base md:text-xl font-semibold text-muted-foreground tracking-wide">Dubai Properties</span>
                 </div>
 
             </div>

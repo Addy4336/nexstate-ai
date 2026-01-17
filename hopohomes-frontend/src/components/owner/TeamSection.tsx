@@ -29,13 +29,13 @@ const teamMembers = [
 
 export default function TeamSection() {
     return (
-        <section className="bg-muted/30 dark:bg-neutral-950 py-16 md:py-24 px-6 md:px-12">
-            <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
+        <section className="bg-muted/30 dark:bg-neutral-950 py-12 md:py-24 px-4 sm:px-6 md:px-12">
+            <div className="max-w-7xl mx-auto space-y-10 md:space-y-16">
 
                 {/* Header Section */}
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-8 lg:gap-12">
                     <div className="max-w-2xl space-y-4 md:space-y-6">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium">
                             Expert Team
                         </span>
                         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">
@@ -44,13 +44,13 @@ export default function TeamSection() {
                         </h2>
                     </div>
 
-                    <div className="max-w-md space-y-6 md:space-y-8 lg:pt-12">
+                    <div className="max-w-md space-y-4 md:space-y-8 lg:pt-12">
                         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
                             A dedicated team of Dubai real estate professionals committed to maximizing your property's potential and returns.
                         </p>
-                        <a href="#" className="inline-flex items-center gap-2 font-medium text-foreground border-b border-foreground/30 hover:border-foreground pb-0.5 transition-colors group">
+                        <a href="#" className="inline-flex items-center gap-2 font-medium text-foreground border-b border-foreground/30 hover:border-foreground pb-0.5 transition-colors group text-sm md:text-base">
                             View All Team
-                            <div className="w-6 h-6 rounded-full border border-foreground/30 flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-colors">
+                            <div className="w-5 h-5 md:w-6 md:h-6 rounded-full border border-foreground/30 flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-colors">
                                 <ChevronRight size={14} />
                             </div>
                         </a>
@@ -63,13 +63,13 @@ export default function TeamSection() {
                         <div
                             key={index}
                             className={`group relative rounded-[2rem] transition-all duration-300 ${member.hasCardBackground
-                                ? 'bg-background p-5 shadow-xl shadow-black/5 dark:shadow-white/5 border border-border'
+                                ? 'bg-background p-4 sm:p-5 shadow-xl shadow-black/5 dark:shadow-white/5 border border-border'
                                 : 'p-0 sm:p-4'
                                 }`}
                         >
                             {/* Image Container */}
                             <div
-                                className={`relative w-full overflow-hidden rounded-3xl mb-6 ${member.hasCardBackground ? 'aspect-4/3' : 'aspect-3/4'
+                                className={`relative w-full overflow-hidden rounded-3xl mb-6 ${member.hasCardBackground ? 'aspect-[4/3]' : 'aspect-[3/4]'
                                     } ${member.isGrayscale ? 'grayscale hover:grayscale-0 transition-all duration-500' : ''}`}
                             >
                                 <Image

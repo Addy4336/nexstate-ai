@@ -12,77 +12,77 @@ const highlights = [
 
 export default function AboutSection() {
     return (
-        <section className="bg-muted/30 dark:bg-neutral-950 py-24 px-6 md:px-12 relative overflow-hidden">
-            <div className="max-w-7xl mx-auto space-y-16">
+        <section className="bg-muted/30 dark:bg-neutral-950 py-12 md:py-24 px-4 sm:px-6 md:px-12 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto space-y-10 md:space-y-16">
 
                 {/* Top Header Section */}
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-                    <div className="space-y-6 max-w-3xl">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-8">
+                    <div className="space-y-4 md:space-y-6 max-w-3xl">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium">
                             About HopoHomes
                         </span>
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">
+                        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">
                             Dubai's Trusted<br />
                             Property Partners
                         </h2>
                     </div>
 
-                    <div className="flex flex-wrap gap-4 pb-2">
-                        <button className="px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none">
+                    <div className="flex flex-wrap gap-3 sm:gap-4 pb-2">
+                        <button className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none text-sm sm:text-base">
                             Get Started <ArrowUpRight size={18} />
                         </button>
-                        <button className="px-6 py-3.5 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors">
+                        <button className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors text-sm sm:text-base">
                             Learn more
                         </button>
                     </div>
                 </div>
 
                 {/* Main Content Split */}
-                <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+                <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-20">
 
                     {/* Left Content */}
-                    <div className="flex-1 space-y-10">
+                    <div className="flex-1 space-y-8 md:space-y-10 w-full">
 
                         <div className="space-y-4">
-                            <h3 className="text-2xl font-semibold text-foreground">Your Property, Our Priority</h3>
-                            <p className="text-muted-foreground leading-relaxed max-w-md text-lg">
+                            <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Your Property, Our Priority</h3>
+                            <p className="text-muted-foreground leading-relaxed max-w-md text-base sm:text-lg">
                                 Since 2014, we've been transforming property ownership in Dubai. Our expertise in luxury real estate ensures your investment performs at its peak.
                             </p>
                         </div>
 
                         {/* Highlights */}
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                             {highlights.map((item, index) => (
-                                <div key={index} className="flex items-center gap-4">
-                                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                        <Check className="w-4 h-4 text-primary" />
+                                <div key={index} className="flex items-center gap-3 sm:gap-4">
+                                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                                     </div>
-                                    <span className="text-foreground">{item}</span>
+                                    <span className="text-foreground text-sm sm:text-base">{item}</span>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="flex gap-12 sm:gap-20 pt-8">
+                        <div className="flex gap-8 sm:gap-20 pt-4 sm:pt-8 border-t border-border/50 lg:border-none">
                             <div>
-                                <div className="text-4xl md:text-5xl font-semibold text-foreground flex items-start leading-none tracking-tight">
+                                <div className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground flex items-start leading-none tracking-tight">
                                     98
-                                    <span className="text-primary text-2xl md:text-3xl mt-1 font-medium">%</span>
+                                    <span className="text-primary text-xl sm:text-2xl md:text-3xl mt-1 font-medium">%</span>
                                 </div>
-                                <p className="text-muted-foreground text-sm mt-3 font-medium">Occupancy Rate</p>
+                                <p className="text-muted-foreground text-xs sm:text-sm mt-2 sm:mt-3 font-medium">Occupancy Rate</p>
                             </div>
                             <div>
-                                <div className="text-4xl md:text-5xl font-semibold text-foreground flex items-start leading-none tracking-tight">
+                                <div className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground flex items-start leading-none tracking-tight">
                                     12.5
-                                    <span className="text-primary text-2xl md:text-3xl mt-1 font-medium">%</span>
+                                    <span className="text-primary text-xl sm:text-2xl md:text-3xl mt-1 font-medium">%</span>
                                 </div>
-                                <p className="text-muted-foreground text-sm mt-3 font-medium">Avg. Annual ROI</p>
+                                <p className="text-muted-foreground text-xs sm:text-sm mt-2 sm:mt-3 font-medium">Avg. Annual ROI</p>
                             </div>
                         </div>
 
                     </div>
 
                     {/* Right Image with Custom Shape */}
-                    <div className="flex-1 w-full relative">
+                    <div className="flex-1 w-full relative pl-2 pr-2 sm:px-0">
                         {/* Shape Definition */}
                         <svg className="absolute w-0 h-0" aria-hidden="true">
                             <defs>
@@ -102,7 +102,7 @@ export default function AboutSection() {
                             </defs>
                         </svg>
 
-                        <div className="relative w-full aspect-[4/3] md:aspect-square lg:aspect-[4/3]">
+                        <div className="relative w-full aspect-square md:aspect-square lg:aspect-[4/3]">
                             {/* Main Image with Clip Path */}
                             <div className="absolute inset-0 z-10 w-full h-full">
                                 <div

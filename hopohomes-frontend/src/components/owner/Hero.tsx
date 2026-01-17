@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 export default function Hero() {
     return (
-        <section className="relative overflow-hidden bg-background pt-0 pb-12 lg:pt-4 lg:pb-24 px-6 md:px-12">
+        <section className="relative overflow-hidden bg-background pt-8 pb-12 lg:pt-4 lg:pb-24 px-4 sm:px-6 md:px-12">
 
             {/* SVG Clip Path Definition - Tabbed Shape */}
             <svg className="absolute w-0 h-0" aria-hidden="true">
@@ -17,44 +17,44 @@ export default function Hero() {
                 </defs>
             </svg>
 
-            <div className="max-w-7xl mx-auto flex flex-col gap-12 lg:gap-16">
+            <div className="max-w-7xl mx-auto flex flex-col gap-8 md:gap-12 lg:gap-16">
 
                 {/* Header Section (Full Width) */}
-                <div className="flex flex-col items-center lg:items-start text-center lg:text-left mt-4 gap-2">
-                    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
+                <div className="flex flex-col items-center lg:items-start text-center lg:text-left mt-4 gap-4 lg:gap-2">
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
                         <span className="text-primary">Maximize</span> Your
                     </h1>
 
-                    <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 lg:gap-x-8 gap-y-4 w-full">
-                        <div className="flex items-center gap-3">
-                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-sm lg:text-base font-medium border border-primary/20">
-                                <Building2 size={16} className="inline mr-1.5" />
+                    <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-2 sm:gap-x-4 lg:gap-x-8 gap-y-3 w-full">
+                        <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
+                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm lg:text-base font-medium border border-primary/20">
+                                <Building2 size={14} className="inline mr-1.5 sm:w-4 sm:h-4" />
                                 Villas
                             </span>
-                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-sm lg:text-base font-medium border border-primary/20">Apartments</span>
-                            <span className="px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary text-primary-foreground text-sm lg:text-base font-medium flex items-center gap-2 shadow-sm">
-                                <MapPin size={16} />
+                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm lg:text-base font-medium border border-primary/20">Apartments</span>
+                            <span className="px-4 sm:px-5 lg:px-6 py-2 lg:py-2.5 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm lg:text-base font-medium flex items-center gap-2 shadow-sm">
+                                <MapPin size={14} className="sm:w-4 sm:h-4" />
                                 Dubai
                             </span>
                         </div>
 
-                        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
+                        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
                             Property Returns<span className="text-primary">.</span>
                         </h1>
                     </div>
                 </div>
 
                 {/* Content Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-end">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-end">
 
                     {/* Left Column: Description & CTAs */}
-                    <div className="flex flex-col gap-8 lg:pb-8 relative z-10 text-center lg:text-left">
-                        <p className="text-xl text-muted-foreground max-w-lg leading-relaxed mx-auto lg:mx-0">
+                    <div className="flex flex-col gap-6 md:gap-8 lg:pb-8 relative z-10 text-center lg:text-left order-2 lg:order-1">
+                        <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed mx-auto lg:mx-0">
                             Partner with Dubai's most trusted property management experts. We handle everything from Palm Jumeirah to Downtown while you enjoy exceptional returns.
                         </p>
 
-                        <div className="flex items-center justify-center lg:justify-start gap-6">
-                            <button className="bg-primary text-primary-foreground px-8 py-4 rounded-full font-medium hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-lg hover:shadow-primary/25">
+                        <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6">
+                            <button className="w-full sm:w-auto bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-lg hover:shadow-primary/25">
                                 List Your Property
                                 <ArrowUpRight size={18} />
                             </button>
@@ -63,28 +63,28 @@ export default function Hero() {
                             </button>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-between max-w-md pt-8 border-t border-border mt-2 mx-auto lg:mx-0 gap-8 sm:gap-0 lg:mr-10">
-                            <div className="flex flex-col items-center sm:items-start">
+                        <div className="flex flex-col sm:flex-row items-center justify-between max-w-md pt-6 sm:pt-8 border-t border-border mt-2 mx-auto lg:mx-0 gap-6 sm:gap-0 lg:mr-10">
+                            <div className="flex flex-col items-center sm:items-start text-center sm:text-left px-4">
                                 <span className="text-sm text-muted-foreground font-medium mb-1">Properties Managed</span>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-bold text-foreground">2,500</span>
-                                    <span className="text-4xl font-bold text-primary">+</span>
+                                    <span className="text-3xl sm:text-4xl font-bold text-foreground">2,500</span>
+                                    <span className="text-3xl sm:text-4xl font-bold text-primary">+</span>
                                 </div>
-                                <span className="text-sm text-muted-foreground">Across Dubai</span>
+                                <span className="text-xs sm:text-sm text-muted-foreground">Across Dubai</span>
                             </div>
 
-                            <div className="flex flex-col gap-2 items-center sm:items-start">
+                            <div className="flex flex-col gap-2 items-center sm:items-start px-4">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-bold text-foreground">4.9</span>
+                                    <span className="text-xl sm:text-2xl font-bold text-foreground">4.9</span>
                                     <div className="flex gap-0.5 text-yellow-400">
                                         {[...Array(5)].map((_, i) => (
-                                            <Star key={i} size={16} fill="currentColor" />
+                                            <Star key={i} size={14} className="sm:w-4 sm:h-4" fill="currentColor" />
                                         ))}
                                     </div>
                                 </div>
                                 <div className="flex -space-x-3">
                                     {[1, 2, 3, 4].map((i) => (
-                                        <div key={i} className="w-10 h-10 rounded-full border-2 border-background bg-muted overflow-hidden relative">
+                                        <div key={i} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-background bg-muted overflow-hidden relative">
                                             <Image
                                                 src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 40}.jpg`}
                                                 alt="Owner"
@@ -93,8 +93,8 @@ export default function Hero() {
                                             />
                                         </div>
                                     ))}
-                                    <div className="w-10 h-10 rounded-full border-2 border-background bg-primary flex items-center justify-center text-primary-foreground z-10">
-                                        <Plus size={16} />
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-background bg-primary flex items-center justify-center text-primary-foreground z-10">
+                                        <Plus size={14} className="sm:w-4 sm:h-4" />
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@ export default function Hero() {
                     </div>
 
                     {/* Right Column: Image */}
-                    <div className="relative h-[400px] sm:h-[450px] lg:h-[420px] w-full flex items-center justify-center perspective-1000">
+                    <div className="relative h-[300px] sm:h-[450px] lg:h-[420px] w-full flex items-center justify-center perspective-1000 order-1 lg:order-2">
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -128,8 +128,8 @@ export default function Hero() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
                                 {/* Overlay Text inside the Image */}
-                                <div className="absolute bottom-[28%] sm:bottom-[32%] lg:bottom-[28%] left-[8%] lg:left-[10%] text-white z-10 w-full max-w-xs">
-                                    <h3 className="text-2xl sm:text-3xl font-medium leading-tight mb-2 drop-shadow-md">
+                                <div className="absolute bottom-[20%] sm:bottom-[32%] lg:bottom-[28%] left-[8%] lg:left-[10%] text-white z-10 w-full max-w-xs">
+                                    <h3 className="text-xl sm:text-2xl sm:text-3xl font-medium leading-tight mb-2 drop-shadow-md">
                                         Your Partner in <br /> Property Success
                                     </h3>
                                 </div>
@@ -137,8 +137,8 @@ export default function Hero() {
 
                             {/* Floating Action Button - Positioned in the bottom-right cutout */}
                             <div className="absolute bottom-0 right-[2%] z-20">
-                                <button className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-background border border-border flex items-center justify-center text-foreground hover:scale-105 hover:shadow-xl transition-all duration-300 group">
-                                    <ArrowUpRight className="w-6 h-6 sm:w-8 sm:h-8 font-light text-muted-foreground group-hover:text-primary transition-colors" strokeWidth={1.5} />
+                                <button className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-background border border-border flex items-center justify-center text-foreground hover:scale-105 hover:shadow-xl transition-all duration-300 group">
+                                    <ArrowUpRight className="w-5 h-5 sm:w-8 sm:h-8 font-light text-muted-foreground group-hover:text-primary transition-colors" strokeWidth={1.5} />
                                 </button>
                             </div>
                         </motion.div>

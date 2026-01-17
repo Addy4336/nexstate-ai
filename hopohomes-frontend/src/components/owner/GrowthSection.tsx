@@ -24,22 +24,22 @@ const featuredProperties = [
 
 export default function GrowthSection() {
     return (
-        <section className="bg-muted/30 dark:bg-neutral-950 py-16 md:py-24 px-6 md:px-12">
-            <div className="max-w-7xl mx-auto space-y-16">
+        <section className="bg-muted/30 dark:bg-neutral-950 py-12 md:py-24 px-4 sm:px-6 md:px-12">
+            <div className="max-w-7xl mx-auto space-y-10 md:space-y-16">
 
                 {/* Centered Heading */}
-                <div className="text-center max-w-4xl mx-auto space-y-6">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium border border-primary/20">
+                <div className="text-center max-w-4xl mx-auto space-y-4 md:space-y-6">
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium border border-primary/20">
                         Featured Properties
                     </span>
-                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.2]">
+                    <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.2]">
                         Exceptional Dubai Properties<br className="hidden md:block" />
                         Delivering Outstanding Returns
                     </h2>
                 </div>
 
                 {/* Video/Image Container */}
-                <div className="w-full relative aspect-video md:aspect-[2.4/1] rounded-2xl md:rounded-[2rem] overflow-hidden group cursor-pointer shadow-2xl">
+                <div className="w-full relative aspect-video md:aspect-[2.4/1] rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden group cursor-pointer shadow-2xl">
                     {/* Background Image */}
                     <Image
                         src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=1200&auto=format&fit=crop"
@@ -50,34 +50,34 @@ export default function GrowthSection() {
 
                     {/* Play Button Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-                        <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center border border-white/20 relative">
-                            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white flex items-center justify-center pl-1 shadow-2xl">
-                                <Play fill="currentColor" className="text-primary w-5 h-5 md:w-7 md:h-7" />
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center border border-white/20 relative">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-white flex items-center justify-center pl-1 shadow-2xl">
+                                <Play fill="currentColor" className="text-primary w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7" />
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Content Row */}
-                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pt-4">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 md:gap-8 pt-0 md:pt-4">
 
                     {/* Left Description */}
-                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-12 max-w-2xl">
-                        <span className="text-primary font-medium text-lg whitespace-nowrap pt-1 flex items-center gap-2">
-                            <TrendingUp size={18} />
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-12 max-w-2xl">
+                        <span className="text-primary font-medium text-base md:text-lg whitespace-nowrap pt-1 flex items-center gap-2">
+                            <TrendingUp size={18} className="md:w-5 md:h-5" />
                             Featured
                         </span>
-                        <p className="text-muted-foreground text-lg leading-relaxed">
+                        <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
                             From waterfront villas to luxury penthouses, discover Dubai properties that deliver outstanding rental yields.
                         </p>
                     </div>
 
                     {/* Right Buttons */}
-                    <div className="flex flex-wrap gap-4 w-full lg:w-auto">
-                        <button className="flex-1 sm:flex-none justify-center px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none whitespace-nowrap">
+                    <div className="flex flex-wrap gap-3 sm:gap-4 w-full lg:w-auto">
+                        <button className="flex-1 sm:flex-none justify-center px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none whitespace-nowrap text-sm sm:text-base">
                             View Properties <ArrowUpRight size={18} />
                         </button>
-                        <button className="flex-1 sm:flex-none justify-center px-6 py-3.5 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors whitespace-nowrap">
+                        <button className="flex-1 sm:flex-none justify-center px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors whitespace-nowrap text-sm sm:text-base">
                             List Your Property
                         </button>
                     </div>
@@ -85,31 +85,31 @@ export default function GrowthSection() {
                 </div>
 
                 {/* Property Listings & Image Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 pt-12 md:pt-20 border-t border-border mt-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 pt-8 md:pt-20 border-t border-border mt-8 md:mt-12">
 
                     {/* Column 1: Featured Properties List (Span 5) */}
-                    <div className="lg:col-span-5 flex flex-col justify-center space-y-6 order-2 lg:order-1">
+                    <div className="lg:col-span-5 flex flex-col justify-center space-y-4 md:space-y-6 order-2 lg:order-1">
 
                         {featuredProperties.map((property, index) => (
-                            <div key={index} className="group cursor-pointer p-5 rounded-2xl bg-background border border-border hover:border-primary/30 hover:shadow-lg transition-all">
+                            <div key={index} className="group cursor-pointer p-4 md:p-5 rounded-2xl bg-background border border-border hover:border-primary/30 hover:shadow-lg transition-all">
                                 <div className="flex items-start justify-between mb-3">
                                     <div>
-                                        <h3 className="text-lg font-semibold text-foreground mb-1">{property.title}</h3>
-                                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                                        <h3 className="text-base md:text-lg font-semibold text-foreground mb-1">{property.title}</h3>
+                                        <div className="flex flex-wrap items-center gap-2 text-muted-foreground text-xs md:text-sm">
                                             <MapPin size={14} />
                                             {property.location}
-                                            <span className="mx-2 text-border">•</span>
+                                            <span className="mx-1 md:mx-2 text-border">•</span>
                                             <Bed size={14} /> {property.beds}
-                                            <Bath size={14} className="ml-2" /> {property.baths}
+                                            <Bath size={14} className="ml-1 md:ml-2" /> {property.baths}
                                         </div>
                                     </div>
-                                    <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all flex-shrink-0">
-                                        <ArrowUpRight size={18} />
+                                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all flex-shrink-0">
+                                        <ArrowUpRight size={16} className="md:w-[18px] md:h-[18px]" />
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border">
-                                    <span className="text-primary font-semibold text-lg">{property.price}</span>
-                                    <span className="text-xs px-3 py-1.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full font-medium">{property.yield} Yield</span>
+                                    <span className="text-primary font-semibold text-base md:text-lg">{property.price}</span>
+                                    <span className="text-xs px-2 md:px-3 py-1 md:py-1.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full font-medium">{property.yield} Yield</span>
                                 </div>
                             </div>
                         ))}
@@ -162,22 +162,22 @@ export default function GrowthSection() {
                     </div>
 
                     {/* Column 3: Stats (Span 3) */}
-                    <div className="lg:col-span-3 flex flex-col justify-center gap-8 lg:pl-4 order-3">
-                        <h3 className="text-3xl md:text-4xl font-medium text-foreground leading-tight">
+                    <div className="lg:col-span-3 flex flex-col justify-center gap-6 md:gap-8 lg:pl-4 order-3">
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-medium text-foreground leading-tight">
                             Your Partner <br /> in Property
                         </h3>
-                        <div className="space-y-4">
+                        <div className="space-y-3 md:space-y-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-3 h-3 rounded-full bg-primary"></div>
-                                <span className="text-foreground font-medium">98% Occupancy Rate</span>
+                                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-primary"></div>
+                                <span className="text-foreground font-medium text-sm md:text-base">98% Occupancy Rate</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <div className="w-3 h-3 rounded-full bg-primary"></div>
-                                <span className="text-foreground font-medium">RERA Licensed</span>
+                                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-primary"></div>
+                                <span className="text-foreground font-medium text-sm md:text-base">RERA Licensed</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <div className="w-3 h-3 rounded-full bg-primary"></div>
-                                <span className="text-foreground font-medium">2,500+ Properties</span>
+                                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-primary"></div>
+                                <span className="text-foreground font-medium text-sm md:text-base">2,500+ Properties</span>
                             </div>
                         </div>
                     </div>

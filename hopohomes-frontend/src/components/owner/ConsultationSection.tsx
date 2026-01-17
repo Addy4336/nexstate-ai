@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { ArrowRight, Bed, Home, MapPin, CheckCircle2, Shield, Clock, Sparkles } from 'lucide-react';
 
 const bedroomOptions = [
-    { value: '', label: 'Number of Bedrooms' },
+    { value: '', label: 'Bedrooms' },
     { value: 'studio', label: 'Studio Apartment' },
     { value: '1', label: '1 Bedroom' },
     { value: '2', label: '2 Bedrooms' },
@@ -59,7 +59,17 @@ export default function ConsultationSection() {
     };
 
     return (
-        <section className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden">
+        <section className="relative py-16 md:py-28 px-4 sm:px-6 md:px-12 overflow-hidden">
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @media (min-width: 1024px) {
+                    .desktop-clip-form {
+                        clip-path: url(#form-clip);
+                        -webkit-clip-path: url(#form-clip);
+                    }
+                }
+            `}} />
+
             {/* Background with Gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/95 to-primary/90" />
 
@@ -83,45 +93,45 @@ export default function ConsultationSection() {
             </svg>
 
             <div className="relative max-w-7xl mx-auto">
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
                     {/* Left Content */}
-                    <div className="space-y-8 text-white">
+                    <div className="space-y-6 md:space-y-8 text-white text-center lg:text-left">
                         <div className="space-y-6">
-                            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
+                            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs md:text-sm font-medium">
                                 <Sparkles size={16} />
                                 Free Property Consultation
                             </span>
 
-                            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.1]">
+                            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1]">
                                 Start Earning From <br />
                                 <span className="text-white/90">Your Property Today</span>
                             </h2>
 
-                            <p className="text-xl text-white/80 max-w-md leading-relaxed">
+                            <p className="text-lg sm:text-xl text-white/80 max-w-md leading-relaxed mx-auto lg:mx-0">
                                 We guarantee long-term occupancy, verified tenants, and hassle-free management. Maximize your rental income now.
                             </p>
                         </div>
 
                         {/* Benefits */}
-                        <div className="flex flex-wrap gap-4">
+                        <div className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4">
                             {benefits.map((benefit, index) => (
-                                <div key={index} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
-                                    <benefit.icon size={18} className="text-white/90" />
-                                    <span className="text-sm font-medium text-white/90">{benefit.text}</span>
+                                <div key={index} className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                                    <benefit.icon size={16} className="text-white/90 sm:w-[18px] sm:h-[18px]" />
+                                    <span className="text-xs sm:text-sm font-medium text-white/90">{benefit.text}</span>
                                 </div>
                             ))}
                         </div>
 
                         {/* Stats */}
-                        <div className="flex gap-12 pt-4">
+                        <div className="flex justify-center lg:justify-start gap-8 sm:gap-12 pt-4">
                             <div>
-                                <div className="text-4xl font-bold text-white">AED 2.5B+</div>
-                                <div className="text-white/60 text-sm mt-1">Assets Managed</div>
+                                <div className="text-3xl sm:text-4xl font-bold text-white">AED 2.5B+</div>
+                                <div className="text-white/60 text-xs sm:text-sm mt-1">Assets Managed</div>
                             </div>
                             <div>
-                                <div className="text-4xl font-bold text-white">98%</div>
-                                <div className="text-white/60 text-sm mt-1">Occupancy Rate</div>
+                                <div className="text-3xl sm:text-4xl font-bold text-white">98%</div>
+                                <div className="text-white/60 text-xs sm:text-sm mt-1">Occupancy Rate</div>
                             </div>
                         </div>
                     </div>
@@ -133,13 +143,7 @@ export default function ConsultationSection() {
                         <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-xl" />
 
                         {/* Form Container with Clippath */}
-                        <div
-                            className="relative bg-white rounded-3xl p-8 md:p-10 shadow-2xl"
-                            style={{
-                                clipPath: 'url(#form-clip)',
-                                WebkitClipPath: 'url(#form-clip)',
-                            }}
-                        >
+                        <div className="relative bg-white rounded-[2rem] p-6 sm:p-8 md:p-10 shadow-2xl desktop-clip-form">
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
                                     <h3 className="text-2xl font-semibold text-foreground">Claim Free Consultation</h3>
@@ -169,7 +173,7 @@ export default function ConsultationSection() {
                                 </div>
 
                                 {/* Two Column Grid */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {/* Bedrooms */}
                                     <div className="relative">
                                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -251,7 +255,7 @@ export default function ConsultationSection() {
                         </div>
 
                         {/* Floating Image Card - Bottom Right Cutout */}
-                        <div className="absolute -bottom-12 left-3 w-28 h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white hidden lg:block">
+                        <div className="absolute -bottom-12 left-[1%] w-24 h-24 md:w-28 md:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white hidden lg:block">
                             <Image
                                 src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=200&auto=format&fit=crop"
                                 alt="Happy Property Owner"
