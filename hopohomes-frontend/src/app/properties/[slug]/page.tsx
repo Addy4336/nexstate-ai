@@ -116,7 +116,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
     return (
         <div className="min-h-[85vh] bg-background">
             {/* Hero Section */}
-            <div className="relative h-[60vh] md:h-[70vh] overflow-hidden">
+            <div className="relative min-h-[75vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden">
                 <Image
                     src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGR1YmFpJTIwcmVhbCUyMGVzdGF0ZXxlbnwwfHwwfHx8MA%3D%3D"
                     alt={locationName}
@@ -124,7 +124,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
                     className="object-cover"
                     priority
                 />
-                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
 
                 {/* Back Button */}
                 {/* <div className="absolute top-32 left-6 z-10">
@@ -140,27 +140,31 @@ export default async function LocationPage({ params }: LocationPageProps) {
                 </div> */}
 
                 {/* Welcome Text Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center text-center text-white z-10 pt-32">
-                    <div className="max-w-4xl mx-auto px-6">
-                        <h1
-                            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight"
-                            style={{ fontFamily: 'cursive, serif' }}
-                        >
-                            Properties in
-                            <br />
-                            {locationName}
+                <div className="relative z-10 w-full pt-32 pb-16 px-6 flex flex-col items-center justify-center text-center text-white">
+                    <div className="max-w-5xl mx-auto">
+                        <div className="inline-block mb-3 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium tracking-wider uppercase">
+                            Exclusive Collection
+                        </div>
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight text-white drop-shadow-xl">
+                            <span className="block text-2xl md:text-4xl font-light mb-2 opacity-90 tracking-normal font-sans">Properties in</span>
+                            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+                                {locationName}
+                            </span>
                         </h1>
-                        <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed font-light mb-10 drop-shadow-md">
                             Discover exceptional living spaces in {locationName}. Beautiful villas, apartments,
                             and exclusive residences with world-class amenities.
                         </p>
-                        <div className="flex items-center justify-center gap-6 mt-8">
-                            <div className="flex items-center gap-2">
-                                <MapPin className="w-5 h-5 text-yellow-400" />
-                                <span className="font-semibold">{locationName}</span>
+                        <div className="flex flex-wrap items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                            <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-black/30 backdrop-blur-md border border-white/10 shadow-lg hover:bg-black/40 transition-colors">
+                                <MapPin className="w-5 h-5 text-primary" />
+                                <span className="font-medium text-lg">{locationName}</span>
                             </div>
-                            <div className="text-white/80">
-                                {properties.length} {properties.length === 1 ? 'Property' : 'Properties'} Available
+                            <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/10 shadow-lg hover:bg-white/20 transition-colors">
+                                <Home className="w-5 h-5 text-white/90" />
+                                <span className="font-medium text-lg text-white/90">
+                                    {properties.length} {properties.length === 1 ? 'Property' : 'Properties'} Available
+                                </span>
                             </div>
                         </div>
                     </div>
