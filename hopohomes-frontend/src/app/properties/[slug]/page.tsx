@@ -127,7 +127,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
                 <div className="absolute inset-0 bg-black/40" />
 
                 {/* Back Button */}
-                <div className="absolute top-6 left-6 z-10">
+                {/* <div className="absolute top-32 left-6 z-10">
                     <Link href="/">
                         <Button
                             variant="secondary"
@@ -137,10 +137,10 @@ export default async function LocationPage({ params }: LocationPageProps) {
                             <ArrowLeft className="w-4 h-4 text-white" />
                         </Button>
                     </Link>
-                </div>
+                </div> */}
 
                 {/* Welcome Text Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center text-center text-white z-10">
+                <div className="absolute inset-0 flex items-center justify-center text-center text-white z-10 pt-32">
                     <div className="max-w-4xl mx-auto px-6">
                         <h1
                             className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight"

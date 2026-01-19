@@ -41,7 +41,7 @@ export default function Navbar() {
                             <Link href="#" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
                                 About Us
                             </Link>
-                            <Link href="#" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                            <Link href="/properties-locations" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
                                 Property List
                             </Link>
                             <Link href="#" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
@@ -90,7 +90,7 @@ export default function Navbar() {
                         <Link href="#" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
                             About Us
                         </Link>
-                        <Link href="#" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
+                        <Link href="/properties-locations" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
                             Property List
                         </Link>
                         <Link href="#" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
