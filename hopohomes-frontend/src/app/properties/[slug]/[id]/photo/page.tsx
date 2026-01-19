@@ -1,7 +1,17 @@
 "use client"
-import React, { use, useState } from 'react';
+import React, { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowLeft, Loader2, ImageOff, X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+
+// API base URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+interface GalleryPhoto {
+    src: string;
+    alt: string;
+    category: string;
+}
 
 export default function PropertyPhotosPage({ params }: { params: Promise<{ slug: string, id: string }> }) {
     const { slug, id } = use(params);
@@ -11,37 +21,162 @@ export default function PropertyPhotosPage({ params }: { params: Promise<{ slug:
         ? slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
         : 'Property';
 
-    const [selectedCategory, setSelectedCategory] = useState("Property");
+    const [selectedCategory, setSelectedCategory] = useState("All Photos");
+    const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [propertyTitle, setPropertyTitle] = useState(propertyName);
+    const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
 
-    const categories = ["Property", "Deluxe Room (with balcony)", "Deluxe Room (with city view)", "Standard Room"];
+    // Lightbox state
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
 
-    const galleryPhotos = [
-        // Property
-        { src: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?h=1080&q=80", alt: "Property Exterior", category: "Property" },
-        { src: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?h=1080&q=80", alt: "Pool Area", category: "Property" },
-        { src: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?h=1080&q=80", alt: "Kitchen", category: "Property" },
-        { src: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?h=1080&q=80", alt: "Lounge", category: "Property" },
-        { src: "https://plus.unsplash.com/premium_photo-1738099067683-d1a020a3988a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZHViYWklMjBnYXJkZW58ZW58MHx8MHx8fDA%3D", alt: "Garden", category: "Property" },
-        { src: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?h=1080&q=80", alt: "Patio", category: "Property" },
+    // Fetch property data from API
+    useEffect(() => {
+        async function fetchPropertyImages() {
+            try {
+                setLoading(true);
+                setError(null);
 
-        // Deluxe Room (with balcony)
-        { src: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?h=1080&q=80", alt: "Deluxe Balcony Bedroom", category: "Deluxe Room (with balcony)" },
-        { src: "https://images.unsplash.com/photo-1590490360182-c33d57733427?h=1080&q=80", alt: "Deluxe Balcony View", category: "Deluxe Room (with balcony)" },
-        { src: "https://images.unsplash.com/photo-1591088398332-8a7791972843?h=1080&q=80", alt: "Deluxe Balcony Bathroom", category: "Deluxe Room (with balcony)" },
-        { src: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?h=1080&q=80", alt: "Deluxe Balcony Interior", category: "Deluxe Room (with balcony)" },
+                const response = await fetch(`${API_BASE_URL}/api/properties/${id}`, {
+                    cache: 'no-store',
+                });
 
-        // Deluxe Room (with city view)
-        { src: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?h=1080&q=80", alt: "Deluxe City View Bedroom", category: "Deluxe Room (with city view)" },
-        { src: "https://images.unsplash.com/photo-1582719508461-905c673771fd?h=1080&q=80", alt: "Deluxe City View Living Area", category: "Deluxe Room (with city view)" },
-        { src: "https://images.unsplash.com/photo-1590490359683-658d3d23f972?h=1080&q=80", alt: "Deluxe City View Window", category: "Deluxe Room (with city view)" },
+                if (!response.ok) {
+                    throw new Error('Failed to fetch property');
+                }
 
-        // Standard Room
-        { src: "https://images.unsplash.com/photo-1648634158203-199accfd7afc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhbmRhcmQlMjByb29tJTIwYmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D", alt: "Standard Room Bedroom", category: "Standard Room" },
-        { src: "https://images.unsplash.com/photo-1724228319129-7cc33c9e8a2a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3RhbmRhcmQlMjByb29tJTIwZGV0YWlsfGVufDB8fDB8fHww", alt: "Standard Room Interior", category: "Standard Room" },
-        { src: "https://images.unsplash.com/photo-1745221847962-0397cc719b8e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHN0YW5kYXJkJTIwcm9vbSUyMGRldGFpbHxlbnwwfHwwfHx8MA%3D%3D", alt: "Standard Room Detail", category: "Standard Room" },
-    ];
+                const result = await response.json();
 
+                if (!result.success || !result.data) {
+                    throw new Error(result.error || 'Property not found');
+                }
+
+                const property = result.data;
+
+                // Set property title
+                if (property.title) {
+                    setPropertyTitle(property.title);
+                }
+
+                // Collect all images
+                const images: string[] = [];
+
+                // Add cover images first
+                if (property.cover_image && Array.isArray(property.cover_image)) {
+                    images.push(...property.cover_image);
+                }
+
+                // Add additional images
+                if (property.images && Array.isArray(property.images)) {
+                    images.push(...property.images);
+                }
+
+                // Remove duplicates and empty strings
+                const uniqueImages = [...new Set(images)].filter(img => img && img.trim() !== '');
+
+                // Helper function to convert Google Drive URLs to embeddable format
+                const convertGoogleDriveUrl = (url: string): string => {
+                    if (url.includes('drive.google.com')) {
+                        let fileId = '';
+
+                        const ucMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                        if (ucMatch) {
+                            fileId = ucMatch[1];
+                        }
+
+                        const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                        if (fileMatch) {
+                            fileId = fileMatch[1];
+                        }
+
+                        const openMatch = url.match(/open\?id=([a-zA-Z0-9_-]+)/);
+                        if (openMatch) {
+                            fileId = openMatch[1];
+                        }
+
+                        if (fileId) {
+                            const driveUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+                            return `https://images.weserv.nl/?url=${encodeURIComponent(driveUrl)}&w=1000&fit=cover`;
+                        }
+                    }
+                    return url;
+                };
+
+                // Format images for gallery
+                const formattedPhotos: GalleryPhoto[] = uniqueImages.map((src, index) => {
+                    const imageUrl = convertGoogleDriveUrl(src);
+
+                    return {
+                        src: imageUrl,
+                        alt: `${property.title || propertyName} - Photo ${index + 1}`,
+                        category: "All Photos"
+                    };
+                });
+
+                setGalleryPhotos(formattedPhotos);
+            } catch (err) {
+                console.error('Error fetching property images:', err);
+                setError(err instanceof Error ? err.message : 'Failed to load images');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchPropertyImages();
+    }, [id, propertyName]);
+
+    const handleImageError = (index: number, src: string) => {
+        console.error(`Failed to load image ${index + 1}:`, src);
+        setFailedImages(prev => new Set(prev).add(index));
+    };
+
+    // Lightbox handlers
+    const openLightbox = (index: number) => {
+        setLightboxIndex(index);
+        setLightboxOpen(true);
+        // Prevent body scroll when lightbox is open
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+        setLightboxOpen(false);
+        document.body.style.overflow = 'auto';
+    };
+
+    const categories = ["All Photos"];
     const filteredPhotos = galleryPhotos.filter(photo => photo.category === selectedCategory);
+
+    const goToPrevious = useCallback(() => {
+        setLightboxIndex((prev) => Math.max(0, prev - 1));
+    }, []);
+
+    const goToNext = useCallback(() => {
+        setLightboxIndex((prev) => Math.min(filteredPhotos.length - 1, prev + 1));
+    }, [filteredPhotos.length]);
+
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!lightboxOpen) return;
+
+            switch (e.key) {
+                case 'Escape':
+                    closeLightbox();
+                    break;
+                case 'ArrowLeft':
+                    if (lightboxIndex > 0) goToPrevious();
+                    break;
+                case 'ArrowRight':
+                    if (lightboxIndex < filteredPhotos.length - 1) goToNext();
+                    break;
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [lightboxOpen, goToPrevious, goToNext, lightboxIndex, filteredPhotos.length]);
 
     return (
         <div className="min-h-screen bg-background pt-20">
@@ -53,7 +188,7 @@ export default function PropertyPhotosPage({ params }: { params: Promise<{ slug:
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
-                    <h1 className="text-lg font-semibold text-center">Hopo Homes - {propertyName}</h1>
+                    <h1 className="text-lg font-semibold text-center">{propertyTitle}</h1>
                 </div>
 
                 <div className="flex gap-3 overflow-x-auto pb-2 mb-8 scrollbar-hide">
@@ -62,28 +197,167 @@ export default function PropertyPhotosPage({ params }: { params: Promise<{ slug:
                             key={category}
                             onClick={() => setSelectedCategory(category)}
                             className={`px-4 py-2 rounded-full border text-sm whitespace-nowrap transition-all duration-200 ${selectedCategory === category
-                                    ? 'border-black text-black font-medium bg-transparent shadow-sm'
-                                    : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                                ? 'border-black text-black font-medium bg-transparent shadow-sm'
+                                : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
                                 }`}
                         >
-                            {category}
+                            {category} {galleryPhotos.length > 0 && `(${galleryPhotos.length})`}
                         </button>
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {filteredPhotos.map((photo, index) => (
-                        <div key={index} className="aspect-[4/3] relative rounded-xl overflow-hidden group bg-muted">
+                {/* Loading State */}
+                {loading && (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+                        <p className="text-muted-foreground">Loading photos...</p>
+                    </div>
+                )}
+
+                {/* Error State */}
+                {error && !loading && (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <ImageOff className="w-12 h-12 text-muted-foreground mb-4" />
+                        <p className="text-muted-foreground mb-2">Failed to load photos</p>
+                        <p className="text-sm text-muted-foreground">{error}</p>
+                    </div>
+                )}
+
+                {/* Empty State */}
+                {!loading && !error && galleryPhotos.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <ImageOff className="w-12 h-12 text-muted-foreground mb-4" />
+                        <p className="text-muted-foreground">No photos available for this property</p>
+                    </div>
+                )}
+
+                {/* Photos Grid */}
+                {!loading && !error && filteredPhotos.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {filteredPhotos.map((photo, index) => (
+                            <div
+                                key={index}
+                                className="aspect-[4/3] relative rounded-xl overflow-hidden group bg-muted cursor-pointer"
+                                onClick={() => !failedImages.has(index) && openLightbox(index)}
+                            >
+                                {failedImages.has(index) ? (
+                                    <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-muted">
+                                        <ImageOff className="w-8 h-8 text-muted-foreground mb-2" />
+                                        <p className="text-xs text-muted-foreground text-center break-all">
+                                            Failed to load: {photo.src.substring(0, 50)}...
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <img
+                                            src={photo.src}
+                                            alt={photo.alt}
+                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                            loading="lazy"
+                                            onError={() => handleImageError(index, photo.src)}
+                                        />
+                                        {/* Zoom overlay on hover */}
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                                            <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Lightbox Modal */}
+            {lightboxOpen && filteredPhotos.length > 0 && (
+                <div
+                    className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center p-4"
+                    onClick={closeLightbox}
+                >
+                    {/* Close button */}
+                    <button
+                        onClick={closeLightbox}
+                        className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                        aria-label="Close lightbox"
+                    >
+                        <X className="w-6 h-6 text-white" />
+                    </button>
+
+                    {/* Image counter */}
+                    <div className="absolute top-4 left-4 z-10 px-3 py-1.5 rounded-full bg-white/10 text-white text-sm font-medium">
+                        {lightboxIndex + 1} / {filteredPhotos.length}
+                    </div>
+
+                    {/* Previous button - hidden on first image */}
+                    {lightboxIndex > 0 && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                goToPrevious();
+                            }}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                            aria-label="Previous image"
+                        >
+                            <ChevronLeft className="w-6 h-6 text-white" />
+                        </button>
+                    )}
+
+                    {/* Next button - hidden on last image */}
+                    {lightboxIndex < filteredPhotos.length - 1 && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                goToNext();
+                            }}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                            aria-label="Next image"
+                        >
+                            <ChevronRight className="w-6 h-6 text-white" />
+                        </button>
+                    )}
+
+                    {/* Main content container - vertical layout */}
+                    <div
+                        className="flex flex-col items-center gap-4 max-h-full"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Main image */}
+                        <div className="flex-1 flex items-center justify-center min-h-0">
                             <img
-                                src={photo.src}
-                                alt={photo.alt}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                loading="lazy"
+                                src={filteredPhotos[lightboxIndex]?.src}
+                                alt={filteredPhotos[lightboxIndex]?.alt}
+                                className="max-w-[90vw] max-h-[70vh] object-contain rounded-lg animate-in fade-in zoom-in-95 duration-200"
                             />
                         </div>
-                    ))}
+
+                        {/* Thumbnail strip below the image */}
+                        {filteredPhotos.length > 1 && (
+                            <div className="flex gap-2 px-4 py-3 bg-black/50 rounded-xl max-w-[90vw] overflow-x-auto scrollbar-hide">
+                                {filteredPhotos.map((photo, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setLightboxIndex(index);
+                                        }}
+                                        className={`w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 transition-all duration-200 border-2 ${index === lightboxIndex
+                                            ? 'border-white scale-105'
+                                            : 'border-transparent opacity-60 hover:opacity-100'
+                                            }`}
+                                    >
+                                        <img
+                                            src={photo.src}
+                                            alt={photo.alt}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
+

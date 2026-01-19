@@ -32,6 +32,14 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'drive.usercontent.google.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.weserv.nl',
+      },
+      {
+        protocol: 'https',
         hostname: 'zrtqlkcwvmlmqcrdxdry.supabase.co',
       },
     ],
