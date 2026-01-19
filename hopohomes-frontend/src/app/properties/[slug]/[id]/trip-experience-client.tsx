@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, Plus, Minus, Camera, Heart, Share2, Bookmark, Bed, Bath, Square, Car, Shield, MapPin, Clock, Flag, Star, Check, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronDown, ChevronUp, X, Plus, Minus, Camera, Heart, Share2, Bookmark, Bed, Bath, Square, Car, Shield, MapPin, Clock, Flag, Star, Check, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
 import { EnquiryDialog } from '@/components/enquiry-dialog';
 import { format } from "date-fns"
@@ -76,7 +76,9 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
   const [guests, setGuests] = useState(3);
   const [isSaved, setIsSaved] = useState(false);
   const [selectedCancellation, setSelectedCancellation] = useState<'non-refundable' | 'refundable'>('non-refundable');
+
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
   const toggleRoom = (roomName: string) => {
     setExpandedRoom(expandedRoom === roomName ? null : roomName);
@@ -977,8 +979,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
           </div>
         </div>
 
-        {/* Mobile Booking Bar */}
-        <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-background border-t border-border p-4 z-50 flex items-center justify-between">
+        <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-background border-t border-border p-4 z-50 flex items-center justify-between pb-8 safe-area-bottom">
           <div>
             <span className="text-lg font-bold text-primary">
               {trip.pricing.currency} {trip.pricing.from.toLocaleString()}
@@ -986,12 +987,172 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
             <span className="text-muted-foreground">/Monthly</span>
           </div>
           <Button
-            onClick={() => setIsEnquiryOpen(true)}
-            className="h-11 px-8 bg-foreground hover:bg-foreground/90 text-background rounded-full font-semibold"
+            onClick={() => setIsMobileDrawerOpen(true)}
+            className="h-11 px-6 bg-foreground hover:bg-foreground/90 text-background rounded-full font-semibold flex items-center gap-2"
           >
-            Reserve
+            <span>Reserve</span>
+            <ChevronUp className="w-4 h-4" />
           </Button>
         </div>
+
+        {/* Mobile Booking Drawer Overlay */}
+        {isMobileDrawerOpen && (
+          <div className="fixed inset-0 z-[60] lg:hidden">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+              onClick={() => setIsMobileDrawerOpen(false)}
+            ></div>
+
+            {/* Drawer Content */}
+            <div className="absolute bottom-0 left-0 right-0 bg-background rounded-t-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-in slide-in-from-bottom duration-300">
+              {/* Handle */}
+              <div
+                className="w-full flex items-center justify-center pt-4 pb-2 cursor-pointer"
+                onClick={() => setIsMobileDrawerOpen(false)}
+              >
+                <div className="w-16 h-1.5 bg-muted rounded-full"></div>
+              </div>
+
+              {/* Scrollable Form Content */}
+              <div className="flex-1 overflow-y-auto px-6 pt-2 pb-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold">Booking Details</h3>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-secondary/50" onClick={() => setIsMobileDrawerOpen(false)}>
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                {/* Price */}
+                <div className="mb-6">
+                  <span className="text-3xl font-bold text-primary">
+                    {trip.pricing.currency} {trip.pricing.from.toLocaleString()}
+                  </span>
+                  <span className="text-muted-foreground ml-2 text-lg">/Monthly</span>
+                </div>
+
+                {/* Check In / Check Out */}
+                <div className="grid grid-cols-2 gap-3 mb-5">
+                  <div className="border border-border rounded-xl p-3">
+                    <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide block mb-1.5">Check In</label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"ghost"}
+                          className={cn(
+                            "w-full justify-start text-left font-medium text-sm h-auto p-0 hover:bg-transparent",
+                            !checkInDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                          {checkInDate ? format(checkInDate, "dd/MM/yyyy") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 z-[70]" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={checkInDate}
+                          onSelect={setCheckInDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="border border-border rounded-xl p-3">
+                    <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide block mb-1.5">Check Out</label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"ghost"}
+                          className={cn(
+                            "w-full justify-start text-left font-medium text-sm h-auto p-0 hover:bg-transparent",
+                            !checkOutDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                          {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 z-[70]" align="end">
+                        <Calendar
+                          mode="single"
+                          selected={checkOutDate}
+                          onSelect={setCheckOutDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                {/* Guests */}
+                <div className="border border-border rounded-xl p-3 mb-5">
+                  <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide block mb-1.5">Guests</label>
+                  <Select value={guests.toString()} onValueChange={(value) => setGuests(parseInt(value))}>
+                    <SelectTrigger className="w-full border-0 p-0 h-auto text-sm font-medium focus:ring-0 shadow-none [&>span]:line-clamp-1">
+                      <SelectValue placeholder="Select guests" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[70]">
+                      <SelectGroup>
+                        <SelectLabel>Guests</SelectLabel>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num} Guest{num > 1 ? 's' : ''}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Cancellation Policies */}
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold mb-3">Cancellation Policies</h4>
+
+                  {/* Non-Refundable */}
+                  <div
+                    onClick={() => setSelectedCancellation('non-refundable')}
+                    className={`border rounded-xl p-3 mb-2 cursor-pointer transition-all ${selectedCancellation === 'non-refundable'
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border'
+                      }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${selectedCancellation === 'non-refundable' ? 'border-primary bg-primary' : 'border-border'
+                          }`}>
+                          {selectedCancellation === 'non-refundable' && <Check className="w-2.5 h-2.5 text-white" />}
+                        </div>
+                        <span className="font-medium text-sm">Non-Refundable</span>
+                      </div>
+                      <span className="text-sm font-semibold">{trip.pricing.currency} {trip.pricing.from}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-4 border-t border-border bg-background pb-8 safe-area-bottom">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm font-medium text-muted-foreground">Total Estimate</span>
+                  <span className="text-xl font-bold">
+                    {trip.pricing.currency} {selectedCancellation === 'refundable' ? Math.round(trip.pricing.from * 1.1) : trip.pricing.from}
+                  </span>
+                </div>
+
+                <Button
+                  onClick={() => {
+                    setIsMobileDrawerOpen(false);
+                    setTimeout(() => setIsEnquiryOpen(true), 300);
+                  }}
+                  className="w-full h-12 text-base bg-foreground hover:bg-foreground/90 text-background rounded-full font-bold shadow-md"
+                >
+                  Reserve
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
       <EnquiryDialog
@@ -999,6 +1160,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
         onClose={() => setIsEnquiryOpen(false)}
         propertyId={id}
         propertyTitle={trip.title}
+      // Pass collected data to enquiry dialog if supported, or just open it
       />
     </div>
   );

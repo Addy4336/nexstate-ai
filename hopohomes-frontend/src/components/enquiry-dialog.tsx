@@ -21,6 +21,14 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    React.useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -70,34 +78,50 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
                     />
 
                     {/* Dialog */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md max-h-[85vh] flex flex-col bg-background rounded-2xl shadow-xl z-50 overflow-hidden border border-border"
+                        initial={isMobile ? { y: "100%" } : { opacity: 0, scale: 0.95, x: "-50%", y: "-40%" }}
+                        animate={isMobile ? { y: 0 } : { opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
+                        exit={isMobile ? { y: "100%" } : { opacity: 0, scale: 0.95, x: "-50%", y: "-40%" }}
+                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                        className={`
+                            fixed z-[101] bg-background overflow-hidden flex flex-col
+                            
+                            /* Mobile Styles (Default) - Bottom Sheet */
+                            bottom-0 left-0 right-0 w-full rounded-t-3xl border-t border-border shadow-2xl max-h-[90vh]
+                            
+                            /* Desktop Styles (md+) - Centered Modal */
+                            md:bottom-auto md:right-auto md:left-1/2 md:top-1/2 
+                            md:w-full md:max-w-md md:rounded-2xl md:border md:shadow-xl md:max-h-[85vh]
+                            /* Transform handled by motion animate props for centering on desktop */
+                        `}
                     >
+                        {/* Mobile Handle */}
+                        <div className="md:hidden w-full flex items-center justify-center pt-3 pb-1" onClick={onClose}>
+                            <div className="w-12 h-1.5 bg-muted rounded-full"></div>
+                        </div>
+
                         {/* Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-border bg-secondary/20 shrink-0">
+                        <div className="flex items-center justify-between px-5 py-4 border-b border-border/50 shrink-0">
                             <div>
-                                <h2 className="text-lg font-semibold">Reserve Property</h2>
-                                <p className="text-xs text-muted-foreground mt-0.5 text-ellipsis overflow-hidden whitespace-nowrap max-w-[300px]">
+                                <h2 className="text-lg font-bold">Reserve Property</h2>
+                                <p className="text-xs text-muted-foreground mt-0.5 text-ellipsis overflow-hidden whitespace-nowrap max-w-[250px] md:max-w-[300px]">
                                     {propertyTitle}
                                 </p>
                             </div>
                             <button
                                 onClick={onClose}
-                                className="p-1.5 hover:bg-secondary rounded-full transition-colors"
+                                className="p-2 bg-secondary/50 hover:bg-secondary rounded-full transition-colors"
                             >
-                                <X className="w-4 h-4 text-muted-foreground" />
+                                <X className="w-4 h-4 text-foreground/70" />
                             </button>
                         </div>
 
                         {/* Content */}
-                        <div className="p-4 overflow-y-auto flex-1">
+                        <div className="p-5 overflow-y-auto flex-1 overscroll-contain">
                             {isSuccess ? (
                                 <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
                                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -116,19 +140,19 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-semibold text-green-600">Enquiry Sent!</h3>
-                                        <p className="text-muted-foreground">We'll get back to you shortly.</p>
+                                        <h3 className="text-lg font-semibold text-green-600 mb-1">Enquiry Sent!</h3>
+                                        <p className="text-muted-foreground text-sm">We'll get back to you shortly.</p>
                                     </div>
                                 </div>
                             ) : (
-                                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                                     <div className="space-y-1.5">
-                                        <label htmlFor="name" className="text-xs font-medium">Full Name</label>
+                                        <label htmlFor="name" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground ml-1">Full Name</label>
                                         <input
                                             id="name"
                                             required
                                             type="text"
-                                            className="w-full px-3 py-2 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
+                                            className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/20 focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm font-medium"
                                             placeholder="John Doe"
                                             value={formData.name}
                                             onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -136,12 +160,12 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label htmlFor="email" className="text-xs font-medium">Email Address</label>
+                                        <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground ml-1">Email Address</label>
                                         <input
                                             id="email"
                                             required
                                             type="email"
-                                            className="w-full px-3 py-2 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
+                                            className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/20 focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm font-medium"
                                             placeholder="john@example.com"
                                             value={formData.email}
                                             onChange={e => setFormData({ ...formData, email: e.target.value })}
@@ -149,12 +173,12 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label htmlFor="phone" className="text-xs font-medium">Phone Number</label>
+                                        <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground ml-1">Phone Number</label>
                                         <input
                                             id="phone"
                                             required
                                             type="tel"
-                                            className="w-full px-3 py-2 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
+                                            className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/20 focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm font-medium"
                                             placeholder="+971 50 123 4567"
                                             value={formData.phone}
                                             onChange={e => setFormData({ ...formData, phone: e.target.value })}
@@ -162,11 +186,11 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label htmlFor="message" className="text-xs font-medium">Message (Optional)</label>
+                                        <label htmlFor="message" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground ml-1">Message (Optional)</label>
                                         <textarea
                                             id="message"
                                             rows={2}
-                                            className="w-full px-3 py-2 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none text-sm"
+                                            className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/20 focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none text-sm font-medium"
                                             placeholder="I'm interested in this property..."
                                             value={formData.message}
                                             onChange={e => setFormData({ ...formData, message: e.target.value })}
@@ -176,7 +200,7 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
                                     <Button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full mt-2"
+                                        className="w-full mt-2 h-12 text-base rounded-full font-bold shadow-lg shadow-primary/20"
                                     >
                                         {isSubmitting ? (
                                             <>
@@ -193,7 +217,7 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
 
                         {/* Footer */}
                         {!isSuccess && (
-                            <div className="p-3 bg-secondary/20 text-center text-[10px] text-muted-foreground border-t border-border shrink-0">
+                            <div className="p-4 bg-secondary/10 text-center text-[10px] text-muted-foreground border-t border-border/50 shrink-0 pb-8 md:pb-4 safe-area-bottom">
                                 By submitting, you agree to our Terms of Service and Privacy Policy.
                             </div>
                         )}
