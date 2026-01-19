@@ -4,13 +4,13 @@ import { supabaseAdmin } from "@/lib/db";
 export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
     // Submit a new enquiry (public)
     .post("/", async ({ body }) => {
-        const { type, name, email, phone, message, propertyId, propertyTitle } = body;
-        
+        const { type, name, email, phone, message, propertyId, propertyTitle, propertyDetails } = body;
+
         // Basic validation
         if (!name || !email || !message) {
             return { success: false, error: "Missing required fields" };
         }
-        
+
         const { error } = await supabaseAdmin
             .from("enquiry")
             .insert({
@@ -21,14 +21,15 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
                 message,
                 property_id: propertyId || null,
                 property_title: propertyTitle || null,
+                property_details: propertyDetails || null,
                 status: "new",
             });
-        
+
         if (error) {
             console.error("Error submitting enquiry:", error);
             return { success: false, error: "Failed to submit enquiry" };
         }
-        
+
         return { success: true, message: "Enquiry submitted successfully" };
     }, {
         body: t.Object({
@@ -39,6 +40,7 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
             message: t.String(),
             propertyId: t.Optional(t.String()),
             propertyTitle: t.Optional(t.String()),
+            propertyDetails: t.Optional(t.Any()),
         }),
         detail: {
             tags: ["Enquiries"],
@@ -46,7 +48,7 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
             description: "Submit a new enquiry or contact request",
         },
     })
-    
+
     // Get enquiry types (public - for form dropdowns)
     .get("/types", async () => {
         const types = [
@@ -55,7 +57,7 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
             { value: "general_contact", label: "General Enquiry" },
             { value: "schedule_viewing", label: "Schedule Viewing" },
         ];
-        
+
         return { success: true, data: types };
     }, {
         detail: {

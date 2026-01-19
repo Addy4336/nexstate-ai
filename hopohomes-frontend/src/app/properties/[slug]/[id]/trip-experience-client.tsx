@@ -3,8 +3,26 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, Plus, Minus, Camera, Heart, Share2, Bookmark, Bed, Bath, Square, Car, Shield, MapPin, Clock, Flag, Star, Check } from 'lucide-react';
+import { ChevronDown, Plus, Minus, Camera, Heart, Share2, Bookmark, Bed, Bath, Square, Car, Shield, MapPin, Clock, Flag, Star, Check, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
+import { EnquiryDialog } from '@/components/enquiry-dialog';
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export interface TripData {
   title: string;
@@ -53,11 +71,12 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [selectedDateIndex, setSelectedDateIndex] = useState<number>(0);
-  const [checkInDate, setCheckInDate] = useState('11/09/2023');
-  const [checkOutDate, setCheckOutDate] = useState('20/09/2023');
+  const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date(2023, 8, 11));
+  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(new Date(2023, 8, 20));
   const [guests, setGuests] = useState(3);
   const [isSaved, setIsSaved] = useState(false);
   const [selectedCancellation, setSelectedCancellation] = useState<'non-refundable' | 'refundable'>('non-refundable');
+  const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
 
   const toggleRoom = (roomName: string) => {
     setExpandedRoom(expandedRoom === roomName ? null : roomName);
@@ -800,38 +819,82 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                   <span className="text-xl font-bold text-primary">
                     {trip.pricing.currency} {trip.pricing.from.toLocaleString()}
                   </span>
-                  <span className="text-muted-foreground text-sm ml-1">/Night</span>
+                  <span className="text-muted-foreground text-sm ml-1">/Monthly</span>
                 </div>
 
                 {/* Check In / Check Out */}
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   <div className="border border-border rounded-lg p-2">
-                    <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">Check In</label>
-                    <input
-                      type="text"
-                      value={checkInDate}
-                      onChange={(e) => setCheckInDate(e.target.value)}
-                      className="w-full bg-transparent text-xs font-medium mt-0.5 outline-none"
-                    />
+                    <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide block mb-1">Check In</label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"ghost"}
+                          className={cn(
+                            "w-full justify-start text-left font-medium text-xs h-auto p-0 hover:bg-transparent",
+                            !checkInDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0" />
+                          {checkInDate ? format(checkInDate, "dd/MM/yyyy") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={checkInDate}
+                          onSelect={setCheckInDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="border border-border rounded-lg p-2">
-                    <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">Check Out</label>
-                    <input
-                      type="text"
-                      value={checkOutDate}
-                      onChange={(e) => setCheckOutDate(e.target.value)}
-                      className="w-full bg-transparent text-xs font-medium mt-0.5 outline-none"
-                    />
+                    <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide block mb-1">Check Out</label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"ghost"}
+                          className={cn(
+                            "w-full justify-start text-left font-medium text-xs h-auto p-0 hover:bg-transparent",
+                            !checkOutDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0" />
+                          {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="end">
+                        <Calendar
+                          mode="single"
+                          selected={checkOutDate}
+                          onSelect={setCheckOutDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
 
                 {/* Guests */}
+                {/* Guests */}
                 <div className="border border-border rounded-lg p-2 mb-3">
-                  <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">Guests</label>
-                  <div className="flex items-center justify-between mt-0.5">
-                    <span className="text-xs font-medium">{guests} Guest{guests > 1 ? 's' : ''}</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-                  </div>
+                  <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide block mb-1">Guests</label>
+                  <Select value={guests.toString()} onValueChange={(value) => setGuests(parseInt(value))}>
+                    <SelectTrigger className="w-full border-0 p-0 h-auto text-xs font-medium focus:ring-0 shadow-none [&>span]:line-clamp-1">
+                      <SelectValue placeholder="Select guests" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Guests</SelectLabel>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num} Guest{num > 1 ? 's' : ''}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Cancellation Policies */}
@@ -859,7 +922,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                   </div>
 
                   {/* Refundable */}
-                  <div
+                  {/* <div
                     onClick={() => setSelectedCancellation('refundable')}
                     className={`border rounded-lg p-2 cursor-pointer transition-all ${selectedCancellation === 'refundable'
                       ? 'border-primary bg-primary/5'
@@ -877,7 +940,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                       <span className="text-xs font-semibold">{trip.pricing.currency} {Math.round(trip.pricing.from * 1.1)}</span>
                     </div>
                     <p className="text-[10px] text-muted-foreground ml-5 mt-1">Free cancellation before sep21</p>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Total */}
@@ -889,7 +952,10 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                 </div>
 
                 {/* Reserve Button */}
-                <Button className="w-full h-10 bg-foreground hover:bg-foreground/90 text-background rounded-full font-semibold shadow-md transition-all duration-200 mt-1 text-sm">
+                <Button
+                  onClick={() => setIsEnquiryOpen(true)}
+                  className="w-full h-10 bg-foreground hover:bg-foreground/90 text-background rounded-full font-semibold shadow-md transition-all duration-200 mt-1 text-sm"
+                >
                   Reserve
                 </Button>
               </div>
@@ -917,14 +983,23 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
             <span className="text-lg font-bold text-primary">
               {trip.pricing.currency} {trip.pricing.from.toLocaleString()}
             </span>
-            <span className="text-muted-foreground">/night</span>
+            <span className="text-muted-foreground">/Monthly</span>
           </div>
-          <Button className="h-11 px-8 bg-foreground hover:bg-foreground/90 text-background rounded-full font-semibold">
+          <Button
+            onClick={() => setIsEnquiryOpen(true)}
+            className="h-11 px-8 bg-foreground hover:bg-foreground/90 text-background rounded-full font-semibold"
+          >
             Reserve
           </Button>
         </div>
 
       </div>
+      <EnquiryDialog
+        isOpen={isEnquiryOpen}
+        onClose={() => setIsEnquiryOpen(false)}
+        propertyId={id}
+        propertyTitle={trip.title}
+      />
     </div>
   );
 }
