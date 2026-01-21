@@ -979,7 +979,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
           </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-background border-t border-border p-4 z-50 flex items-center justify-between pb-8 safe-area-bottom">
+        <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-background border-t border-border p-4 z-50 flex items-center justify-between  safe-area-bottom">
           <div>
             <span className="text-lg font-bold text-primary">
               {trip.pricing.currency} {trip.pricing.from.toLocaleString()}
