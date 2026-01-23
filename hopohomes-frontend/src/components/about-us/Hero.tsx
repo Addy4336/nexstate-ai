@@ -9,17 +9,17 @@ const Hero = () => {
                 <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12 mb-12 md:mb-20">
                     <div className="flex-1 max-w-[600px]">
                         {/* Tag */}
-                        <div className="flex items-center gap-2 mb-6">
+                        <div className="flex items-center gap-2 mb-4 md:mb-6">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                            <span className="text-[12px] font-semibold uppercase tracking-[1.5px] text-muted-foreground">
+                            <span className="text-[10px] md:text-[12px] font-semibold uppercase tracking-[1.5px] text-muted-foreground">
                                 About Us
                             </span>
                         </div>
 
                         {/* Headline */}
-                        <h1 className="text-foreground text-[32px] md:text-[48px] lg:text-[56px] leading-[1.15] font-medium tracking-[-0.02em]">
+                        <h1 className="text-foreground text-[36px] md:text-[48px] lg:text-[56px] leading-[1.1] md:leading-[1.15] font-medium tracking-[-0.02em]">
                             A real estate team that takes care of everything{' '}
-                            <span className="italic font-serif block">for you</span>
+                            <span className="italic font-serif block mt-1 md:mt-0">for you</span>
                         </h1>
                     </div>
 
