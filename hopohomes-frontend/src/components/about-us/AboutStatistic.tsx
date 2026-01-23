@@ -3,10 +3,10 @@ import Image from 'next/image';
 
 const AboutStatistics = () => {
     return (
-        <section className="bg-surface py-[120px] overflow-hidden">
+        <section className="bg-background py-16 md:py-[120px] overflow-hidden">
             <div className="container mx-auto px-5 md:px-10 max-w-[1280px]">
                 {/* Header Section - Stacked Layout */}
-                <div className="flex flex-col mb-6">
+                <div className="flex flex-col mb-10 md:mb-16">
                     {/* Tag */}
                     <div className="flex items-center gap-2 mb-6">
                         <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
