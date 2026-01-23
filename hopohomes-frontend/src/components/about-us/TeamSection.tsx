@@ -25,7 +25,7 @@ const teamMembers = [
 
 const TeamSection = () => {
     return (
-        <section className="bg-surface py-20 md:py-28 overflow-hidden">
+        <section className="bg-background py-16 md:py-28 overflow-hidden">
             <div className="container mx-auto px-5 md:px-10 max-w-7xl">
                 {/* Header */}
                 <div className="flex flex-col mb-12 md:mb-16">
@@ -38,7 +38,7 @@ const TeamSection = () => {
                     </div>
 
                     {/* Heading */}
-                    <h2 className="text-[32px] md:text-[48px] lg:text-[56px] font-medium leading-[1.15] text-foreground mb-6 tracking-[-0.02em]">
+                    <h2 className="text-[36px] md:text-[48px] lg:text-[56px] font-medium leading-[1.15] text-foreground mb-6 tracking-[-0.02em]">
                         Agents who go further for <span className="font-serif italic">you</span>
                     </h2>
 
@@ -64,7 +64,7 @@ const TeamSection = () => {
                             </div>
 
                             {/* Info Card */}
-                            <div className="flex items-center border border-border hover:bg-primary/10 justify-between bg-card rounded-2xl p-4 shadow-sm">
+                            <div className="flex items-center border border-border group-hover:bg-primary/10 transition-colors duration-300 justify-between bg-card rounded-2xl p-4 shadow-sm">
                                 <div className="flex flex-col">
                                     <h3 className="text-foreground text-[18px] md:text-[20px] font-medium mb-1">
                                         {member.name}
