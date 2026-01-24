@@ -1,24 +1,24 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowUpRight, Play, MapPin, Bed, Bath, TrendingUp } from 'lucide-react';
+import { ArrowUpRight, Play, MapPin, TrendingUp } from 'lucide-react';
 
 const featuredProperties = [
     {
-        title: "Signature Villa, Palm Jumeirah",
-        location: "Palm Jumeirah",
-        price: "AED 850K/year",
-        yield: "3.4%",
-        beds: 6,
-        baths: 7,
+        title: "Short & Mid-Term Focus",
+        location: "Peak Season Optimization",
+        price: "High Yield",
+        yield: "Up to 30%",
+        beds: "Daily",
+        baths: "Monthly",
     },
     {
-        title: "Penthouse, Downtown Dubai",
-        location: "Downtown Dubai",
-        price: "AED 650K/year",
-        yield: "3.5%",
-        beds: 4,
-        baths: 5,
+        title: "Long-Term Rental",
+        location: "Steady Occupancy",
+        price: "Stable Income",
+        yield: "Guaranteed",
+        beds: "Yearly",
+        baths: "Lease",
     },
 ];
 
@@ -30,11 +30,11 @@ export default function GrowthSection() {
                 {/* Centered Heading */}
                 <div className="text-center max-w-4xl mx-auto space-y-4 md:space-y-6">
                     <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs md:text-sm font-medium border border-secondary/20">
-                        Featured Properties
+                        Testimonials
                     </span>
                     <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.2]">
-                        Exceptional Dubai Properties<br className="hidden md:block" />
-                        Delivering Outstanding Returns
+                        Owner Video<br className="hidden md:block" />
+                        Testimonials
                     </h2>
                 </div>
 
@@ -43,7 +43,7 @@ export default function GrowthSection() {
                     {/* Background Image */}
                     <Image
                         src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=1200&auto=format&fit=crop"
-                        alt="Luxury Dubai Property"
+                        alt="Owner Testimonial"
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
@@ -65,20 +65,17 @@ export default function GrowthSection() {
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-12 max-w-2xl">
                         <span className="text-primary font-medium text-base md:text-lg whitespace-nowrap pt-1 flex items-center gap-2">
                             <TrendingUp size={18} className="md:w-5 md:h-5" />
-                            Featured
+                            Performance
                         </span>
                         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                            From waterfront villas to luxury penthouses, discover Dubai properties that deliver outstanding rental yields.
+                            With Hopo Homes, your property is positioned to achieve optimal performance, no matter the season or market conditions.
                         </p>
                     </div>
 
                     {/* Right Buttons */}
                     <div className="flex flex-wrap gap-3 sm:gap-4 w-full lg:w-auto">
                         <button className="flex-1 sm:flex-none justify-center px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none whitespace-nowrap text-sm sm:text-base">
-                            View Properties <ArrowUpRight size={18} />
-                        </button>
-                        <button className="flex-1 sm:flex-none justify-center px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors whitespace-nowrap text-sm sm:text-base">
-                            List Your Property
+                            Watch Stories <ArrowUpRight size={18} />
                         </button>
                     </div>
 
@@ -87,8 +84,9 @@ export default function GrowthSection() {
                 {/* Property Listings & Image Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 pt-8 md:pt-20 border-t border-border mt-8 md:mt-12">
 
-                    {/* Column 1: Featured Properties List (Span 5) */}
+                    {/* Column 1: Featured Strategies List (Span 5) */}
                     <div className="lg:col-span-5 flex flex-col justify-center space-y-4 md:space-y-6 order-2 lg:order-1">
+                        <h3 className="text-xl font-semibold mb-4">Rental Strategies</h3>
 
                         {featuredProperties.map((property, index) => (
                             <div key={index} className="group cursor-pointer p-4 md:p-5 rounded-2xl bg-background border border-border hover:border-primary/30 hover:shadow-lg transition-all">
@@ -98,9 +96,6 @@ export default function GrowthSection() {
                                         <div className="flex flex-wrap items-center gap-2 text-muted-foreground text-xs md:text-sm">
                                             <MapPin size={14} />
                                             {property.location}
-                                            <span className="mx-1 md:mx-2 text-border">•</span>
-                                            <Bed size={14} /> {property.beds}
-                                            <Bath size={14} className="ml-1 md:ml-2" /> {property.baths}
                                         </div>
                                     </div>
                                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all flex-shrink-0">
@@ -109,7 +104,7 @@ export default function GrowthSection() {
                                 </div>
                                 <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border">
                                     <span className="text-primary font-semibold text-base md:text-lg">{property.price}</span>
-                                    <span className="text-xs px-2 md:px-3 py-1 md:py-1.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full font-medium">{property.yield} Yield</span>
+                                    <span className="text-xs px-2 md:px-3 py-1 md:py-1.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full font-medium">{property.yield}</span>
                                 </div>
                             </div>
                         ))}
@@ -174,10 +169,6 @@ export default function GrowthSection() {
                             <div className="flex items-center gap-3">
                                 <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-primary"></div>
                                 <span className="text-foreground font-medium text-sm md:text-base">RERA Licensed</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-primary"></div>
-                                <span className="text-foreground font-medium text-sm md:text-base">2,500+ Properties</span>
                             </div>
                         </div>
                     </div>

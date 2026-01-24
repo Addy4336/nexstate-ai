@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowDown, ArrowUpRight, Home, Key, Wallet } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Home, Key, Wallet, Shield, Zap, TrendingUp, Sparkles, Clock } from 'lucide-react';
 
 export default function ServicesSection() {
     return (
@@ -33,30 +33,30 @@ export default function ServicesSection() {
                     <div className="flex flex-col lg:flex-row justify-between items-start gap-6 md:gap-8 mb-10 md:mb-14 pt-8 md:pt-6">
                         <div className="max-w-xl space-y-4">
                             <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-medium border border-primary/20">
-                                Our Services
+                                Why Partner With Us?
                             </span>
                             <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium leading-tight text-foreground">
-                                Expert Property<br />
-                                Management Solutions
+                                HOPO Homes for <br />
+                                Individual Owners
                             </h2>
                         </div>
 
                         <p className="text-muted-foreground max-w-xs text-left lg:text-right hidden lg:block self-end leading-relaxed text-sm md:text-base">
-                            From Palm Jumeirah to Downtown Dubai, we manage exceptional properties with excellence and care.
+                            Maximize your rental yields and enjoy hassle-free property management with our comprehensive services.
                         </p>
                     </div>
 
-                    {/* Cards Grid - Responsive: 1 col on mobile/tablet, 3 cols on desktop */}
+                    {/* Cards Grid - Reverted to 3-column Layout with Updated Content */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:items-end">
 
-                        {/* Card 1: Property Listing */}
+                        {/* Card 1: Marketing & Leasing (Image Card) */}
                         <div className="bg-card rounded-2xl p-4 flex flex-col gap-4 group cursor-pointer transition-transform hover:-translate-y-1 duration-300 w-full h-full shadow-sm border border-border">
                             {/* Image Container */}
                             <div className="relative aspect-square w-full">
 
                                 {/* Icon Top Left */}
                                 <div className="absolute top-0 left-0 z-20 w-14 h-14 md:w-16 md:h-16 flex items-center justify-center border border-white/10 rounded-[1rem] md:rounded-[1.2rem] text-primary-foreground bg-primary/90 backdrop-blur-sm">
-                                    <Home size={20} strokeWidth={1.5} className="md:w-[22px] md:h-[22px]" />
+                                    <Zap size={20} strokeWidth={1.5} className="md:w-[22px] md:h-[22px]" />
                                 </div>
 
                                 {/* Main Image with Clip Path */}
@@ -70,7 +70,7 @@ export default function ServicesSection() {
                                     >
                                         <Image
                                             src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=600&auto=format&fit=crop"
-                                            alt="Property Listing"
+                                            alt="Marketing"
                                             fill
                                             className="object-cover scale-110 group-hover:scale-125 transition-transform duration-700"
                                         />
@@ -85,35 +85,41 @@ export default function ServicesSection() {
                                 </div>
                             </div>
 
-                            <h3 className="text-lg md:text-xl font-medium text-card-foreground px-2 pb-2">Property Listing <br /> & Marketing</h3>
+                            <div className="px-2 pb-2">
+                                <h3 className="text-lg md:text-xl font-medium text-card-foreground mb-1">Smart Marketing <br /> & Leasing</h3>
+                                <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">
+                                    Quick lease-ups (90-100% occupancy), online booking, and tailored interior design to transform your property.
+                                </p>
+                            </div>
                         </div>
 
-                        {/* Card 2: Tenant Management (Center) */}
+                        {/* Card 2: Comprehensive Management (Text Card - Center) */}
                         <div className="bg-card rounded-2xl p-6 lg:p-8 flex flex-col items-center justify-center text-center space-y-6 hover:bg-muted/50 transition-colors duration-300 w-full h-full lg:h-auto shadow-sm border border-border min-h-[280px]">
                             <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <Key size={20} className="text-primary md:w-6 md:h-6" />
+                                <Shield size={20} className="text-primary md:w-6 md:h-6" />
                             </div>
 
-                            <h3 className="text-lg md:text-xl font-medium text-card-foreground leading-tight">
-                                Tenant Screening <br /> & Management
-                            </h3>
+                            <div>
+                                <h3 className="text-lg md:text-xl font-medium text-card-foreground leading-tight mb-2">
+                                    Hassle-Free <br /> Management
+                                </h3>
+                                <p className="text-muted-foreground text-sm leading-relaxed max-w-[220px] mx-auto">
+                                    We handle verified tenant screening, paperwork, 24/7 maintenance, and safety via smart home tech.
+                                </p>
+                            </div>
 
                             <button className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors text-sm shadow-md">
                                 Get Started <ArrowUpRight size={16} />
                             </button>
-
-                            <p className="text-muted-foreground text-sm leading-relaxed max-w-[200px]">
-                                Quality tenant screening ensuring the best occupants for your Dubai property.
-                            </p>
                         </div>
 
-                        {/* Card 3: Rent Collection */}
+                        {/* Card 3: Financial Growth (Image Card) */}
                         <div className="bg-card rounded-2xl p-4 flex flex-col gap-4 group cursor-pointer transition-transform hover:-translate-y-1 duration-300 w-full h-full shadow-sm border border-border">
                             {/* Image Container */}
                             <div className="relative aspect-square w-full">
                                 {/* Icon Top Left */}
                                 <div className="absolute top-0 left-0 z-20 w-14 h-14 md:w-16 md:h-16 flex items-center justify-center border border-white/10 rounded-[1rem] md:rounded-[1.2rem] text-primary-foreground bg-primary/90 backdrop-blur-sm">
-                                    <Wallet size={20} strokeWidth={1.5} className="md:w-[22px] md:h-[22px]" />
+                                    <TrendingUp size={20} strokeWidth={1.5} className="md:w-[22px] md:h-[22px]" />
                                 </div>
 
                                 {/* Main Image with Clip Path */}
@@ -127,7 +133,7 @@ export default function ServicesSection() {
                                     >
                                         <Image
                                             src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600&auto=format&fit=crop"
-                                            alt="Rent Collection"
+                                            alt="Financial Growth"
                                             fill
                                             className="object-cover scale-110 group-hover:scale-125 transition-transform duration-700"
                                         />
@@ -141,7 +147,13 @@ export default function ServicesSection() {
                                     <ArrowUpRight size={20} strokeWidth={1.5} className="md:w-6 md:h-6" />
                                 </div>
                             </div>
-                            <h3 className="text-lg md:text-xl font-medium text-card-foreground px-2 pb-2">Rent Collection <br /> & Reporting</h3>
+
+                            <div className="px-2 pb-2">
+                                <h3 className="text-lg md:text-xl font-medium text-card-foreground mb-1">Maximized <br /> Financial Returns</h3>
+                                <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">
+                                    Enjoy up to 30% higher rental yields, on-time rent payments, and stable long-term contracts (up to 5 years).
+                                </p>
+                            </div>
                         </div>
 
                     </div>

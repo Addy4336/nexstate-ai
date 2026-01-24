@@ -4,10 +4,10 @@ import Image from 'next/image';
 import { ArrowUpRight, Check } from 'lucide-react';
 
 const highlights = [
-    "RERA Licensed Property Management",
-    "Dedicated Account Manager",
-    "Guaranteed Rental Income",
-    "24/7 Maintenance Support",
+    "Short & Mid-Term Focus",
+    "Long-Term Rental Flexibility",
+    "Innovative Marketing",
+    "Extensive Network",
 ];
 
 export default function AboutSection() {
@@ -19,11 +19,11 @@ export default function AboutSection() {
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-8">
                     <div className="space-y-4 md:space-y-6 max-w-3xl">
                         <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs md:text-sm font-medium">
-                            About HopoHomes
+                            Why Choose Hopo?
                         </span>
                         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">
-                            Dubai's Trusted<br />
-                            Property Partners
+                            Why Hopo Homes is<br />
+                            Your Best Choice
                         </h2>
                     </div>
 
@@ -44,9 +44,12 @@ export default function AboutSection() {
                     <div className="flex-1 space-y-8 md:space-y-10 w-full">
 
                         <div className="space-y-4">
-                            <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Your Property, Our Priority</h3>
+                            <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Trustable & Easy</h3>
                             <p className="text-muted-foreground leading-relaxed max-w-md text-base sm:text-lg">
-                                Since 2014, we've been transforming property ownership in Dubai. Our expertise in luxury real estate ensures your investment performs at its peak.
+                                At Hopo Homes, our property management approach is simple. We are dedicated to maintaining honesty, clarity, and trust in every interaction while delivering a seamless and stress-free experience for property owners.
+                            </p>
+                            <p className="text-muted-foreground leading-relaxed max-w-md text-base sm:text-lg">
+                                With Hopo Homes, your property is positioned to achieve optimal performance, no matter the season or market conditions.
                             </p>
                         </div>
 

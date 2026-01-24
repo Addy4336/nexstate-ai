@@ -7,23 +7,23 @@ import Image from 'next/image';
 const steps = [
     {
         id: "01",
-        category: "Property Assessment",
-        title: <>Evaluate Your <br /> Property Value</>,
-        description: "Our experts conduct a comprehensive assessment of your property, evaluating market positioning and rental potential.",
+        category: "Submit Property",
+        title: <>Submit Property <br /> Detail</>,
+        description: "List your property and get it inspected by our team members to understand its potential.",
         image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=800&auto=format&fit=crop"
     },
     {
         id: "02",
-        category: "Professional Marketing",
-        title: <>Global Listing <br /> & Exposure</>,
-        description: "We create stunning visual content including professional photography and virtual tours distributed across top platforms.",
+        category: "Agreement",
+        title: <>Signing <br /> Agreement</>,
+        description: "Sign contract for long term and let HOPO Homes take over the responsibility for your property.",
         image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop"
     },
     {
         id: "03",
-        category: "Ongoing Management",
-        title: <>Hassle-Free <br /> Property Care</>,
-        description: "From tenant acquisition to maintenance coordination, we handle every aspect while you enjoy exceptional returns.",
+        category: "Returns",
+        title: <>Hassle-Free <br /> Higher Returns</>,
+        description: "Get- Set - Go to get best rental returns in market from your properties with our expert management.",
         image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800&auto=format&fit=crop"
     }
 ];

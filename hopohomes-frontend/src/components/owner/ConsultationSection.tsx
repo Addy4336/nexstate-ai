@@ -104,12 +104,12 @@ export default function ConsultationSection() {
                             </span>
 
                             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1]">
-                                Start Earning From <br />
-                                <span className="text-white/90">Your Property Today</span>
+                                Best & Secure Way to <br />
+                                <span className="text-white/90">Manage Your Property</span>
                             </h2>
 
                             <p className="text-lg sm:text-xl text-white/80 max-w-md leading-relaxed mx-auto lg:mx-0">
-                                We guarantee long-term occupancy, verified tenants, and hassle-free management. Maximize your rental income now.
+                                Get high income from rent in a few steps. Login, register, or submit your property details to get started.
                             </p>
                         </div>
 

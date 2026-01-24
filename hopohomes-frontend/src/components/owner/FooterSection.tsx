@@ -20,8 +20,12 @@ export default function FooterSection() {
                             <div className="flex flex-col gap-4">
                                 <h2 className="text-2xl md:text-3xl font-bold font-sans tracking-tighter">HOPO HOMES.</h2>
                                 <p className="text-zinc-400 text-base md:text-lg leading-relaxed max-w-md font-light">
-                                    Refining the art of living. We curate exclusive properties for those who seek the exceptional.
+                                    Office no. MF-17 Shamsa King Mohammed Ibrahim Al Suwaidi - Deira Al Murar Dubai UAE
                                 </p>
+                                <div className="flex flex-col gap-1 text-zinc-400 text-sm md:text-base font-light">
+                                    <p>+971 4 597 3415</p>
+                                    <p>hopohomes@gmail.com</p>
+                                </div>
                             </div>
 
                             {/* Minimalist Newsletter */}

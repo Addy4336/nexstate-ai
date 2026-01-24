@@ -22,7 +22,7 @@ export default function Hero() {
                 {/* Header Section (Full Width) */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left mt-4 gap-4 lg:gap-2">
                     <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
-                        <span className="text-primary">Maximize</span> Your
+                        <span className="text-primary">HOPO Homes</span> for
                     </h1>
 
                     <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-2 sm:gap-x-4 lg:gap-x-8 gap-y-3 w-full">
@@ -39,7 +39,7 @@ export default function Hero() {
                         </div>
 
                         <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-semibold leading-[1.1] tracking-tight text-foreground">
-                            Property Returns<span className="text-primary">.</span>
+                            Individual Owners<span className="text-primary">.</span>
                         </h1>
                     </div>
                 </div>
@@ -50,7 +50,7 @@ export default function Hero() {
                     {/* Left Column: Description & CTAs */}
                     <div className="flex flex-col gap-6 md:gap-8 lg:pb-8 relative z-10 text-center lg:text-left order-2 lg:order-1">
                         <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed mx-auto lg:mx-0">
-                            Partner with Dubai's most trusted property management experts. We handle everything from Palm Jumeirah to Downtown while you enjoy exceptional returns.
+                            Why partner with HOPO Homes? We provide up to 30% more rental yield, on-time rent payments, and handle all property management and maintenance.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6">
