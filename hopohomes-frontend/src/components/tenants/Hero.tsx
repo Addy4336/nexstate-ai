@@ -42,11 +42,11 @@ export default function Hero() {
 
                     <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 sm:gap-6 lg:gap-8">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.15] sm:leading-[1.1]">
-                            Build Your Future, One <br className="hidden xs:block" /> Property at a Time.
+                            AI-powered network of <br className="hidden xs:block" /> fully furnished homes in Dubai
                         </h1>
 
-                        <p className="max-w-xs text-white/80 text-xs sm:text-sm leading-relaxed lg:text-right lg:pb-2">
-                            Own Your World, One Property at a Time. Own Your World, One Property at a Time. Own Your World, One Property at a Time.
+                        <p className="max-w-lg text-white/80 text-xs sm:text-sm leading-relaxed lg:text-right lg:pb-2">
+                            Flexible living for modern residents and higher, hassle-free returns for property owners – powered by intelligent operations, hotel-grade standards, and a fully digital experience.
                         </p>
                     </div>
                 </div>

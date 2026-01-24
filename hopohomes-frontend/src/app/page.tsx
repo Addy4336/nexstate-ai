@@ -9,12 +9,15 @@ import CTASection from "@/components/tenants/CTASection";
 import LocationSection from "@/components/tenants/LocationSection";
 import CalculatorsSection from "@/components/CalculatorsSection";
 
+import DetailedContent from "@/components/landing/DetailedContent";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground relative font-sans">
       {/* <Navbar /> */}
       <Hero />
       <UserToggle currentType="tenant" />
+      <DetailedContent />
       <PropertyShowcase />
       <LocationSection />
       <MapFeatures />
