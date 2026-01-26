@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { marked } from 'marked';
 import {
     Facebook,
     Twitter,
@@ -29,6 +30,7 @@ interface Blog {
     images: string[] | null;
     category: string;
     status: string;
+    content_format?: string;
     published_at: string | null;
     created_at: string;
     updated_at: string;
@@ -146,6 +148,29 @@ function getReadingTime(content: string): number {
     return Math.ceil(wordCount / wordsPerMinute);
 }
 
+// Process blog content - convert markdown to HTML if needed
+function processContent(content: string, format?: string): string {
+    console.log('processContent called with format:', format);
+    console.log('Content preview:', content.substring(0, 100));
+    
+    // Check if content looks like markdown (contains ## or ** or * for lists)
+    const looksLikeMarkdown = content.includes('##') || 
+                               (content.includes('**') && !content.includes('<')) ||
+                               /^\* |\n\* /m.test(content);
+    
+    if (format === 'markdown' || (looksLikeMarkdown && format !== 'html')) {
+        // Configure marked for better HTML output
+        marked.setOptions({
+            gfm: true, // GitHub Flavored Markdown
+            breaks: true, // Convert \n to <br>
+        });
+        const html = marked.parse(content, { async: false }) as string;
+        console.log('Converted HTML preview:', html.substring(0, 200));
+        return html;
+    }
+    return content;
+}
+
 // Get blog cover image with fallback
 function getBlogImage(blog: Blog): string {
     if (blog.cover_image) {
@@ -186,6 +211,10 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
     if (!blog) {
         notFound();
     }
+
+    // Debug logging
+    console.log('Blog content_format:', blog.content_format);
+    console.log('Blog content preview:', blog.content?.substring(0, 100));
 
     // Fetch related blogs
     const relatedBlogs = await getRelatedBlogs(slug, 3);
@@ -335,10 +364,12 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                             )}
                         </div>
 
-                        {/* Content Body - Render HTML content */}
+                        {/* Content Body - Render HTML or Markdown content */}
                         <div
                             className="prose prose-base md:prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-p:text-muted-foreground prose-p:leading-relaxed prose-img:rounded-2xl prose-a:text-primary hover:prose-a:text-primary/80 prose-strong:text-foreground prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4"
-                            dangerouslySetInnerHTML={{ __html: blog.content || '' }}
+                            dangerouslySetInnerHTML={{ 
+                                __html: processContent(blog.content || '', blog.content_format)
+                            }}
                         />
                     </article>
 

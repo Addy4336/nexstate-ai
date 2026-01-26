@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ImageUpload } from "./ImageUpload";
 import { RichTextEditor } from "./RichTextEditor";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { createBlogPost, updateBlogPost } from "@/actions/blog-actions";
-import { Loader2, Save, Globe, FileText, Image as ImageIcon, Settings } from "lucide-react";
+import { Loader2, Save, Globe, FileText, Image as ImageIcon, Settings, Code2, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -19,6 +19,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { marked } from "marked";
 
 interface BlogFormProps {
     initialData?: any;
@@ -40,7 +42,29 @@ export function BlogForm({ initialData }: BlogFormProps) {
     const [slug, setSlug] = useState(initialData?.slug || "");
     const [content, setContent] = useState(initialData?.content || "");
     const [folderId, setFolderId] = useState(initialData?.drive_folder_id || "");
+    const [editorMode, setEditorMode] = useState<"richtext" | "markdown">(
+        initialData?.content_format === "markdown" ? "markdown" : "richtext"
+    );
+    const [showPreview, setShowPreview] = useState(false);
     const router = useRouter();
+
+    // Configure marked for preview
+    marked.setOptions({
+        gfm: true,
+        breaks: true,
+    });
+
+    // Generate markdown preview HTML
+    const previewHtml = useMemo(() => {
+        if (editorMode === "markdown" && content) {
+            try {
+                return marked.parse(content, { async: false }) as string;
+            } catch (error) {
+                return "<p>Error rendering preview</p>";
+            }
+        }
+        return "";
+    }, [content, editorMode]);
 
     // Auto-generate slug from title
     const generateSlug = (titleValue: string) => {
@@ -67,6 +91,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
         formData.set("folderId", folderId);
         formData.set("slug", slug);
         formData.set("content", content);
+        formData.set("content_format", editorMode === "markdown" ? "markdown" : "html");
 
         try {
             let result;
@@ -147,16 +172,72 @@ export function BlogForm({ initialData }: BlogFormProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label>Content</Label>
-                            <div className="min-h-[400px] border rounded-md focus-within:ring-1 focus-within:ring-ring">
-                                <RichTextEditor
-                                    content={content}
-                                    onChange={setContent}
-                                    placeholder="Write your blog content here..."
-                                    className="border-0 shadow-none rounded-none"
-                                />
-                                <input type="hidden" name="content" value={content} />
+                            <div className="flex items-center justify-between mb-2">
+                                <Label>Content</Label>
+                                <Tabs value={editorMode} onValueChange={(v) => setEditorMode(v as "richtext" | "markdown")} className="w-auto">
+                                    <TabsList className="grid w-[200px] grid-cols-2">
+                                        <TabsTrigger value="richtext" className="text-xs">
+                                            <FileText className="h-3 w-3 mr-1" />
+                                            Rich Text
+                                        </TabsTrigger>
+                                        <TabsTrigger value="markdown" className="text-xs">
+                                            <Code2 className="h-3 w-3 mr-1" />
+                                            Markdown
+                                        </TabsTrigger>
+                                    </TabsList>
+                                </Tabs>
                             </div>
+                            
+                            {editorMode === "richtext" ? (
+                                <div className="min-h-[400px] border rounded-md focus-within:ring-1 focus-within:ring-ring">
+                                    <RichTextEditor
+                                        content={content}
+                                        onChange={setContent}
+                                        placeholder="Write your blog content here..."
+                                        className="border-0 shadow-none rounded-none"
+                                    />
+                                    <input type="hidden" name="content" value={content} />
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-xs text-muted-foreground">
+                                            Using Markdown syntax. Use ## for headings, **bold**, *italic*, - for lists, etc.
+                                        </p>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setShowPreview(!showPreview)}
+                                            className="text-xs"
+                                        >
+                                            <Eye className="h-3 w-3 mr-1" />
+                                            {showPreview ? "Edit" : "Preview"}
+                                        </Button>
+                                    </div>
+                                    
+                                    {showPreview ? (
+                                        <div className="min-h-[400px] border rounded-md p-6 bg-muted/30">
+                                            <div 
+                                                className="prose prose-sm max-w-none"
+                                                dangerouslySetInnerHTML={{ __html: previewHtml }}
+                                                style={{
+                                                    fontSize: '16px',
+                                                    lineHeight: '1.75',
+                                                }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <Textarea
+                                            value={content}
+                                            onChange={(e) => setContent(e.target.value)}
+                                            placeholder="Write your blog content in markdown...&#10;&#10;## Example Heading&#10;&#10;This is **bold** and this is *italic*.&#10;&#10;- List item 1&#10;- List item 2"
+                                            className="min-h-[400px] font-mono text-sm resize-y focus-visible:ring-1"
+                                        />
+                                    )}
+                                    <input type="hidden" name="content" value={content} />
+                                </div>
+                            )}
                         </div>
                     </CardContent>
                 </Card>

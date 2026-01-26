@@ -20,6 +20,7 @@ export async function createBlogPost(formData: FormData) {
     const category = formData.get("category") as string || "general";
     const status = formData.get("status") as string || "draft";
     const drive_folder_id = formData.get("folderId") as string;
+    const content_format = formData.get("content_format") as string || "html";
 
     // Generate slug from title
     let slug = formData.get("slug") as string;
@@ -63,6 +64,7 @@ export async function createBlogPost(formData: FormData) {
                 status,
                 published_at,
                 drive_folder_id,
+                content_format,
             });
 
         if (error) {
@@ -85,6 +87,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
     const category = formData.get("category") as string || "general";
     const status = formData.get("status") as string || "draft";
     const drive_folder_id = formData.get("folderId") as string;
+    const content_format = formData.get("content_format") as string || "html";
 
     // Generate slug from title if not provided
     let slug = formData.get("slug") as string;
@@ -134,6 +137,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
             status,
             published_at,
             updated_at: new Date().toISOString(),
+            content_format,
         };
 
         // Only update drive_folder_id if provided

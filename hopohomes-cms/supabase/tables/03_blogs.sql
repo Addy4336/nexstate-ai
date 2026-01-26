@@ -9,6 +9,7 @@ create table if not exists "blog" (
   images text[], -- Array of image URLs for gallery
   category text default 'general', -- market-news, investment-tips, lifestyle, etc.
   status text default 'draft', -- draft, published, archived
+  content_format text default 'html', -- 'html' or 'markdown'
   author_id text references "user"(id) on delete set null,
   drive_folder_id text,
   published_at timestamp,
