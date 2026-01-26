@@ -1,6 +1,9 @@
 
 import Hero from "@/components/owner/Hero";
 import UserToggle from "@/components/tenants/UserToggle";
+import OwnerFeatures from "@/components/owner/OwnerFeatures";
+import TailoredStrategies from "@/components/owner/TailoredStrategies";
+import AdaptiveRentalOptions from "@/components/owner/AdaptiveRentalOptions";
 import ServicesSection from "@/components/owner/ServicesSection";
 import AboutSection from "@/components/owner/AboutSection";
 import ProcessSection from "@/components/owner/ProcessSection";
@@ -15,7 +18,10 @@ export default function Home() {
 
       <Hero />
       <UserToggle currentType="owner" />
+      <TailoredStrategies />
+      <AdaptiveRentalOptions />
       <ServicesSection />
+      <OwnerFeatures />
       <AboutSection />
       <ProcessSection />
       <GrowthSection />

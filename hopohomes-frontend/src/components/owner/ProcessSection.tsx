@@ -50,16 +50,15 @@ export default function ProcessSection() {
                 {/* Header */}
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-8 md:gap-12">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1] max-w-xl">
-                        Simple Process, <br />
-                        Maximum Returns
+                        How HOPO Homes works?
                     </h2>
 
                     <div className="flex flex-col items-start lg:items-end space-y-4 md:space-y-6 max-w-sm">
                         <span className="inline-block px-5 py-2 rounded-full bg-secondary border border-border shadow-sm text-secondary-foreground text-sm font-medium">
-                            How It Works
+                            3 Simple Steps
                         </span>
                         <p className="text-muted-foreground text-base md:text-lg leading-relaxed lg:text-right">
-                            We simplify property management so you can enjoy hassle-free ownership and exceptional returns.
+                            Get high income from rent in few steps
                         </p>
                     </div>
                 </div>
