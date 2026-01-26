@@ -18,9 +18,10 @@ const PROPERTIES = [
 
 export default function ExploreProperties() {
     return (
-        <section className="bg-background py-12 md:py-24">
+        <section className="bg-background py-16 md:py-28 overflow-hidden">
             <div className="container mx-auto px-4 md:px-12">
 
+                {/* Header Section */}
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start gap-6 md:gap-16 mb-10 md:mb-16 text-center md:text-left">
                     <div className="w-full md:w-1/2">
@@ -40,27 +41,43 @@ export default function ExploreProperties() {
                 </div>
 
                 {/* Properties Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
                     {PROPERTIES.map((property) => (
                         <div key={property.id} className="group cursor-pointer">
-                            {/* Image Container */}
-                            <div className="relative aspect-[4/3] overflow-hidden w-full">
+                            {/* Card Image Wrapper */}
+                            <div className="relative aspect-[5/4] sm:aspect-[4/3] overflow-hidden rounded-[2rem] shadow-sm group-hover:shadow-2xl transition-all duration-500 w-full mb-6">
                                 <Image
                                     src={property.image}
                                     alt={property.title}
                                     fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                    className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                                 />
+
+                                {/* Dark Overlay on Hover */}
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                                {/* Floating Action Button */}
+                                <div className="absolute bottom-6 right-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-10 hover:bg-primary hover:border-primary text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                    </svg>
+                                </div>
                             </div>
 
-                            {/* Content Box */}
-                            <div className="bg-secondary/60 p-6 md:p-8">
-                                <h3 className="text-xl md:text-2xl font-medium text-primary mb-1">
-                                    {property.title}
-                                </h3>
-                                <p className="text-muted-foreground text-sm uppercase tracking-wide">
-                                    {property.info}
-                                </p>
+                            {/* Card Content */}
+                            <div className="pl-2">
+                                <div className="flex flex-col">
+                                    <h3 className="text-2xl md:text-3xl font-semibold text-foreground group-hover:text-primary transition-colors duration-300 mb-2">
+                                        {property.title}
+                                    </h3>
+                                    <div className="flex items-center gap-3">
+                                        <span className="h-px w-8 bg-muted-foreground/30"></span>
+                                        <p className="text-muted-foreground text-sm uppercase tracking-wider font-medium">
+                                            {property.info}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     ))}
