@@ -1,6 +1,7 @@
 'use client';
 
 import { ArrowRight, Home } from 'lucide-react';
+import Link from 'next/link';
 
 export default function MapFeatures() {
     return (
@@ -63,10 +64,12 @@ export default function MapFeatures() {
                         </p>
 
                         <div className="pt-2">
+                            <Link href="/properties-locations">
                             <button className="bg-primary text-primary-foreground px-8 py-4 rounded-full text-sm sm:text-base font-medium inline-flex items-center gap-2 hover:opacity-90 transition-all shadow-lg hover:shadow-xl group w-fit">
                                 Find Nearest Properties
                                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                             </button>
+                            </Link>
                         </div>
                     </div>
 
