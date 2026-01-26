@@ -220,6 +220,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
                                 onFolderIdChange={setFolderId}
                                 defaultImages={initialData?.images}
                                 folderName={title ? `blog-${title}` : "blog-images"}
+                                layoutMode="stack"
                             />
                         </div>
                     </CardContent>
