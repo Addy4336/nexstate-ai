@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { NumberTicker } from '@/components/ui/number-ticker';
+import Link from 'next/link';
 
 const PROPERTY_SLIDES = [
     {
@@ -184,9 +185,11 @@ export default function PropertyShowcase() {
                             {/* Pricing & Button */}
                             <div className="text-center flex flex-col items-center gap-2 pb-1">
                                 <p className="text-lg font-medium text-foreground">Pricing Start at {currentData.rightCard.price}</p>
+                                <Link href="/properties">
                                 <button className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-xs font-semibold inline-flex items-center gap-2 hover:opacity-90 transition-all shadow-md group">
                                     Explore Properties <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                                 </button>
+                                </Link>
                             </div>
                         </div>
 
