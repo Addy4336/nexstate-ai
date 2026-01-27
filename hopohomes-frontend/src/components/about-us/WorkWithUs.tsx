@@ -11,8 +11,8 @@ const WorkWithUs = () => {
                     <div className="w-full lg:w-1/2">
                         <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden">
                             <Image
-                                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/b1686b7d-0a11-4bb4-944b-fa2e2afc6783-bienes-temlis-webflow-io/assets/images/677fc4281c954f93ecfdd0d3_darmau-gKEiDaAtK4o-unspla-4.webp"
-                                alt="Professional real estate team"
+                                src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1000&auto=format&fit=crop"
+                                alt="Property owner analyzing ROI on tablet"
                                 fill
                                 className="object-cover"
                                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -21,10 +21,10 @@ const WorkWithUs = () => {
                     </div>
 
                     {/* Right - Content Card */}
-                    <div className="w-full lg:w-1/2 flex items-center justify-center bg-secondary/20 rounded-3xl px-6 md:px-12 lg:px-16 py-12 lg:py-16">
+                    <div className="w-full lg:w-1/2 flex items-center justify-center bg-secondary/20 rounded-3xl px-6 md:px-12 lg:px-16">
                         <div className="max-w-[480px] text-center">
                             {/* Tag */}
-                            <div className="flex items-center justify-center gap-2 mb-6">
+                            <div className="flex items-center justify-center gap-2 mb-2">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
                                 <span className="text-[12px] font-semibold uppercase tracking-[1.5px] text-muted-foreground">
                                     Work With Us
@@ -33,18 +33,21 @@ const WorkWithUs = () => {
 
                             {/* Heading */}
                             <h2 className="text-[30px] md:text-[36px] lg:text-[40px] font-medium leading-[1.2] text-foreground mb-6 tracking-[-0.02em]">
-                                Driven by experience, committed to <span className="font-serif italic">excellence</span>
+                                Smart Management, <span className="font-serif italic">Higher Returns</span>
                             </h2>
 
                             {/* Description */}
-                            <p className="text-muted-foreground text-[14px] md:text-[15px] leading-[1.7] mb-8">
-                                Our goal each day is to provide the level of outstanding service we once wished we&apos;d found.
+                            <p className="text-muted-foreground text-[14px] md:text-[15px] leading-[1.7] mb-2">
+                                Forget "old data" and quarterly reports. Our AI Calculator gives property owners live market insights and real-time ROI tracking.<br /><br />
+                                Live Accuracy: See exactly how your property performs right now.<br />
+                                24/7 Management: Our AI never takes a sick day, ensuring your asset is always working for you.<br />
+                                Maximized Yields: AI-driven pricing ensures you never lose money on an empty unit.
                             </p>
 
                             {/* CTA Button */}
                             <Link
                                 href="/contact"
-                                className="inline-flex items-center justify-center px-8 py-4 bg-secondary text-secondary-foreground text-[14px] font-medium rounded-full hover:opacity-90 transition-opacity duration-300"
+                                className="inline-flex items-center justify-center px-4 py-2 bg-secondary text-secondary-foreground text-[14px] font-medium rounded-full hover:opacity-90 transition-opacity duration-300"
                             >
                                 Let&apos;s talk
                             </Link>

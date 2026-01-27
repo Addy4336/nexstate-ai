@@ -20,7 +20,7 @@ export default function ContactCTA() {
                                 <span>Newsletter</span>
                             </div>
                             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
-                                Get Updates And Stay Connected
+                                Get ROI Updates & Market News
                             </h2>
                             <p className="text-white/70 text-base max-w-lg mx-auto lg:mx-0">
                                 Subscribe to our newsletter to receive the latest news, exclusive offers, and real estate insights directly to your inbox.
@@ -37,9 +37,9 @@ export default function ContactCTA() {
                                 />
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-white text-primary text-sm font-bold rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-all shadow-lg flex items-center justify-center gap-2 group whitespace-nowrap"
+                                    className="px-6 py-3 bg-white text-[#23527C] text-sm font-bold rounded-lg hover:bg-secondary hover:text-secondary-foreground transition-all shadow-lg flex items-center justify-center gap-2 group whitespace-nowrap"
                                 >
-                                    Subscribe
+                                    SUBSCRIBE
                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </form>

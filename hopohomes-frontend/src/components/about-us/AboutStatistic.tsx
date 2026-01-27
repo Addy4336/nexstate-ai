@@ -17,12 +17,15 @@ const AboutStatistics = () => {
 
                     {/* Heading */}
                     <h2 className="text-[32px] md:text-[48px] lg:text-[56px] font-medium leading-[1.15] text-foreground mb-4 tracking-[-0.02em]">
-                        Leading the market with a client first focus
+                        A Tech-First Approach to Real Estate
                     </h2>
 
                     {/* Description */}
                     <p className="text-muted-foreground text-[15px] md:text-[17px] leading-[1.7] max-w-[800px]">
-                        At Real State we specialize in connecting buyers, sellers, and renters with exceptional properties. With years of expertise and a customer-first approach, we make real estate simple and stress-free.
+                        At HOPO Homes, we believe the future of renting is instant. Traditional real estate is slow, but our fully AI-integrated ecosystem moves at the speed of life.<br /><br />
+                        For Residents: We offer 24/7 instant support for everything from booking a home to fixing a leaky tap.<br />
+                        For Owners: We provide live, data-driven ROI tracking and automated management that never sleeps.<br />
+                        Our Promise: Zero delays. 100% transparency.
                     </p>
                 </div>
 
@@ -48,8 +51,8 @@ const AboutStatistics = () => {
                     <div className="w-full md:w-[75%]">
                         <div className="relative aspect-[16/10] overflow-hidden rounded-3xl">
                             <Image
-                                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/b1686b7d-0a11-4bb4-944b-fa2e2afc6783-bienes-temlis-webflow-io/assets/images/677fc42a41448c17b36848eb_darmau-gKEiDaAtK4o-unspla-3.webp"
-                                alt="Real estate agents professional portrait"
+                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2000&auto=format&fit=crop"
+                                alt="Modern smart home interior"
                                 fill
                                 className="object-cover"
                                 sizes="(max-width: 768px) 100vw, 65vw"
@@ -60,8 +63,8 @@ const AboutStatistics = () => {
                     <div className="w-full md:w-[25%]">
                         <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
                             <Image
-                                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/b1686b7d-0a11-4bb4-944b-fa2e2afc6783-bienes-temlis-webflow-io/assets/images/677fc4281c954f93ecfdd0d3_darmau-gKEiDaAtK4o-unspla-4.webp"
-                                alt="Professional real estate team"
+                                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"
+                                alt="Real estate data analytics"
                                 fill
                                 className="object-cover"
                                 sizes="(max-width: 768px) 100vw, 35vw"

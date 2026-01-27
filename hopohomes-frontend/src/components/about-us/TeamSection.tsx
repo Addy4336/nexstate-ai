@@ -4,22 +4,22 @@ import Link from 'next/link';
 
 const teamMembers = [
     {
-        name: "Jonas Bone",
-        role: "Sales representative",
-        image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/b1686b7d-0a11-4bb4-944b-fa2e2afc6783-bienes-temlis-webflow-io/assets/images/677fc42a41448c17b36848eb_darmau-gKEiDaAtK4o-unspla-3.webp",
-        slug: "jonas-bone"
+        name: "The Sales & Guide AI",
+        role: "Instant bookings, zero waiting. I help you find and tour your dream home in seconds, 24/7.",
+        image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1000&auto=format&fit=crop",
+        slug: "sales-guide-ai"
     },
     {
-        name: "Adam Cole",
-        role: "Sales representative",
-        image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/b1686b7d-0a11-4bb4-944b-fa2e2afc6783-bienes-temlis-webflow-io/assets/images/677fc4281c954f93ecfdd0d3_darmau-gKEiDaAtK4o-unspla-4.webp",
-        slug: "adam-cole"
+        name: "The Maintenance AI",
+        role: "I handle repairs instantly. Report an issue, and I dispatch solutions immediately—no follow-ups needed.",
+        image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1000&auto=format&fit=crop",
+        slug: "maintenance-ai"
     },
     {
-        name: "Robertson",
-        role: "Broker and team trainer",
-        image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/b1686b7d-0a11-4bb4-944b-fa2e2afc6783-bienes-temlis-webflow-io/assets/images/677fc42a41448c17b36848eb_darmau-gKEiDaAtK4o-unspla-3.webp",
-        slug: "robertson"
+        name: "The Management AI",
+        role: "I protect your investment. I track ROI in real-time and ensure 100% operational efficiency for owners.",
+        image: "https://images.unsplash.com/photo-1639322537228-ad7117a767f1?q=80&w=1000&auto=format&fit=crop",
+        slug: "management-ai"
     }
 ];
 

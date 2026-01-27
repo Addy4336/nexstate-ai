@@ -18,15 +18,14 @@ const Hero = () => {
 
                         {/* Headline */}
                         <h1 className="text-foreground text-[36px] md:text-[48px] lg:text-[56px] leading-[1.1] md:leading-[1.15] font-medium tracking-[-0.02em]">
-                            A real estate team that takes care of everything{' '}
-                            <span className="italic font-serif block mt-1 md:mt-0">for you</span>
+                            Redefining Rental Living with Artificial Intelligence
                         </h1>
                     </div>
 
                     {/* Description Paragraph */}
                     <div className="md:self-center max-w-[380px] md:pt-8">
                         <p className="text-muted-foreground text-[15px] md:text-[16px] leading-[1.7]">
-                            We handle every detail of your buying or selling journey, making the process seamless and stress-free
+                            We don’t just manage homes; we optimize them. HOPO Homes combines advanced AI agents with human expertise to create a seamless, instant, and transparent rental experience for everyone.
                         </p>
                     </div>
                 </div>
@@ -34,8 +33,8 @@ const Hero = () => {
                 {/* Hero Visual */}
                 <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden">
                     <Image
-                        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/b1686b7d-0a11-4bb4-944b-fa2e2afc6783-bienes-temlis-webflow-io/assets/images/677faea5299c43b10a63a15b_Frame_201321316125_20_1_-2.webp"
-                        alt="Real estate team presenting a modern villa"
+                        src="https://images.unsplash.com/photo-1512918760383-eda2723ad6e5?q=80&w=2600&auto=format&fit=crop"
+                        alt="Modern luxury apartment with AI integration"
                         fill
                         priority
                         className="object-cover"

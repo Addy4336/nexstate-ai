@@ -13,18 +13,18 @@ const STAFF_ROLES = ["admin", "manager", "editor"];
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow access to login and setup pages without authentication
+  // Allow access to login, setup pages, and API routes without authentication/redirection
   if (
     pathname === "/admin/login" ||
     pathname === "/admin/setup" ||
-    pathname.startsWith("/api/auth")
+    pathname.startsWith("/api")
   ) {
     return NextResponse.next();
   }
 
-  // Only process admin routes
+  // Redirect root and non-admin paths to /admin
   if (!pathname.startsWith("/admin")) {
-    return NextResponse.next();
+    return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   // Check if user has a valid session
@@ -52,7 +52,7 @@ export async function proxy(request: NextRequest) {
   // Check if user has a staff role (admin, manager, or editor)
   if (!STAFF_ROLES.includes(session.user.role)) {
     // Non-staff users trying to access admin area
-    const unauthorizedUrl = new URL("/", request.url);
+    const unauthorizedUrl = new URL("/admin/login", request.url); // Redirect to login instead of root
     return NextResponse.redirect(unauthorizedUrl);
   }
 
@@ -74,13 +74,13 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all admin routes except:
-     * - api routes
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    "/admin/:path*",
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
 };
 
