@@ -7,8 +7,6 @@ export default function FooterSection() {
     return (
         <div className='px-4 py-8 md:px-8 md:py-12'>
             <footer className="rounded-3xl md:rounded-[2.5rem] bg-foreground text-white py-12 md:py-20 relative overflow-hidden">
-                {/* Huge Fog Effect Background Text */}
-                {/* Huge Fog Effect Background Text REMOVED */}
 
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
 
@@ -20,11 +18,13 @@ export default function FooterSection() {
                             <div className="flex flex-col gap-4">
                                 <h2 className="text-2xl md:text-3xl font-bold font-sans tracking-tighter">HOPO HOMES.</h2>
                                 <p className="text-zinc-400 text-base md:text-lg leading-relaxed max-w-md font-light">
-                                    Office no. MF-17 Shamsa King Mohammed Ibrahim Al Suwaidi - Deira Al Murar Dubai UAE
+                                    The World's First Fully AI-Managed Rental Ecosystem. Experience the future of living with three dedicated AI Agents working 24/7.
                                 </p>
                                 <div className="flex flex-col gap-1 text-zinc-400 text-sm md:text-base font-light">
-                                    <p>+971 4 597 3415</p>
-                                    <p>hopohomes@gmail.com</p>
+                                    <p>Office No. MF-17, Shamsa Building</p>
+                                    <p>Al Murar, Deira, Dubai, UAE</p>
+                                    <p className="mt-2">+971 4 597 3415</p>
+                                    <p>info@hopohomes.com</p>
                                 </div>
                             </div>
 
@@ -46,36 +46,49 @@ export default function FooterSection() {
 
                         {/* Navigation Links (Col 7) */}
                         <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-10 sm:gap-12 lg:gap-8">
-                            {/* Column 1 */}
+                            {/* Column 1: For You */}
                             <div className="flex flex-col gap-5 md:gap-6">
-                                <h4 className="font-medium text-white text-base md:text-lg">Real Estate</h4>
+                                <h4 className="font-medium text-white text-base md:text-lg">For You</h4>
                                 <div className="flex flex-col gap-3 md:gap-4 text-zinc-400 font-light text-sm md:text-base">
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Buy Property</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Sell Property</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Rent Property</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">New Developments</Link>
+                                    <Link href="/tenants" className="hover:text-white transition-colors duration-300">For Tenants</Link>
+                                    <Link href="/owner" className="hover:text-white transition-colors duration-300">For Owners</Link>
+                                    <Link href="/properties" className="hover:text-white transition-colors duration-300">Browse Properties</Link>
+                                    <Link href="/properties-locations" className="hover:text-white transition-colors duration-300">Locations</Link>
                                 </div>
                             </div>
 
-                            {/* Column 2 */}
+                            {/* Column 2: Company */}
                             <div className="flex flex-col gap-5 md:gap-6">
                                 <h4 className="font-medium text-white text-base md:text-lg">Company</h4>
                                 <div className="flex flex-col gap-3 md:gap-4 text-zinc-400 font-light text-sm md:text-base">
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Who We Are</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Our Team</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Careers</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Contact</Link>
+                                    <Link href="/about-us" className="hover:text-white transition-colors duration-300">About Us</Link>
+                                    <Link href="/blog" className="hover:text-white transition-colors duration-300">Blog</Link>
+                                    <Link href="/contact" className="hover:text-white transition-colors duration-300">Contact Us</Link>
+                                    <Link href="/" className="hover:text-white transition-colors duration-300">Home</Link>
                                 </div>
                             </div>
 
-                            {/* Column 3 */}
+
+                            {/* Column 3: AI Features */}
                             <div className="flex flex-col gap-5 md:gap-6">
-                                <h4 className="font-medium text-white text-base md:text-lg">Support</h4>
+                                <h4 className="font-medium text-white text-base md:text-lg">AI Agents</h4>
                                 <div className="flex flex-col gap-3 md:gap-4 text-zinc-400 font-light text-sm md:text-base">
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Help Center</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Terms of Service</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Privacy Policy</Link>
-                                    <Link href="#" className="hover:text-white transition-colors duration-300">Cookie Policy</Link>
+                                    <div className="flex items-center gap-2 group">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                        <span className="group-hover:text-white transition-colors">Sales Agent</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 group">
+                                        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                                        <span className="group-hover:text-white transition-colors">Maintenance Agent</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 group">
+                                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                        <span className="group-hover:text-white transition-colors">Management Agent</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 group">
+                                        <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                                        <span className="group-hover:text-white transition-colors">24/7 AI Support</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -84,13 +97,13 @@ export default function FooterSection() {
                     {/* Footer Bottom */}
                     <div className="border-t border-white/5 md:border-none pt-8 md:pt-10 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
 
-                        <p className="text-zinc-600 text-sm">© 2024 HopoHomes Global. All rights reserved.</p>
+                        <p className="text-zinc-600 text-sm">© {new Date().getFullYear()} HOPO Homes. All rights reserved.</p>
 
                         <div className="flex items-center gap-6 md:gap-8">
-                            <Link href="#" className="text-zinc-500 hover:text-white transition-colors duration-300"><Instagram className="w-5 h-5 stroke-1" /></Link>
-                            <Link href="#" className="text-zinc-500 hover:text-white transition-colors duration-300"><Twitter className="w-5 h-5 stroke-1" /></Link>
-                            <Link href="#" className="text-zinc-500 hover:text-white transition-colors duration-300"><Linkedin className="w-5 h-5 stroke-1" /></Link>
-                            <Link href="#" className="text-zinc-500 hover:text-white transition-colors duration-300"><Facebook className="w-5 h-5 stroke-1" /></Link>
+                            <Link href="https://instagram.com" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Instagram className="w-5 h-5 stroke-1" /></Link>
+                            <Link href="https://twitter.com" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Twitter className="w-5 h-5 stroke-1" /></Link>
+                            <Link href="https://linkedin.com" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Linkedin className="w-5 h-5 stroke-1" /></Link>
+                            <Link href="https://facebook.com" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Facebook className="w-5 h-5 stroke-1" /></Link>
                         </div>
                     </div>
 

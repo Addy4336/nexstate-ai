@@ -1,89 +1,112 @@
-import Image from "next/image";
+'use client';
 
-const LIST_DATA = [
-    {
-        title: "Latest",
-        items: [
-            {
-                id: 1,
-                image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 2,
-                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 3,
-                image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=2070&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 4,
-                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            }
-        ]
-    },
-    {
-        title: "Most Viewed",
-        items: [
-            {
-                id: 5,
-                image: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?q=80&w=2070&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 6,
-                image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2070&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 7,
-                image: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=2070&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 8,
-                image: "https://plus.unsplash.com/premium_photo-1676823571650-bae964e7010f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8aG91c2V8ZW58MHwyfDB8fHww",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            }
-        ]
-    },
-    {
-        title: "Stormy Choice",
-        items: [
-            {
-                id: 9,
-                image: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=2070&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 10,
-                image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=2076&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 11,
-                image: "https://images.unsplash.com/photo-1719887805632-de5be825f72b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aG91c2V8ZW58MHwyfDB8fHww",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            },
-            {
-                id: 12,
-                image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop",
-                text: "Lorem Ipsum is simply dummy text of the printing"
-            }
-        ]
-    }
-];
+import { useState, useEffect } from 'react';
+import Image from "next/image";
+import Link from "next/link";
+
+interface Blog {
+    id: string;
+    title: string;
+    slug: string;
+    image?: string;
+    excerpt?: string;
+    created_at: string;
+}
+
+interface ListCategory {
+    title: string;
+    items: Blog[];
+}
 
 export default function BlogLists() {
+    const [listData, setListData] = useState<ListCategory[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchBlogs = async () => {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_CMS_API_URL}/api/blogs`);
+                const result = await response.json();
+
+                if (result.success && Array.isArray(result.data)) {
+                    const blogs = result.data;
+
+                    // Organize blogs into categories
+                    // Latest: First 4 blogs (most recent)
+                    // Most Viewed: Next 4 blogs
+                    // Editor's Choice: Next 4 blogs
+                    const latestBlogs = blogs.slice(0, 4);
+                    const mostViewedBlogs = blogs.slice(4, 8);
+                    const editorsChoice = blogs.slice(8, 12);
+
+                    const categories: ListCategory[] = [];
+
+                    if (latestBlogs.length > 0) {
+                        categories.push({
+                            title: "Latest",
+                            items: latestBlogs
+                        });
+                    }
+
+                    if (mostViewedBlogs.length > 0) {
+                        categories.push({
+                            title: "Most Viewed",
+                            items: mostViewedBlogs
+                        });
+                    }
+
+                    if (editorsChoice.length > 0) {
+                        categories.push({
+                            title: "Editor's Choice",
+                            items: editorsChoice
+                        });
+                    }
+
+                    // If we have fewer blogs, just show what we have in Latest
+                    if (categories.length === 0 && blogs.length > 0) {
+                        categories.push({
+                            title: "Latest",
+                            items: blogs
+                        });
+                    }
+
+                    setListData(categories);
+                }
+            } catch (error) {
+                console.error("Failed to fetch blogs:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBlogs();
+    }, []);
+
+    if (loading) {
+        return (
+            <section className="py-8 md:py-12 bg-background">
+                <div className="container mx-auto px-4 md:px-12">
+                    <div className="text-center py-10 text-muted-foreground">Loading blogs...</div>
+                </div>
+            </section>
+        );
+    }
+
+    if (listData.length === 0) {
+        return (
+            <section className="py-8 md:py-12 bg-background">
+                <div className="container mx-auto px-4 md:px-12">
+                    <div className="text-center py-10 text-muted-foreground">No blogs available.</div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="py-8 md:py-12 bg-background">
             <div className="container mx-auto px-4 md:px-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    {LIST_DATA.map((list, index) => (
+                    {listData.map((list, index) => (
                         <div key={index} className="bg-card rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-border p-4 md:p-6">
 
                             {/* Header */}
@@ -95,25 +118,31 @@ export default function BlogLists() {
 
                             {/* Items */}
                             <div className="flex flex-col gap-4 md:gap-6">
-                                {list.items.map((item, itemIndex) => (
-                                    <div key={item.id} className="group flex gap-3 md:gap-4 items-start">
+                                {list.items.map((item) => (
+                                    <Link href={`/blog/${item.slug}`} key={item.id} className="group flex gap-3 md:gap-4 items-start">
                                         {/* Image */}
                                         <div className="relative w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-lg overflow-hidden bg-muted">
-                                            <Image
-                                                src={item.image}
-                                                alt="Blog thumbnail"
-                                                fill
-                                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                            />
+                                            {item.image ? (
+                                                <Image
+                                                    src={item.image}
+                                                    alt={item.title || "Blog thumbnail"}
+                                                    fill
+                                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-muted flex items-center justify-center">
+                                                    <span className="text-muted-foreground text-xs">No image</span>
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* Text */}
                                         <div className="flex-1 py-1 border-b border-border pb-4 md:pb-6 last:border-0 last:pb-0">
                                             <p className="text-card-foreground text-xs md:text-sm font-medium leading-relaxed group-hover:text-primary transition-colors line-clamp-3 md:line-clamp-none">
-                                                {item.text}
+                                                {item.title}
                                             </p>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))}
                             </div>
 

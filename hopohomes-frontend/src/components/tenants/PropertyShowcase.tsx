@@ -156,9 +156,9 @@ export default function PropertyShowcase() {
                             <p className="text-muted-foreground text-sm leading-relaxed mb-4 sm:mb-8 max-w-60">
                                 {currentData.middleCard.description}
                             </p>
-                            <button className="px-8 py-3 rounded-full border border-border bg-background text-foreground text-sm font-medium hover:bg-muted transition-colors shadow-sm">
+                            {/* <button className="px-8 py-3 rounded-full border border-border bg-background text-foreground text-sm font-medium hover:bg-muted transition-colors shadow-sm">
                                 Details
-                            </button>
+                            </button> */}
                         </div>
                         {/* Footer Text aligned under Middle Col */}
                         <div className="flex-1 max-h-[3.5rem] flex items-end">

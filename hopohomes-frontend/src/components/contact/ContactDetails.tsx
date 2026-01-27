@@ -285,14 +285,14 @@ export default function ContactDetails() {
                     {/* Right Map */}
                     <div className="w-full lg:w-1/2 min-h-[400px] lg:min-h-full bg-muted relative">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.168509612099!2d55.15694731544392!3d25.09567498394712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f6b5402c126e3%3A0xb9511e6655c46d7c!2sIn5%20Tech!5e0!3m2!1sen!2sae!4v1709540000000!5m2!1sen!2sae"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3612.8220583880156!2d55.162585474623015!3d25.107884135313796!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f6b1495a55be1%3A0x5b8e89f8023b5766!2sin5%20Tech!5e0!3m2!1sen!2sin!4v1769512056689!5m2!1sen!2sin"
                             width="100%"
                             height="100%"
                             style={{ border: 0 }}
                             allowFullScreen={false}
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
-                            className="absolute inset-0 w-full h-full grayscale-[0.8] contrast-[0.9] opacity-90 hover:grayscale-0 transition-all duration-700"
+                            className="absolute inset-0 w-full h-full  contrast-[0.9] opacity-90 hover:grayscale-0 transition-all duration-700"
                         />
                     </div>
                 </div>

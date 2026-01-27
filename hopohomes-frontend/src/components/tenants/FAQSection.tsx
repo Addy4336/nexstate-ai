@@ -21,7 +21,7 @@ export default function FAQSection() {
     useEffect(() => {
         const fetchFaqs = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/faqs');
+                const response = await fetch(`${process.env.NEXT_PUBLIC_CMS_API_URL}/api/faqs`);
                 const result = await response.json();
                 if (result.success && Array.isArray(result.data)) {
                     setFaqs(result.data);

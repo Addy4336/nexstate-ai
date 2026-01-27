@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Calculator, TrendingUp, DollarSign, Percent, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import Link from "next/link";
 
 export function ROICalculator() {
   const [monthlyRent, setMonthlyRent] = useState(8000);
@@ -149,10 +150,11 @@ export function ROICalculator() {
                     <p className="text-xl font-bold text-accent">AED {netIncome.toLocaleString()}</p>
                   </div>
                 </div>
-
+               <Link href="/owner#owner-consultation-form">
                 <Button className="btn-primary w-full">
                   Get Detailed Analysis
                 </Button>
+                </Link>
               </div>
             </div>
           </motion.div>

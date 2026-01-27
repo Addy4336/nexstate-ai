@@ -3,13 +3,34 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Globe, Menu, X } from 'lucide-react';
+
+// Define navigation items
+const navItems = [
+    { href: '/', label: 'Home' },
+    { href: '/tenants', label: 'For Tenants' },
+    { href: '/owner', label: 'For Owners' },
+    { href: '/properties', label: 'Properties' },
+    { href: '/about-us', label: 'About Us' },
+    { href: '/contact', label: 'Contact Us' },
+    { href: '/blog', label: 'Blog' },
+];
 
 export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
 
     const toggleMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    // Check if a route is active
+    const isActive = (href: string) => {
+        if (href === '/') {
+            return pathname === '/';
+        }
+        return pathname.startsWith(href);
     };
 
     return (
@@ -35,18 +56,19 @@ export default function Navbar() {
                     {/* Desktop Menu - Centered */}
                     <div className="hidden lg:flex items-center justify-center flex-1">
                         <div className="flex items-center gap-8">
-                            <Link href="/" className="px-4 py-2 rounded-full bg-primary text-primary-foreground font-medium text-sm transition-all shadow-md">
-                                Home
-                            </Link>
-                            <Link href="#" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
-                                About Us
-                            </Link>
-                            <Link href="/properties-locations" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
-                                Property List
-                            </Link>
-                            <Link href="#" className="font-medium text-sm text-foreground hover:text-primary transition-colors">
-                                Contact Us
-                            </Link>
+                            {navItems.map((item) => (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={
+                                        isActive(item.href)
+                                            ? "px-4 py-2 rounded-full bg-primary text-primary-foreground font-medium text-sm transition-all shadow-md"
+                                            : "font-medium text-sm text-foreground hover:text-primary transition-colors"
+                                    }
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
                         </div>
                     </div>
 
@@ -84,18 +106,20 @@ export default function Navbar() {
             {isMobileMenuOpen && (
                 <div className="lg:hidden absolute top-20 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-border shadow-lg animate-in slide-in-from-top-2">
                     <div className="px-4 pt-2 pb-6 space-y-2">
-                        <Link href="/" className="block px-4 py-3 rounded-lg bg-primary/10 text-primary font-semibold text-base">
-                            Home
-                        </Link>
-                        <Link href="#" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
-                            About Us
-                        </Link>
-                        <Link href="/properties-locations" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
-                            Property List
-                        </Link>
-                        <Link href="#" className="block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors">
-                            Contact Us
-                        </Link>
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={
+                                    isActive(item.href)
+                                        ? "block px-4 py-3 rounded-lg bg-primary/10 text-primary font-semibold text-base"
+                                        : "block px-4 py-3 rounded-lg text-foreground hover:bg-muted font-medium text-base transition-colors"
+                                }
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
                         <div className="pt-4 border-t border-border mt-2 flex items-center justify-between px-2">
                             <button className="flex items-center gap-2 text-foreground font-medium">
                                 <Globe className="w-5 h-5" />

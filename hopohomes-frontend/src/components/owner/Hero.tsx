@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { ArrowUpRight, Plus, Star, MapPin, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function Hero() {
     return (
@@ -54,13 +55,17 @@ export default function Hero() {
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6">
+                            <Link href="/owner#owner-consultation-form">
                             <button className="w-full sm:w-auto bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-lg hover:shadow-primary/25">
                                 List Your Property
                                 <ArrowUpRight size={18} />
                             </button>
+                            </Link>
+                            <Link href="/owner#how-it-works">
                             <button className="text-foreground font-medium underline decoration-1 underline-offset-4 hover:text-primary transition-colors">
                                 How it works
                             </button>
+                            </Link>
                         </div>
 
                         <div className="flex flex-col sm:flex-row items-center justify-between max-w-md pt-6 sm:pt-8 border-t border-border mt-2 mx-auto lg:mx-0 gap-6 sm:gap-0 lg:mr-10">

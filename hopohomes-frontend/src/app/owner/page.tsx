@@ -17,7 +17,7 @@ export default function Home() {
     <main className="min-h-screen pt-20 bg-white text-black dark:bg-neutral-950 dark:text-white selection:bg-purple-100 selection:text-purple-900">
 
       <Hero />
-      <UserToggle currentType="owner" />
+      {/* <UserToggle currentType="owner" /> */}
       <TailoredStrategies />
       <AdaptiveRentalOptions />
       <ServicesSection />

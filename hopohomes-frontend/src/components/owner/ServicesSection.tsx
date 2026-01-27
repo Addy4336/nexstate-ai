@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { ArrowDown, ArrowUpRight, Home, Key, Wallet, Shield, Zap, TrendingUp, Sparkles, Clock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ServicesSection() {
     return (
@@ -108,9 +109,11 @@ export default function ServicesSection() {
                                 </p>
                             </div>
 
-                            <button className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors text-sm shadow-md">
+                            <Link href="/owner#owner-consultation-form">
+                            <button className="w-full py-3.5 rounded-xl px-4 bg-primary text-primary-foreground font-medium flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors text-sm shadow-md">
                                 Get Started <ArrowUpRight size={16} />
                             </button>
+                            </Link>
                         </div>
 
                         {/* Card 3: Financial Growth (Image Card) */}

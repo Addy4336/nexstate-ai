@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const steps = [
     {
@@ -48,7 +49,7 @@ export default function ProcessSection() {
             <div className="max-w-7xl mx-auto space-y-12 md:space-y-20">
 
                 {/* Header */}
-                <div className="flex flex-col lg:flex-row justify-between items-start gap-8 md:gap-12">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-8 md:gap-12" id='how-it-works'>
                     <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1] max-w-xl">
                         How HOPO Homes works?
                     </h2>
@@ -114,10 +115,12 @@ export default function ProcessSection() {
                             <p className="text-muted-foreground text-base sm:text-lg md:text-xl leading-relaxed mb-6 md:mb-10">
                                 {activeStep.description}
                             </p>
+                            <Link href="/owner#owner-consultation-form">
                             <button className="bg-primary hover:bg-primary/90 text-white px-5 sm:px-6 md:px-8 py-3.5 md:py-4 rounded-2xl font-medium transition-colors inline-flex items-center gap-2 w-fit shadow-lg shadow-primary/25 text-sm md:text-base">
                                 List Your Property
                                 <ArrowUpRight size={18} className="sm:w-5 sm:h-5" />
                             </button>
+                            </Link>
                         </div>
 
                     </div>

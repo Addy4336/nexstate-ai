@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CTASection() {
     return (
@@ -28,11 +29,12 @@ export default function CTASection() {
                 <p className="text-lg md:text-xl text-card/90 max-w-2xl font-light">
                     Explore a curated selection of properties that align with your vision and goals.
                 </p>
-
+<Link href="/properties">
                 <button className="bg-secondary text-secondary-foreground px-8 py-4 rounded-full text-base font-semibold inline-flex items-center gap-2 hover:bg-muted transition-colors mt-4 group">
                     Get Started
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
+                </Link>
             </div>
         </section>
         // </div>

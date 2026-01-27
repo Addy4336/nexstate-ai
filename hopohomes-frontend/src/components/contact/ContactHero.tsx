@@ -25,7 +25,7 @@ export default function ContactHero() {
                         <span className="text-background text-sm font-medium tracking-wide uppercase">
                             We Will Be Happy To Assist
                         </span>
-                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-normal text-[#23527C] leading-tight tracking-tight mt-1 md:mt-2">
+                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-normal text-primary leading-tight tracking-tight mt-1 md:mt-2">
                             CONTACT US FOR <br />
                             INSTANT ANSWERS
                         </h1>
