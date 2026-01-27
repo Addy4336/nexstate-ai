@@ -23,52 +23,40 @@ export default function ContactDetails() {
                 </div>
 
                 {/* Info Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
                     {/* Phone */}
                     <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
                             <Phone className="w-6 h-6" />
                         </div>
-                        <h4 className="text-foreground font-semibold text-lg mb-3">Phone</h4>
+                        <h4 className="text-foreground font-semibold text-lg mb-3">Phone Support</h4>
                         <div className="text-muted-foreground text-sm space-y-1">
-                            <p>+1 (456) 657-887</p>
-                            <p>+1 (456) 657-997</p>
+                            <p>+971 4 451 1555</p>
+                            <p>(24/7 AI Support Hotline)</p>
                         </div>
                     </div>
 
                     {/* Email */}
                     <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
                             <Mail className="w-6 h-6" />
                         </div>
-                        <h4 className="text-foreground font-semibold text-lg mb-3">Email Address</h4>
+                        <h4 className="text-foreground font-semibold text-lg mb-3">Email Us</h4>
                         <div className="text-muted-foreground text-sm space-y-1">
-                            <p>info@realet.com</p>
-                            <p>sales@realet.com</p>
+                            <p>info@hopohomes.com</p>
+                            <p>We reply within 24 hours.</p>
                         </div>
                     </div>
 
-                    {/* Hours */}
+                    {/* Address/Visit HQ */}
                     <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-                            <Clock className="w-6 h-6" />
-                        </div>
-                        <h4 className="text-foreground font-semibold text-lg mb-3">Opening Hours</h4>
-                        <div className="text-muted-foreground text-sm space-y-1">
-                            <p>Mon - Thu: 10am - 6pm</p>
-                            <p>Fri: 10am - 3am</p>
-                        </div>
-                    </div>
-
-                    {/* Address */}
-                    <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
                             <MapPin className="w-6 h-6" />
                         </div>
-                        <h4 className="text-foreground font-semibold text-lg mb-3">Address</h4>
+                        <h4 className="text-foreground font-semibold text-lg mb-3">Visit HQ</h4>
                         <div className="text-muted-foreground text-sm space-y-1">
-                            <p>3557 Derek Drive,</p>
-                            <p>Orlando, Florida</p>
+                            <p>In5 Tech, Dubai Internet City</p>
+                            <p>Dubai, UAE</p>
                         </div>
                     </div>
                 </div>
@@ -78,8 +66,8 @@ export default function ContactDetails() {
 
                     {/* Left Form */}
                     <div className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 bg-card relative">
-                        <h3 className="text-3xl font-bold text-foreground mb-2">Send Us A Message</h3>
-                        <p className="text-muted-foreground mb-10">We usually reply within 24 hours.</p>
+                        <h3 className="text-3xl font-bold text-foreground mb-2">Send a Message</h3>
+                        <p className="text-muted-foreground mb-10">For specific inquiries about property management or partnerships.</p>
 
                         <form className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -105,7 +93,7 @@ export default function ContactDetails() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label htmlFor="phone" className="text-sm font-medium text-foreground ml-1">Phone</label>
+                                    <label htmlFor="phone" className="text-sm font-medium text-foreground ml-1">Phone Number</label>
                                     <input
                                         id="phone"
                                         type="tel"
@@ -114,7 +102,7 @@ export default function ContactDetails() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label htmlFor="email" className="text-sm font-medium text-foreground ml-1">Email</label>
+                                    <label htmlFor="email" className="text-sm font-medium text-foreground ml-1">Email Address</label>
                                     <input
                                         id="email"
                                         type="email"
@@ -128,7 +116,7 @@ export default function ContactDetails() {
                                 <label htmlFor="message" className="text-sm font-medium text-foreground ml-1">Message</label>
                                 <textarea
                                     id="message"
-                                    placeholder="How can we help you?"
+                                    placeholder="Tell us how we can help..."
                                     rows={5}
                                     className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all resize-none"
                                 ></textarea>
@@ -137,9 +125,9 @@ export default function ContactDetails() {
                             <div className="pt-4">
                                 <button
                                     type="submit"
-                                    className="group w-full md:w-auto px-8 py-3.5 bg-primary text-primary-foreground text-sm font-semibold rounded-xl hover:bg-primary/90 transition-all shadow-md hover:shadow-xl flex items-center justify-center gap-2"
+                                    className="group w-full md:w-auto px-8 py-3.5 bg-[#23527C] text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-md hover:shadow-xl flex items-center justify-center gap-2"
                                 >
-                                    Send Message
+                                    SEND MESSAGE
                                     <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </div>

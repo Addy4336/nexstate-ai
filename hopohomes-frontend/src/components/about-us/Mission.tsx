@@ -21,8 +21,8 @@ const Mission = () => {
                         {/* Image */}
                         <div className="relative w-full max-w-[295px] aspect-[4/3] overflow-hidden rounded-2xl">
                             <Image
-                                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/b1686b7d-0a11-4bb4-944b-fa2e2afc6783-bienes-temlis-webflow-io/assets/images/677fc4281c954f93ecfdd0d3_darmau-gKEiDaAtK4o-unspla-4.webp"
-                                alt="Real estate professionals discussing"
+                                src="https://images.unsplash.com/photo-1556912172-45b7abe8d7e1?q=80&w=1000&auto=format&fit=crop"
+                                alt="Happy residents using technology"
                                 fill
                                 className="object-cover"
                                 sizes="(max-width: 768px) 100vw, 220px"

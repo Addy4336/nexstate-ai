@@ -3,24 +3,24 @@ import Image from 'next/image';
 
 const testimonials = [
     {
-        quote: "The process of buying our home was as stress-free as we could have imagined.",
-        name: "Janie Stewart",
-        location: "Idaho, USA.",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=janie",
+        quote: "I booked my apartment at 2 AM with their AI agent. No brokers, no hassle. It was instant.",
+        name: "Sarah",
+        location: "Tenant",
+        avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop",
         variant: "light"
     },
     {
-        quote: "We have had two great experiences working with Realty Group, as they sold two of our homes. They were professional, attentive, and patient.",
-        name: "Madison Wilson",
-        location: "Idaho, USA.",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=madison",
+        quote: "My AC stopped working, and the Maintenance AI had it fixed within hours. Unbelievable speed.",
+        name: "Rahul",
+        location: "Resident",
+        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=200&auto=format&fit=crop",
         variant: "dark"
     },
     {
-        quote: "Great experience working with Realty Group, especially as a first time buyer!",
-        name: "Rosa Smith",
-        location: "Idaho, USA.",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=rosa",
+        quote: "Finally, a rental company that uses technology to actually help people, not just collect rent.",
+        name: "Ahmed",
+        location: "Tenant",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop",
         variant: "secondary"
     }
 ];
@@ -41,7 +41,7 @@ const Testimonials = () => {
 
                     {/* Heading */}
                     <h2 className="text-[36px] md:text-[48px] lg:text-[56px] font-medium leading-[1.15] text-foreground mb-6 tracking-[-0.02em]">
-                        Real State success <span className="font-serif italic">stories</span>
+                        Living in the <span className="font-serif italic">Future</span>
                     </h2>
 
                     {/* Description */}

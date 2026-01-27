@@ -39,12 +39,12 @@ const ContactSection = () => {
 
                         {/* Heading */}
                         <h2 className="text-[32px] md:text-[48px] lg:text-[56px] font-medium leading-[1.15] text-foreground mb-6 tracking-[-0.02em]">
-                            Get in <span className="font-serif italic text-primary">touch</span>
+                            Ready to Experience the <span className="font-serif italic text-primary">Future?</span>
                         </h2>
 
                         {/* Description */}
                         <p className="text-muted-foreground text-[15px] md:text-[17px] leading-[1.7] mb-12 max-w-[400px]">
-                            Receive expert guidance to maximize your next purchase, sale, or investment.
+                            Chat with our AI Agent now or calculate your property's ROI instantly.
                         </p>
 
                         {/* Contact Info */}

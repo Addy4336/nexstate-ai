@@ -25,16 +25,16 @@ export default function ContactHero() {
                         <span className="text-background text-sm font-medium tracking-wide uppercase">
                             We Will Be Happy To Assist
                         </span>
-                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-normal text-primary leading-tight tracking-tight mt-1 md:mt-2">
-                            CONTACT US TO <br />
-                            FIND OUT MORE
+                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-normal text-[#23527C] leading-tight tracking-tight mt-1 md:mt-2">
+                            CONTACT US FOR <br />
+                            INSTANT ANSWERS
                         </h1>
                     </div>
 
                     {/* Right Side - Description */}
                     <div className="w-full md:w-1/2 md:pt-14">
                         <p className="text-background text-sm md:text-base leading-relaxed max-w-lg mx-auto md:mx-0">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque in tempor nulla. Etiam nec vulputate odionec vitae sem ornare, hendrerit tortor all eget, vestibulum libero auisque in exllert ante.
+                            Why wait? Chat with our AI agents for immediate help, or reach out to our team below.
                         </p>
                     </div>
 
