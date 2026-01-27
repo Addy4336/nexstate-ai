@@ -8,7 +8,7 @@ import { Menu, X } from 'lucide-react';
 
 // Define navigation items (same as main Navbar)
 const navItems = [
-    { href: '/', label: 'Home' },
+    { href: '/', label: 'AI Powered' },
     { href: '/tenants', label: 'For Tenants' },
     { href: '/owner', label: 'For Owners' },
     { href: '/properties', label: 'Properties' },

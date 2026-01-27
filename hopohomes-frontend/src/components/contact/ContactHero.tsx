@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function ContactHero() {
     return (
-        <section className="relative py-16 md:py-32 overflow-hidden">
+        <section className="relative pt-36 pb-16 md:pt-44 md:pb-32 overflow-hidden">
             {/* Background Image */}
             <div className="absolute inset-0 -z-20">
                 <Image
