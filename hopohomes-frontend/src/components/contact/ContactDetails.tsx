@@ -1,7 +1,109 @@
-import React from 'react';
-import { Phone, Mail, Clock, MapPin, Send } from 'lucide-react';
+'use client';
+
+import React, { useState } from 'react';
+import { Phone, Mail, MapPin, Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+
+interface FormData {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string;
+    message: string;
+}
+
+interface FormStatus {
+    type: 'idle' | 'loading' | 'success' | 'error';
+    message: string;
+}
 
 export default function ContactDetails() {
+    const [formData, setFormData] = useState<FormData>({
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        message: '',
+    });
+
+    const [status, setStatus] = useState<FormStatus>({
+        type: 'idle',
+        message: '',
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({ ...prev, [id]: value }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Basic validation
+        if (!formData.firstName || !formData.email || !formData.message) {
+            setStatus({
+                type: 'error',
+                message: 'Please fill in all required fields (First Name, Email, and Message).',
+            });
+            return;
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setStatus({
+                type: 'error',
+                message: 'Please enter a valid email address.',
+            });
+            return;
+        }
+
+        setStatus({ type: 'loading', message: '' });
+
+        try {
+            const response = await fetch('/api/enquiries', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'general_contact',
+                    name: `${formData.firstName} ${formData.lastName}`.trim(),
+                    email: formData.email,
+                    phone: formData.phone || undefined,
+                    message: formData.message,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setStatus({
+                    type: 'success',
+                    message: 'Thank you! Your message has been sent successfully. We\'ll get back to you soon.',
+                });
+                // Reset form
+                setFormData({
+                    firstName: '',
+                    lastName: '',
+                    phone: '',
+                    email: '',
+                    message: '',
+                });
+            } else {
+                setStatus({
+                    type: 'error',
+                    message: data.error || 'Something went wrong. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setStatus({
+                type: 'error',
+                message: 'Network error. Please check your connection and try again.',
+            });
+        }
+    };
+
     return (
         <section className="bg-background py-20 md:py-32 relative overflow-hidden">
             {/* Subtle Gradient Background */}
@@ -69,15 +171,35 @@ export default function ContactDetails() {
                         <h3 className="text-3xl font-bold text-foreground mb-2">Send a Message</h3>
                         <p className="text-muted-foreground mb-10">For specific inquiries about property management or partnerships.</p>
 
-                        <form className="space-y-6">
+                        {/* Status Messages */}
+                        {status.type === 'success' && (
+                            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                <p className="text-green-700 text-sm">{status.message}</p>
+                            </div>
+                        )}
+
+                        {status.type === 'error' && (
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+                                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                                <p className="text-red-700 text-sm">{status.message}</p>
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label htmlFor="firstName" className="text-sm font-medium text-foreground ml-1">First Name</label>
+                                    <label htmlFor="firstName" className="text-sm font-medium text-foreground ml-1">
+                                        First Name <span className="text-red-500">*</span>
+                                    </label>
                                     <input
                                         id="firstName"
                                         type="text"
                                         placeholder="John"
-                                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all"
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                        disabled={status.type === 'loading'}
+                                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -86,7 +208,10 @@ export default function ContactDetails() {
                                         id="lastName"
                                         type="text"
                                         placeholder="Doe"
-                                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                        disabled={status.type === 'loading'}
+                                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                 </div>
                             </div>
@@ -98,37 +223,60 @@ export default function ContactDetails() {
                                         id="phone"
                                         type="tel"
                                         placeholder="+1 (555) 000-0000"
-                                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        disabled={status.type === 'loading'}
+                                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label htmlFor="email" className="text-sm font-medium text-foreground ml-1">Email Address</label>
+                                    <label htmlFor="email" className="text-sm font-medium text-foreground ml-1">
+                                        Email Address <span className="text-red-500">*</span>
+                                    </label>
                                     <input
                                         id="email"
                                         type="email"
                                         placeholder="john@example.com"
-                                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        disabled={status.type === 'loading'}
+                                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="message" className="text-sm font-medium text-foreground ml-1">Message</label>
+                                <label htmlFor="message" className="text-sm font-medium text-foreground ml-1">
+                                    Message <span className="text-red-500">*</span>
+                                </label>
                                 <textarea
                                     id="message"
                                     placeholder="Tell us how we can help..."
                                     rows={5}
-                                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all resize-none"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    disabled={status.type === 'loading'}
+                                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground/40 text-sm transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                                 ></textarea>
                             </div>
 
                             <div className="pt-4">
                                 <button
                                     type="submit"
-                                    className="group w-full md:w-auto px-8 py-3.5 bg-[#23527C] text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-md hover:shadow-xl flex items-center justify-center gap-2"
+                                    disabled={status.type === 'loading'}
+                                    className="group w-full md:w-auto px-8 py-3.5 bg-[#23527C] text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all shadow-md hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                                 >
-                                    SEND MESSAGE
-                                    <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    {status.type === 'loading' ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            SENDING...
+                                        </>
+                                    ) : (
+                                        <>
+                                            SEND MESSAGE
+                                            <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </form>
@@ -137,7 +285,7 @@ export default function ContactDetails() {
                     {/* Right Map */}
                     <div className="w-full lg:w-1/2 min-h-[400px] lg:min-h-full bg-muted relative">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d112173.53589998858!2d-81.44299884615374!3d28.5383354921936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88e773d8fecdbc77%3A0xac3b2063ca5bf9e!2sOrlando%2C%20FL%2C%20USA!5e0!3m2!1sen!2sin!4v1709540000000!5m2!1sen!2sin"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.168509612099!2d55.15694731544392!3d25.09567498394712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f6b5402c126e3%3A0xb9511e6655c46d7c!2sIn5%20Tech!5e0!3m2!1sen!2sae!4v1709540000000!5m2!1sen!2sae"
                             width="100%"
                             height="100%"
                             style={{ border: 0 }}
