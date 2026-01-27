@@ -18,6 +18,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { notFound } from "next/navigation";
 import { ScrollToTopButton } from "@/components/blog/ScrollToTopButton";
+import { ImageLightbox } from "@/components/blog/ImageLightbox";
 
 // Blog interface matching the CMS API response
 interface Blog {
@@ -152,12 +153,12 @@ function getReadingTime(content: string): number {
 function processContent(content: string, format?: string): string {
     console.log('processContent called with format:', format);
     console.log('Content preview:', content.substring(0, 100));
-    
+
     // Check if content looks like markdown (contains ## or ** or * for lists)
-    const looksLikeMarkdown = content.includes('##') || 
-                               (content.includes('**') && !content.includes('<')) ||
-                               /^\* |\n\* /m.test(content);
-    
+    const looksLikeMarkdown = content.includes('##') ||
+        (content.includes('**') && !content.includes('<')) ||
+        /^\* |\n\* /m.test(content);
+
     if (format === 'markdown' || (looksLikeMarkdown && format !== 'html')) {
         // Configure marked for better HTML output
         marked.setOptions({
@@ -280,38 +281,12 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                             </div>
                         </div>
 
-                        {/* Hero Image */}
-                        <div className="relative aspect-[16/10] w-full rounded-3xl overflow-hidden shadow-lg bg-muted">
-                            <Image
-                                src={coverImage}
-                                alt={blog.title}
-                                fill
-                                className="object-cover hover:scale-105 transition-transform duration-700"
-                                priority
-                            />
-                        </div>
-
-                        {/* Image Gallery - Show additional images if available */}
-                        {blog.images && blog.images.length > 1 && (
-                            <div className="space-y-4">
-                                <h3 className="text-lg font-semibold text-foreground">Gallery</h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    {blog.images.slice(1).map((image, index) => (
-                                        <div
-                                            key={index}
-                                            className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-sm hover:shadow-lg transition-shadow"
-                                        >
-                                            <Image
-                                                src={image}
-                                                alt={`${blog.title} - Image ${index + 2}`}
-                                                fill
-                                                className="object-cover hover:scale-105 transition-transform duration-500"
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        {/* Image Lightbox - Cover Image and Gallery */}
+                        <ImageLightbox
+                            images={blog.images || []}
+                            coverImage={coverImage}
+                            title={blog.title}
+                        />
 
                         {/* Excerpt Section */}
                         {blog.excerpt && (
@@ -367,7 +342,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                         {/* Content Body - Render HTML or Markdown content */}
                         <div
                             className="prose prose-base md:prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-p:text-muted-foreground prose-p:leading-relaxed prose-img:rounded-2xl prose-a:text-primary hover:prose-a:text-primary/80 prose-strong:text-foreground prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4"
-                            dangerouslySetInnerHTML={{ 
+                            dangerouslySetInnerHTML={{
                                 __html: processContent(blog.content || '', blog.content_format)
                             }}
                         />
