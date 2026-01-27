@@ -229,7 +229,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
             <div className="absolute top-0 left-0 w-full h-[600px] bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:20px_20px] opacity-40 -z-10 [mask-image:linear-gradient(to_bottom,black_50%,transparent)]"></div>
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -z-10"></div>
 
-            <div className="container mx-auto px-4 max-w-7xl mt-8 md:mt-16">
+            <div className="container mx-auto px-4 max-w-7xl pt-24 md:pt-28">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative">
 
                     {/* Middle Column: Main Content */}
