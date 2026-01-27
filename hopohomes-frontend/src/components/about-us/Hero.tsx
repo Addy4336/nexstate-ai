@@ -33,7 +33,7 @@ const Hero = () => {
                 {/* Hero Visual */}
                 <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden">
                     <Image
-                        src="https://images.unsplash.com/photo-1512918760383-eda2723ad6e5?q=80&w=2600&auto=format&fit=crop"
+                        src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2600&auto=format&fit=crop"
                         alt="Modern luxury apartment with AI integration"
                         fill
                         priority

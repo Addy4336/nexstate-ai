@@ -6,19 +6,19 @@ const teamMembers = [
     {
         name: "The Sales & Guide AI",
         role: "Instant bookings, zero waiting. I help you find and tour your dream home in seconds, 24/7.",
-        image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1000&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1000&auto=format&fit=crop",
         slug: "sales-guide-ai"
     },
     {
         name: "The Maintenance AI",
         role: "I handle repairs instantly. Report an issue, and I dispatch solutions immediately—no follow-ups needed.",
-        image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1000&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1000&auto=format&fit=crop",
         slug: "maintenance-ai"
     },
     {
         name: "The Management AI",
         role: "I protect your investment. I track ROI in real-time and ensure 100% operational efficiency for owners.",
-        image: "https://images.unsplash.com/photo-1639322537228-ad7117a767f1?q=80&w=1000&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop",
         slug: "management-ai"
     }
 ];
@@ -51,7 +51,7 @@ const TeamSection = () => {
                 {/* Team Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {teamMembers.map((member, index) => (
-                        <div key={index} className="group">
+                        <div key={index} className="group flex flex-col h-full">
                             {/* Image */}
                             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl mb-4">
                                 <Image
@@ -64,12 +64,12 @@ const TeamSection = () => {
                             </div>
 
                             {/* Info Card */}
-                            <div className="flex items-center border border-border group-hover:bg-primary/10 transition-colors duration-300 justify-between bg-card rounded-2xl p-4 shadow-sm">
-                                <div className="flex flex-col">
+                            <div className="flex items-start border border-border group-hover:bg-primary/10 transition-colors duration-300 justify-between bg-card rounded-2xl p-4 shadow-sm min-h-[120px] flex-1">
+                                <div className="flex flex-col flex-1 pr-3">
                                     <h3 className="text-foreground text-[18px] md:text-[20px] font-medium mb-1">
                                         {member.name}
                                     </h3>
-                                    <span className="text-muted-foreground text-[14px]">
+                                    <span className="text-muted-foreground text-[14px] line-clamp-3">
                                         {member.role}
                                     </span>
                                 </div>
@@ -77,7 +77,7 @@ const TeamSection = () => {
                                 {/* Arrow Button */}
                                 <Link
                                     href={`/team/${member.slug}`}
-                                    className="w-12 h-12 flex items-center justify-center rounded-full border border-border hover:bg-secondary/20 hover:border-foreground hover:text-background transition-all duration-300 group/btn"
+                                    className="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-full border border-border hover:bg-secondary/20 hover:border-foreground hover:text-background transition-all duration-300 group/btn"
                                 >
                                     <svg
                                         width="20"

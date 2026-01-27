@@ -21,7 +21,7 @@ const Mission = () => {
                         {/* Image */}
                         <div className="relative w-full max-w-[295px] aspect-[4/3] overflow-hidden rounded-2xl">
                             <Image
-                                src="https://images.unsplash.com/photo-1556912172-45b7abe8d7e1?q=80&w=1000&auto=format&fit=crop"
+                                src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?q=80&w=1000&auto=format&fit=crop"
                                 alt="Happy residents using technology"
                                 fill
                                 className="object-cover"

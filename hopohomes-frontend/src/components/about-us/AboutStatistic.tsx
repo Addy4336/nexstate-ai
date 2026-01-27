@@ -51,7 +51,7 @@ const AboutStatistics = () => {
                     <div className="w-full md:w-[75%]">
                         <div className="relative aspect-[16/10] overflow-hidden rounded-3xl">
                             <Image
-                                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2000&auto=format&fit=crop"
+                                src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=2000&auto=format&fit=crop"
                                 alt="Modern smart home interior"
                                 fill
                                 className="object-cover"
@@ -63,7 +63,7 @@ const AboutStatistics = () => {
                     <div className="w-full md:w-[25%]">
                         <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
                             <Image
-                                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"
+                                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop"
                                 alt="Real estate data analytics"
                                 fill
                                 className="object-cover"
