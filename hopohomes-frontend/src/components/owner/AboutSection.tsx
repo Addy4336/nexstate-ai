@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { ArrowUpRight, Check } from 'lucide-react';
+import Link from 'next/link';
 
 const highlights = [
     "Short & Mid-Term Focus",
@@ -28,12 +29,14 @@ export default function AboutSection() {
                     </div>
 
                     <div className="flex flex-wrap gap-3 sm:gap-4 pb-2">
+                        <Link    href="/owner#owner-consultation-form">
                         <button className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25 dark:shadow-none text-sm sm:text-base">
                             Get Started <ArrowUpRight size={18} />
                         </button>
-                        <button className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors text-sm sm:text-base">
+                        </Link>
+                        {/* <button className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-background text-foreground font-medium border border-border shadow-sm hover:bg-muted transition-colors text-sm sm:text-base">
                             Learn more
-                        </button>
+                        </button> */}
                     </div>
                 </div>
 

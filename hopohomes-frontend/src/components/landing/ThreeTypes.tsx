@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Users, Home, Key } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const types = [
@@ -80,22 +81,22 @@ export default function ThreeTypes() {
                             </div>
 
                             {/* Content */}
-                            <div className="absolute inset-0 p-8 flex flex-col justify-end text-white">
-                                <div className="transform transition-transform duration-300 translate-y-4 group-hover:translate-y-0">
+                            <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end text-white">
+                                <div className="transform transition-transform duration-300">
                                     <div className="inline-flex items-center justify-center p-3 rounded-xl bg-white/10 backdrop-blur-md mb-4 border border-white/20">
                                         {type.icon}
                                     </div>
 
-                                    <h3 className="text-3xl font-bold mb-3 leading-tight">{type.title}</h3>
+                                    <h3 className="text-2xl md:text-3xl font-bold mb-3 leading-tight">{type.title}</h3>
 
-                                    <p className="text-white/80 leading-relaxed mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 transform translate-y-4 group-hover:translate-y-0">
+                                    <p className="text-white/80 leading-relaxed mb-6 text-sm md:text-base">
                                         {type.description}
                                     </p>
 
-                                    <div className="flex items-center gap-2 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 delay-200 translate-x-[-10px] group-hover:translate-x-0">
+                                    <Link href="/properties" className="flex items-center gap-2 text-sm font-semibold hover:underline w-fit">
                                         <span>Explore {type.title}</span>
                                         <ArrowRight className="w-4 h-4 ml-1" />
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
                         </motion.div>

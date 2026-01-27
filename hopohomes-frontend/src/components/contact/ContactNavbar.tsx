@@ -3,13 +3,34 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
+
+// Define navigation items (same as main Navbar)
+const navItems = [
+    { href: '/', label: 'Home' },
+    { href: '/tenants', label: 'For Tenants' },
+    { href: '/owner', label: 'For Owners' },
+    { href: '/properties', label: 'Properties' },
+    { href: '/about-us', label: 'About Us' },
+    { href: '/contact', label: 'Contact Us' },
+    { href: '/blog', label: 'Blog' },
+];
 
 export default function ContactNavbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
 
     const toggleMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    // Check if a route is active
+    const isActive = (href: string) => {
+        if (href === '/') {
+            return pathname === '/';
+        }
+        return pathname.startsWith(href);
     };
 
     return (
@@ -34,18 +55,19 @@ export default function ContactNavbar() {
                 {/* Desktop Menu - Centered */}
                 <div className="hidden lg:flex items-center justify-center flex-1">
                     <div className="flex items-center gap-8 text-sm font-medium text-gray-600">
-                        <Link href="/" className="hover:text-primary transition-colors">
-                            Home
-                        </Link>
-                        <Link href="#" className="hover:text-primary transition-colors">
-                            About Us
-                        </Link>
-                        <Link href="/properties-locations" className="hover:text-primary transition-colors">
-                            Property List
-                        </Link>
-                        <Link href="#" className="hover:text-primary transition-colors">
-                            Contact Us
-                        </Link>
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={
+                                    isActive(item.href)
+                                        ? "text-primary font-semibold"
+                                        : "hover:text-primary transition-colors"
+                                }
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
                     </div>
                 </div>
 
@@ -80,18 +102,20 @@ export default function ContactNavbar() {
             {isMobileMenuOpen && (
                 <div className="lg:hidden absolute top-24 left-4 right-4 bg-white border border-gray-100 rounded-2xl shadow-xl animate-in slide-in-from-top-2 z-50">
                     <div className="p-4 space-y-2">
-                        <Link href="/" className="block px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium text-base transition-colors">
-                            Home
-                        </Link>
-                        <Link href="#" className="block px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium text-base transition-colors">
-                            About Us
-                        </Link>
-                        <Link href="/properties-locations" className="block px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium text-base transition-colors">
-                            Property List
-                        </Link>
-                        <Link href="#" className="block px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium text-base transition-colors">
-                            Contact Us
-                        </Link>
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={
+                                    isActive(item.href)
+                                        ? "block px-4 py-3 rounded-lg bg-primary/10 text-primary font-semibold text-base"
+                                        : "block px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium text-base transition-colors"
+                                }
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
                         <div className="pt-4 border-t border-gray-100 mt-2 flex flex-col gap-3">
 
                             <button className="w-full border border-gray-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-full font-medium text-base transition-all">

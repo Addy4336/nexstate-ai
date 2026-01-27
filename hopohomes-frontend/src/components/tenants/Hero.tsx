@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     Select,
     SelectContent,
@@ -9,6 +11,29 @@ import {
 } from '@/components/ui/select';
 
 export default function Hero() {
+    const router = useRouter();
+
+    // Search form state
+    const [propertyType, setPropertyType] = useState('');
+    const [price, setPrice] = useState('');
+    const [location, setLocation] = useState('');
+    const [bedrooms, setBedrooms] = useState('');
+
+    // Handle search submit
+    const handleSearch = () => {
+        // Build query parameters
+        const params = new URLSearchParams();
+
+        if (propertyType) params.append('type', propertyType);
+        if (price) params.append('price', price);
+        if (location) params.append('location', location);
+        if (bedrooms) params.append('bedrooms', bedrooms);
+
+        // Redirect to properties page with search params
+        const queryString = params.toString();
+        router.push(`/properties${queryString ? `?${queryString}` : ''}`);
+    };
+
     return (
         <div className="relative w-full min-h-screen flex flex-col overflow-hidden">
             {/* Background Video */}
@@ -61,7 +86,7 @@ export default function Hero() {
                         {/* Looking For */}
                         <div className="space-y-1">
                             <label className="text-[10px] sm:text-xs font-semibold text-foreground block">Looking for</label>
-                            <Select>
+                            <Select value={propertyType} onValueChange={setPropertyType}>
                                 <SelectTrigger className="w-full bg-muted border-border rounded-md sm:rounded-lg h-9 sm:h-10 text-xs sm:text-sm">
                                     <SelectValue placeholder="Select Type" />
                                 </SelectTrigger>
@@ -79,7 +104,7 @@ export default function Hero() {
                         {/* Price */}
                         <div className="space-y-1">
                             <label className="text-[10px] sm:text-xs font-semibold text-foreground block">Price</label>
-                            <Select>
+                            <Select value={price} onValueChange={setPrice}>
                                 <SelectTrigger className="w-full bg-muted border-border rounded-md sm:rounded-lg h-9 sm:h-10 text-xs sm:text-sm">
                                     <SelectValue placeholder="Select Price" />
                                 </SelectTrigger>
@@ -96,7 +121,7 @@ export default function Hero() {
                         {/* Locations */}
                         <div className="space-y-1">
                             <label className="text-[10px] sm:text-xs font-semibold text-foreground block">Locations</label>
-                            <Select>
+                            <Select value={location} onValueChange={setLocation}>
                                 <SelectTrigger className="w-full bg-muted border-border rounded-md sm:rounded-lg h-9 sm:h-10 text-xs sm:text-sm">
                                     <SelectValue placeholder="Select Location" />
                                 </SelectTrigger>
@@ -115,7 +140,7 @@ export default function Hero() {
                         {/* Number of rooms */}
                         <div className="space-y-1">
                             <label className="text-[10px] sm:text-xs font-semibold text-foreground block">Number of rooms</label>
-                            <Select>
+                            <Select value={bedrooms} onValueChange={setBedrooms}>
                                 <SelectTrigger className="w-full bg-muted border-border rounded-md sm:rounded-lg h-9 sm:h-10 text-xs sm:text-sm">
                                     <SelectValue placeholder="Select Bedrooms" />
                                 </SelectTrigger>
@@ -134,7 +159,10 @@ export default function Hero() {
 
                     {/* Footer with Filters and Search Button */}
                     <div className="flex justify-end gap-3 pt-2 sm:pt-3 border-t border-border">
-                        <button className="bg-primary text-primary-foreground px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-semibold hover:bg-primary/90 transition-all shadow-lg w-full sm:w-auto">
+                        <button
+                            onClick={handleSearch}
+                            className="bg-primary text-primary-foreground px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-semibold hover:bg-primary/90 transition-all shadow-lg w-full sm:w-auto"
+                        >
                             Search Properties
                         </button>
                     </div>
