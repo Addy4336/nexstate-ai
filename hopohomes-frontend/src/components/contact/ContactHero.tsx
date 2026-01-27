@@ -15,7 +15,7 @@ export default function ContactHero() {
                 />
             </div>
             {/* Overlay to ensure text readability */}
-            <div className="absolute inset-0 -z-10 bg-foreground/70" />
+            <div className="absolute inset-0 -z-10 bg-foreground/10" />
 
             <div className="container mx-auto px-4 md:px-12 relative z-10">
                 <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 md:gap-20 text-center md:text-left">
