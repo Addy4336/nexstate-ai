@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ArrowRight, Bed, Home, MapPin, CheckCircle2, Shield, Clock, Sparkles } from 'lucide-react';
+import { ArrowRight, Bed, Home, MapPin, CheckCircle2, Shield, Clock, Sparkles, Loader2, Mail } from 'lucide-react';
 
 const bedroomOptions = [
     { value: '', label: 'Bedrooms' },
@@ -45,17 +45,71 @@ export default function ConsultationSection() {
         propertyType: '',
         city: '',
         name: '',
+        email: '',
         phone: '',
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setError(null); // Clear error when user makes changes
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Consultation request:', formData);
-        // Handle form submission
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+            // Build the message from property details
+            const propertyDetailsMessage = `Property Type: ${propertyTypes.find(p => p.value === formData.propertyType)?.label || 'Not specified'}, Bedrooms: ${bedroomOptions.find(b => b.value === formData.bedrooms)?.label || 'Not specified'}, City: ${cityOptions.find(c => c.value === formData.city)?.label || 'Not specified'}`;
+
+            const response = await fetch('/api/enquiries', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'owner_enquiry',
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    message: `Owner consultation request: ${propertyDetailsMessage}`,
+                    propertyDetails: {
+                        propertyType: formData.propertyType,
+                        bedrooms: formData.bedrooms,
+                        city: formData.city,
+                    },
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Failed to submit enquiry');
+            }
+
+            setIsSuccess(true);
+            // Reset form after success
+            setTimeout(() => {
+                setFormData({
+                    bedrooms: '',
+                    propertyType: '',
+                    city: '',
+                    name: '',
+                    email: '',
+                    phone: '',
+                });
+                setIsSuccess(false);
+            }, 3000);
+        } catch (err) {
+            console.error('Error submitting form:', err);
+            setError(err instanceof Error ? err.message : 'Failed to submit. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -144,114 +198,165 @@ export default function ConsultationSection() {
 
                         {/* Form Container with Clippath */}
                         <div className="relative bg-white rounded-[2rem] p-6 sm:p-8 md:p-10 shadow-2xl desktop-clip-form">
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <h3 className="text-2xl font-semibold text-foreground">Claim Free Consultation</h3>
-                                    <p className="text-muted-foreground text-sm">Fill in your property details to get started</p>
-                                </div>
-
-                                {/* Property Type */}
-                                <div className="relative">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                                        <Home size={20} />
+                            {isSuccess ? (
+                                // Success State
+                                <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                        <CheckCircle2 className="w-8 h-8 text-green-600" />
                                     </div>
-                                    <select
-                                        name="propertyType"
-                                        value={formData.propertyType}
+                                    <div>
+                                        <h3 className="text-xl font-semibold text-green-600 mb-1">Consultation Request Sent!</h3>
+                                        <p className="text-muted-foreground text-sm">We'll get back to you within 24 hours.</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="space-y-5">
+                                    <div className="space-y-2">
+                                        <h3 className="text-2xl font-semibold text-foreground">Claim Free Consultation</h3>
+                                        <p className="text-muted-foreground text-sm">Fill in your property details to get started</p>
+                                    </div>
+
+                                    {/* Error Message */}
+                                    {error && (
+                                        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+                                            {error}
+                                        </div>
+                                    )}
+
+                                    {/* Property Type */}
+                                    <div className="relative">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                            <Home size={20} />
+                                        </div>
+                                        <select
+                                            name="propertyType"
+                                            value={formData.propertyType}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                        >
+                                            {propertyTypes.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                        </div>
+                                    </div>
+
+                                    {/* Two Column Grid */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {/* Bedrooms */}
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                                <Bed size={20} />
+                                            </div>
+                                            <select
+                                                name="bedrooms"
+                                                value={formData.bedrooms}
+                                                onChange={handleChange}
+                                                required
+                                                className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
+                                            >
+                                                {bedroomOptions.map((option) => (
+                                                    <option key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                            </div>
+                                        </div>
+
+                                        {/* City */}
+                                        <div className="relative">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                                <MapPin size={20} />
+                                            </div>
+                                            <select
+                                                name="city"
+                                                value={formData.city}
+                                                onChange={handleChange}
+                                                required
+                                                className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
+                                            >
+                                                {cityOptions.map((option) => (
+                                                    <option key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Name Input */}
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        placeholder="Your Full Name"
+                                        value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                        required
+                                        className="w-full px-5 py-4 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                    />
+
+                                    {/* Email Input */}
+                                    <div className="relative">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                            <Mail size={20} />
+                                        </div>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            placeholder="Your Email Address"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full pl-12 pr-5 py-4 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                        />
+                                    </div>
+
+                                    {/* Phone Input */}
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        placeholder="Phone Number (+971)"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full px-5 py-4 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                                    />
+
+                                    {/* Submit Button */}
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="w-full py-4 px-8 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-secondary/25 transition-all group disabled:opacity-70 disabled:cursor-not-allowed"
                                     >
-                                        {propertyTypes.map((option) => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
-                                    </div>
-                                </div>
+                                        {isSubmitting ? (
+                                            <>
+                                                <Loader2 size={20} className="animate-spin" />
+                                                Submitting...
+                                            </>
+                                        ) : (
+                                            <>
+                                                Claim Free Consultation
+                                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                            </>
+                                        )}
+                                    </button>
 
-                                {/* Two Column Grid */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {/* Bedrooms */}
-                                    <div className="relative">
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                                            <Bed size={20} />
-                                        </div>
-                                        <select
-                                            name="bedrooms"
-                                            value={formData.bedrooms}
-                                            onChange={handleChange}
-                                            className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
-                                        >
-                                            {bedroomOptions.map((option) => (
-                                                <option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
-                                        </div>
-                                    </div>
-
-                                    {/* City */}
-                                    <div className="relative">
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                                            <MapPin size={20} />
-                                        </div>
-                                        <select
-                                            name="city"
-                                            value={formData.city}
-                                            onChange={handleChange}
-                                            className="w-full pl-12 pr-4 py-4 rounded-xl bg-muted/50 border border-border text-foreground appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm"
-                                        >
-                                            {cityOptions.map((option) => (
-                                                <option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Name Input */}
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="Your Full Name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    className="w-full px-5 py-4 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-                                />
-
-                                {/* Phone Input */}
-                                <input
-                                    type="tel"
-                                    name="phone"
-                                    placeholder="Phone Number (+971)"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    className="w-full px-5 py-4 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-                                />
-
-                                {/* Submit Button */}
-                                <button
-                                    type="submit"
-                                    className="w-full py-4 px-8 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-secondary/25 transition-all group"
-                                >
-                                    Claim Free Consultation
-                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                                </button>
-
-                                <p className="text-center text-xs text-muted-foreground">
-                                    By submitting, you agree to our Terms & Privacy Policy
-                                </p>
-                            </form>
+                                    <p className="text-center text-xs text-muted-foreground">
+                                        By submitting, you agree to our Terms & Privacy Policy
+                                    </p>
+                                </form>
+                            )}
                         </div>
 
                         {/* Floating Image Card - Bottom Right Cutout */}
@@ -273,6 +378,7 @@ export default function ConsultationSection() {
                 formData={formData}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
             />
         </section>
     );
@@ -282,10 +388,11 @@ export default function ConsultationSection() {
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronUp, X } from 'lucide-react';
 
-function MobileDrawerForm({ formData, handleChange, handleSubmit }: {
+function MobileDrawerForm({ formData, handleChange, handleSubmit, isSubmitting }: {
     formData: any,
     handleChange: (e: any) => void,
-    handleSubmit: (e: any) => void
+    handleSubmit: (e: any) => void | Promise<void>,
+    isSubmitting: boolean
 }) {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -416,6 +523,18 @@ function MobileDrawerForm({ formData, handleChange, handleSubmit }: {
                                         placeholder="Your Full Name"
                                         value={formData.name}
                                         onChange={handleChange}
+                                        required
+                                        className="w-full px-4 py-3 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                                    />
+
+                                    {/* Email */}
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        placeholder="Your Email Address"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
                                         className="w-full px-4 py-3 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                                     />
 
@@ -426,16 +545,27 @@ function MobileDrawerForm({ formData, handleChange, handleSubmit }: {
                                         placeholder="Phone Number (+971)"
                                         value={formData.phone}
                                         onChange={handleChange}
+                                        required
                                         className="w-full px-4 py-3 rounded-xl bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                                     />
 
                                     {/* Submit */}
                                     <button
                                         type="submit"
-                                        className="w-full py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all mt-2"
+                                        disabled={isSubmitting}
+                                        className="w-full py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
                                     >
-                                        Claim Free Consultation
-                                        <ArrowRight size={18} />
+                                        {isSubmitting ? (
+                                            <>
+                                                <Loader2 size={18} className="animate-spin" />
+                                                Submitting...
+                                            </>
+                                        ) : (
+                                            <>
+                                                Claim Free Consultation
+                                                <ArrowRight size={18} />
+                                            </>
+                                        )}
                                     </button>
 
                                     <div className="h-6" /> {/* Spacer for bottom safe area */}
