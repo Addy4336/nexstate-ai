@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
 
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/admin/dashboard";
@@ -30,14 +30,14 @@ export default function LoginPage() {
             await signIn.email({
                 email,
                 password,
-                callbackURL: "/admin/dashboard",
+                callbackURL: callbackUrl,
                 fetchOptions: {
                     onSuccess: () => {
                         toast.success("Welcome back!", {
                             description: "Successfully signed in to admin dashboard",
                         });
                         // Use replace to prevent back button returning to login
-                        router.replace("/admin/dashboard");
+                        router.replace(callbackUrl);
                     },
                     onError: (ctx) => {
                         toast.error(ctx.error.message || "Invalid email or password");
@@ -52,87 +52,116 @@ export default function LoginPage() {
     };
 
     return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-md"
+        >
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 mb-8">
+                <div className="relative w-24 h-8">
+                    <Image
+                        src="/images/logo.webp"
+                        alt="HOPO Homes"
+                        fill
+                        className="object-contain object-left"
+                    />
+                </div>
+                <div className="flex items-center gap-1.5 text-lg font-bold whitespace-nowrap">
+                    <span className="text-primary">Admin</span>
+                    <span className="text-foreground">Portal</span>
+                </div>
+            </Link>
+
+            <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back</h1>
+            <p className="text-muted-foreground mb-8">
+                Sign in to your admin account to continue
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="admin@hopohomes.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="pl-10"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <Input
+                            id="password"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="pl-10 pr-10"
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                    </div>
+                </div>
+
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                        <>
+                            Sign In
+                            <ArrowRight className="w-5 h-5 ml-2" />
+                        </>
+                    )}
+                </Button>
+            </form>
+        </motion.div>
+    );
+}
+
+function LoginFormFallback() {
+    return (
+        <div className="w-full max-w-md animate-pulse">
+            <div className="h-8 w-32 bg-muted rounded mb-8" />
+            <div className="h-10 w-48 bg-muted rounded mb-2" />
+            <div className="h-6 w-64 bg-muted rounded mb-8" />
+            <div className="space-y-6">
+                <div className="space-y-2">
+                    <div className="h-4 w-12 bg-muted rounded" />
+                    <div className="h-10 w-full bg-muted rounded" />
+                </div>
+                <div className="space-y-2">
+                    <div className="h-4 w-16 bg-muted rounded" />
+                    <div className="h-10 w-full bg-muted rounded" />
+                </div>
+                <div className="h-10 w-full bg-muted rounded" />
+            </div>
+        </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
         <div className="min-h-screen flex">
             {/* Left Side - Form */}
             <div className="flex-1 flex items-center justify-center p-8 bg-background">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-md"
-                >
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2 mb-8">
-                        <div className="relative w-24 h-8">
-                            <Image
-                                src="/images/logo.webp"
-                                alt="HOPO Homes"
-                                fill
-                                className="object-contain object-left"
-                            />
-                        </div>
-                        <div className="flex items-center gap-1.5 text-lg font-bold whitespace-nowrap">
-                            <span className="text-primary">Admin</span>
-                            <span className="text-foreground">Portal</span>
-                        </div>
-                    </Link>
-
-                    <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back</h1>
-                    <p className="text-muted-foreground mb-8">
-                        Sign in to your admin account to continue
-                    </p>
-
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="admin@hopohomes.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="pl-10"
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Password</Label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                                <Input
-                                    id="password"
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="pl-10 pr-10"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                >
-                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                </button>
-                            </div>
-                        </div>
-
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                <>
-                                    Sign In
-                                    <ArrowRight className="w-5 h-5 ml-2" />
-                                </>
-                            )}
-                        </Button>
-                    </form>
-                </motion.div>
+                <Suspense fallback={<LoginFormFallback />}>
+                    <LoginForm />
+                </Suspense>
             </div>
 
             {/* Right Side - Decorative */}
