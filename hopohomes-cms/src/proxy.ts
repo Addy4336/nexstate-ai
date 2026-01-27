@@ -22,9 +22,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect root and non-admin paths to /admin
-  if (!pathname.startsWith("/admin")) {
-    return NextResponse.redirect(new URL("/admin", request.url));
+  // Redirect root and non-admin paths (or exactly /admin) to /admin/dashboard
+  if (!pathname.startsWith("/admin") || pathname === "/admin") {
+    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
   // Check if user has a valid session
