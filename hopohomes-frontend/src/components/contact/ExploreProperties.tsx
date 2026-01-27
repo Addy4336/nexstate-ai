@@ -4,14 +4,14 @@ import Image from "next/image";
 const PROPERTIES = [
     {
         id: 1,
-        image: "https://images.unsplash.com/photo-1558036117-15d82a90b9f1?q=80&w=2000&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2000&auto=format&fit=crop",
         title: "The Smart Studio",
         info: "Business Bay, Dubai",
         tag: "Instant Booking Available"
     },
     {
         id: 2,
-        image: "https://images.unsplash.com/photo-1560185127-6a6a6875df7c?q=80&w=2000&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=2000&auto=format&fit=crop",
         title: "Tech-Ready 1BHK",
         info: "Dubai Marina",
         tag: "Fully Managed by AI"

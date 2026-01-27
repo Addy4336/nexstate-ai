@@ -7,8 +7,8 @@ export default function ContactHero() {
             {/* Background Image */}
             <div className="absolute inset-0 -z-20">
                 <Image
-                    src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2000&auto=format&fit=crop"
-                    alt="Office Background"
+                    src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2000&auto=format&fit=crop"
+                    alt="Customer Service Agent"
                     fill
                     className="object-cover"
                     priority
