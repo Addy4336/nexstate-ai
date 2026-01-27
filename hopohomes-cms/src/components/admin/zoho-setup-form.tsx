@@ -161,8 +161,8 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
         setLoadingFields(true);
         try {
             const result = await getZohoFormFields(ownerName, appLinkName, formLinkName);
-            if (result.success && result.fields) {
-                setFormFields(result.fields);
+            if (result.success && 'fields' in result && result.fields) {
+                setFormFields(result.fields as ZohoField[]);
             }
         } catch (error) {
             toast.error("Failed to load form fields");
