@@ -81,10 +81,13 @@ export default function Navbar() {
                             <span className="text-sm">Eng</span>
                         </button> */}
 
-                        {/* Sign Up Button */}
-                        <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 sm:px-7 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md transform hover:scale-105">
-                            Sign Up
-                        </button>
+                        {/* Sign Up / Login Button */}
+                        <Link
+                            href={`${process.env.NEXT_PUBLIC_CMS_API_URL}/admin/login`}
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 sm:px-7 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md transform hover:scale-105"
+                        >
+                            Login
+                        </Link>
 
                         {/* Mobile Menu Button */}
                         <button

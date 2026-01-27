@@ -33,46 +33,46 @@ export default function EverythingApp() {
                             </p>
 
                             {/* AI Ecosystem - 3 Connected Agents */}
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-6">
+                            <div className="flex items-center justify-center gap-2 sm:gap-4 mb-6">
                                 {/* Sales Agent */}
-                                <div className="bg-card rounded-2xl p-3 sm:p-4 shadow-sm flex flex-col items-center gap-2 w-24 sm:w-28">
-                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-chart-2/20 flex items-center justify-center">
-                                        <Users className="w-5 h-5 sm:w-6 sm:h-6 text-chart-2" />
+                                <div className="bg-card rounded-xl sm:rounded-2xl p-2 sm:p-4 shadow-sm flex flex-col items-center gap-1 sm:gap-2 flex-1 max-w-[100px] sm:max-w-none">
+                                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-chart-2/20 flex items-center justify-center">
+                                        <Users className="w-4 h-4 sm:w-6 sm:h-6 text-chart-2" />
                                     </div>
-                                    <span className="text-xs font-semibold text-foreground">Sales</span>
-                                    <div className="text-[10px] text-muted-foreground">AI Agent</div>
+                                    <span className="text-[10px] sm:text-xs font-semibold text-foreground text-center leading-tight">Sales</span>
+                                    <div className="text-[8px] sm:text-[10px] text-muted-foreground hidden sm:block">AI Agent</div>
                                 </div>
 
-                                {/* Connection Lines - Horizontal on mobile, Vertical on sm+ */}
-                                <div className="flex sm:flex-col items-center gap-1">
-                                    <div className="h-6 w-0.5 sm:h-0.5 sm:w-8 bg-foreground/20"></div>
-                                    <Sparkles className="w-4 h-4 text-secondary animate-pulse" />
-                                    <div className="h-6 w-0.5 sm:h-0.5 sm:w-8 bg-foreground/20"></div>
+                                {/* Connection Lines */}
+                                <div className="flex flex-col items-center gap-0.5 sm:gap-1 shrink-0">
+                                    <div className="w-4 sm:w-8 h-0.5 bg-foreground/20"></div>
+                                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-secondary animate-pulse" />
+                                    <div className="w-4 sm:w-8 h-0.5 bg-foreground/20"></div>
                                 </div>
 
                                 {/* Maintenance Agent */}
-                                <div className="bg-card rounded-2xl p-3 sm:p-4 shadow-sm flex flex-col items-center gap-2 w-24 sm:w-28">
-                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-secondary/30 flex items-center justify-center">
-                                        <Wrench className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
+                                <div className="bg-card rounded-xl sm:rounded-2xl p-2 sm:p-4 shadow-sm flex flex-col items-center gap-1 sm:gap-2 flex-1 max-w-[100px] sm:max-w-none">
+                                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-secondary/30 flex items-center justify-center">
+                                        <Wrench className="w-4 h-4 sm:w-6 sm:h-6 text-secondary" />
                                     </div>
-                                    <span className="text-xs font-semibold text-foreground">Maintenance</span>
-                                    <div className="text-[10px] text-muted-foreground">AI Agent</div>
+                                    <span className="text-[10px] sm:text-xs font-semibold text-foreground text-center leading-tight">Maint.</span>
+                                    <div className="text-[8px] sm:text-[10px] text-muted-foreground hidden sm:block">AI Agent</div>
                                 </div>
 
-                                {/* Connection Lines - Horizontal on mobile, Vertical on sm+ */}
-                                <div className="flex sm:flex-col items-center gap-1">
-                                    <div className="h-6 w-0.5 sm:h-0.5 sm:w-8 bg-foreground/20"></div>
-                                    <Sparkles className="w-4 h-4 text-secondary animate-pulse" />
-                                    <div className="h-6 w-0.5 sm:h-0.5 sm:w-8 bg-foreground/20"></div>
+                                {/* Connection Lines */}
+                                <div className="flex flex-col items-center gap-0.5 sm:gap-1 shrink-0">
+                                    <div className="w-4 sm:w-8 h-0.5 bg-foreground/20"></div>
+                                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-secondary animate-pulse" />
+                                    <div className="w-4 sm:w-8 h-0.5 bg-foreground/20"></div>
                                 </div>
 
                                 {/* Management Agent */}
-                                <div className="bg-card rounded-2xl p-3 sm:p-4 shadow-sm flex flex-col items-center gap-2 w-24 sm:w-28">
-                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                                        <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                                <div className="bg-card rounded-xl sm:rounded-2xl p-2 sm:p-4 shadow-sm flex flex-col items-center gap-1 sm:gap-2 flex-1 max-w-[100px] sm:max-w-none">
+                                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                                        <Settings className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
                                     </div>
-                                    <span className="text-xs font-semibold text-foreground">Management</span>
-                                    <div className="text-[10px] text-muted-foreground">AI Agent</div>
+                                    <span className="text-[10px] sm:text-xs font-semibold text-foreground text-center leading-tight">Mgmt.</span>
+                                    <div className="text-[8px] sm:text-[10px] text-muted-foreground hidden sm:block">AI Agent</div>
                                 </div>
                             </div>
 
