@@ -37,7 +37,7 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
                 // Get current property data
                 const { data: property, error: fetchError } = await supabaseAdmin
                     .from("property")
-                    .select("rental_periods, buffer_days")
+                    .select("rental_periods")
                     .eq("id", propertyId)
                     .single();
 
@@ -65,7 +65,6 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
                             current_rental_start: propertyDetails.checkInDate,
                             current_rental_end: propertyDetails.checkOutDate,
                             rental_periods: updatedRentalPeriods,
-                            buffer_days: property?.buffer_days || 2,
                         })
                         .eq("id", propertyId);
 

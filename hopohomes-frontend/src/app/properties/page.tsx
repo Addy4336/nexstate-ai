@@ -35,8 +35,6 @@ interface Property {
     current_rental_start: string | null;
     current_rental_end: string | null;
     rental_periods: any[];
-    min_rental_days: number;
-    buffer_days: number;
 }
 
 interface ApiResponse {
@@ -91,17 +89,70 @@ function getStatusColor(status: string): string {
     return colorMap[status] || 'bg-gray-500';
 }
 
-function getNextAvailableDate(currentRentalEnd: string | null, bufferDays: number = 2): Date | null {
-    if (!currentRentalEnd) return null;
-    
-    const endDate = new Date(currentRentalEnd);
+function getNextAvailableDate(
+    currentRentalEnd: string | null, 
+    rentalPeriods: any[] = []
+): Date | null {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
+    // If no rental periods, property is available now
+    if (!rentalPeriods || rentalPeriods.length === 0) {
+        return null;
+    }
+
+    // Get all active/confirmed bookings sorted by start date
+    const allBookings = rentalPeriods
+        .filter((p: any) => (p.status === 'active' || p.status === 'confirmed'))
+        .map((p: any) => ({
+            start: new Date(p.start_date),
+            end: new Date(p.end_date)
+        }))
+        .sort((a: any, b: any) => a.start.getTime() - b.start.getTime());
+
+    if (allBookings.length === 0) {
+        return null;
+    }
+
+    // Check if today is before all bookings
+    const firstBooking = allBookings[0];
+    if (today < firstBooking.start) {
+        return null; // Available now
+    }
+
+    // Find the first booking that ends today or in the future
+    for (let i = 0; i < allBookings.length; i++) {
+        const currentBooking = allBookings[i];
+        
+        // If this booking ends today or in the future
+        if (currentBooking.end >= today) {
+            // Check if there's a gap before the next booking
+            if (i < allBookings.length - 1) {
+                const nextBooking = allBookings[i + 1];
+                const dayAfterCurrent = new Date(currentBooking.end);
+                dayAfterCurrent.setDate(dayAfterCurrent.getDate() + 1);
+                
+                const dayBeforeNext = new Date(nextBooking.start);
+                dayBeforeNext.setDate(dayBeforeNext.getDate() - 1);
+                
+                // If there's a gap of at least 1 day
+                if (dayAfterCurrent <= dayBeforeNext) {
+                    return dayAfterCurrent;
+                }
+            } else {
+                // This is the last booking, return day after it ends
+                const dayAfterLast = new Date(currentBooking.end);
+                dayAfterLast.setDate(dayAfterLast.getDate() + 1);
+                return dayAfterLast;
+            }
+        }
+    }
+
+    // Fallback to day after last booking
+    const lastBooking = allBookings[allBookings.length - 1];
+    const availableDate = new Date(lastBooking.end);
+    availableDate.setDate(availableDate.getDate() + 1);
     
-    if (endDate < today) return null;
-    
-    const availableDate = new Date(endDate);
-    availableDate.setDate(availableDate.getDate() + bufferDays + 1);
     return availableDate;
 }
 
@@ -476,7 +527,7 @@ export default function Properties() {
                                         
                                         {/* Available From Date for Rented Properties */}
                                         {property.status === 'rented' && property.current_rental_end && (() => {
-                                            const availableDate = getNextAvailableDate(property.current_rental_end, property.buffer_days || 2);
+                                            const availableDate = getNextAvailableDate(property.current_rental_end, property.rental_periods);
                                             return availableDate && (
                                                 <div className="flex items-center gap-1.5 text-sm text-orange-600 bg-orange-50 dark:bg-orange-950/20 px-2.5 py-1.5 rounded-md">
                                                     <Calendar className="w-3.5 h-3.5" />

@@ -292,7 +292,6 @@ export default async function PropertyDetailsPage({ params }: TripExperiencePage
     currentRentalEnd: propertyData.current_rental_end || null,
     currentRentalStart: propertyData.current_rental_start || null,
     rentalPeriods: propertyData.rental_periods || [],
-    bufferDays: propertyData.buffer_days || 2,
   } : null;
 
   return <TripExperienceClient trip={property} slug={slug} id={id} rentalData={rentalData} />;

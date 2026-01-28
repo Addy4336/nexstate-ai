@@ -615,8 +615,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             start_date,
             end_date,
             property.current_rental_end,
-            property.rental_periods || [],
-            property.buffer_days || 2
+            property.rental_periods || []
         );
         
         if (!availabilityCheck.available) {
@@ -634,7 +633,6 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             success: true,
             available: true,
             cost,
-            bufferDays: property.buffer_days,
             nextAvailableDate: property.current_rental_end,
         };
     }, {
@@ -677,8 +675,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             start_date,
             end_date,
             property.current_rental_end,
-            property.rental_periods || [],
-            property.buffer_days || 2
+            property.rental_periods || []
         );
         
         if (!availabilityCheck.available) {

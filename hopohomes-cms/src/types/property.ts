@@ -39,7 +39,6 @@ export interface Property {
   current_rental_start: string | null;
   current_rental_end: string | null;
   rental_periods: RentalPeriod[];
-  buffer_days: number;
 }
 
 /**

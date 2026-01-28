@@ -65,7 +65,6 @@ interface RentalData {
   currentRentalEnd: string | null;
   currentRentalStart: string | null;
   rentalPeriods: any[];
-  bufferDays: number;
 }
 
 interface TripExperienceClientProps {
@@ -83,12 +82,85 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
 
   // Calculate minimum check-in date based on rental status
   const getMinimumCheckInDate = () => {
-    if (rentalData?.status === 'rented' && rentalData.currentRentalEnd) {
-      const rentalEndDate = new Date(rentalData.currentRentalEnd);
-      const bufferDays = rentalData.bufferDays || 2;
-      return addDays(rentalEndDate, bufferDays + 1);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // If property is not rented or no rental periods, available from today
+    if (!rentalData || !rentalData.rentalPeriods || rentalData.rentalPeriods.length === 0) {
+      return today;
     }
-    return new Date();
+
+    // Get all active/confirmed bookings sorted by start date
+    const allBookings = rentalData.rentalPeriods
+      .filter((p: any) => (p.status === 'active' || p.status === 'confirmed'))
+      .map((p: any) => ({
+        start: new Date(p.start_date),
+        end: new Date(p.end_date)
+      }))
+      .sort((a: any, b: any) => a.start.getTime() - b.start.getTime());
+
+    if (allBookings.length === 0) {
+      return today;
+    }
+
+    // Check if today is before all bookings
+    const firstBooking = allBookings[0];
+    if (today < firstBooking.start) {
+      return today;
+    }
+
+    // Find the first booking that ends today or in the future
+    for (let i = 0; i < allBookings.length; i++) {
+      const currentBooking = allBookings[i];
+      
+      // If we're currently in this booking period or it ends in the future
+      if (currentBooking.end >= today) {
+        // Check if there's a gap before the next booking
+        if (i < allBookings.length - 1) {
+          const nextBooking = allBookings[i + 1];
+          const dayAfterCurrent = new Date(currentBooking.end);
+          dayAfterCurrent.setDate(dayAfterCurrent.getDate() + 1);
+          
+          const dayBeforeNext = new Date(nextBooking.start);
+          dayBeforeNext.setDate(dayBeforeNext.getDate() - 1);
+          
+          // If there's a gap of at least 1 day
+          if (dayAfterCurrent <= dayBeforeNext) {
+            return dayAfterCurrent;
+          }
+        } else {
+          // This is the last booking, return day after it ends
+          const dayAfterLast = new Date(currentBooking.end);
+          dayAfterLast.setDate(dayAfterLast.getDate() + 1);
+          return dayAfterLast;
+        }
+      }
+    }
+
+    // Fallback to day after last booking
+    const lastBooking = allBookings[allBookings.length - 1];
+    const dayAfterLast = new Date(lastBooking.end);
+    dayAfterLast.setDate(dayAfterLast.getDate() + 1);
+    return dayAfterLast;
+  };
+
+  // Check if a date falls within any booked period
+  const isDateBooked = (date: Date): boolean => {
+    if (!rentalData || !rentalData.rentalPeriods) return false;
+
+    const checkDate = new Date(date);
+    checkDate.setHours(0, 0, 0, 0);
+
+    return rentalData.rentalPeriods.some((period: any) => {
+      if (period.status !== 'active' && period.status !== 'confirmed') return false;
+
+      const startDate = new Date(period.start_date);
+      const endDate = new Date(period.end_date);
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+
+      return checkDate >= startDate && checkDate <= endDate;
+    });
   };
 
   const minimumDate = getMinimumCheckInDate();
@@ -1077,7 +1149,11 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                             mode="single"
                             selected={checkInDate}
                             onSelect={setCheckInDate}
-                            disabled={(date) => date < minimumDate}
+                            disabled={(date) => {
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              return date < today || isDateBooked(date);
+                            }}
                             initialFocus
                           />
                         </PopoverContent>
@@ -1103,7 +1179,19 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                             mode="single"
                             selected={checkOutDate}
                             onSelect={setCheckOutDate}
-                            disabled={(date) => date < (checkInDate || minimumDate)}
+                            disabled={(date) => {
+                              const minDate = checkInDate || minimumDate;
+                              if (date < minDate || isDateBooked(date)) return true;
+                              
+                              // Maximum 14 nights (15 days including check-in day)
+                              if (checkInDate) {
+                                const maxDate = new Date(checkInDate);
+                                maxDate.setDate(maxDate.getDate() + 14);
+                                if (date > maxDate) return true;
+                              }
+                              
+                              return false;
+                            }}
                             initialFocus
                           />
                         </PopoverContent>
@@ -1318,7 +1406,11 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                             mode="single"
                             selected={checkInDate}
                             onSelect={setCheckInDate}
-                            disabled={(date) => date < minimumDate}
+                            disabled={(date) => {
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              return date < today || isDateBooked(date);
+                            }}
                             initialFocus
                           />
                         </PopoverContent>
@@ -1344,7 +1436,19 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                             mode="single"
                             selected={checkOutDate}
                             onSelect={setCheckOutDate}
-                            disabled={(date) => date < (checkInDate || minimumDate)}
+                            disabled={(date) => {
+                              const minDate = checkInDate || minimumDate;
+                              if (date < minDate || isDateBooked(date)) return true;
+                              
+                              // Maximum 14 nights (15 days including check-in day)
+                              if (checkInDate) {
+                                const maxDate = new Date(checkInDate);
+                                maxDate.setDate(maxDate.getDate() + 14);
+                                if (date > maxDate) return true;
+                              }
+                              
+                              return false;
+                            }}
                             initialFocus
                           />
                         </PopoverContent>

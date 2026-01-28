@@ -49,7 +49,6 @@ export async function createProperty(formData: FormData) {
                 amenities,
                 // Initialize rental tracking columns with defaults
                 rental_periods: [],
-                buffer_days: 2,
                 current_rental_start: null,
                 current_rental_end: null,
             });

@@ -5,13 +5,11 @@
 ALTER TABLE property ADD COLUMN IF NOT EXISTS current_rental_start DATE;
 ALTER TABLE property ADD COLUMN IF NOT EXISTS current_rental_end DATE;
 ALTER TABLE property ADD COLUMN IF NOT EXISTS rental_periods JSONB DEFAULT '[]'::jsonb;
-ALTER TABLE property ADD COLUMN IF NOT EXISTS buffer_days INTEGER DEFAULT 2;
 
 -- Add comments for documentation
 COMMENT ON COLUMN property.current_rental_start IS 'Start date of the current active rental period';
 COMMENT ON COLUMN property.current_rental_end IS 'End date of the current active rental period';
 COMMENT ON COLUMN property.rental_periods IS 'JSON array of all rental periods: [{start_date, end_date, tenant_info, amount, status}]';
-COMMENT ON COLUMN property.buffer_days IS 'Buffer days between rentals for cleaning/maintenance (default 2 days)';
 
 -- Create index for rental date queries
 CREATE INDEX IF NOT EXISTS property_rental_dates_idx ON property(current_rental_start, current_rental_end);
@@ -31,17 +29,16 @@ DECLARE
   v_current_end DATE;
   v_rental_periods JSONB;
   v_period JSONB;
-  v_buffer_days INTEGER;
 BEGIN
   -- Get property rental info
-  SELECT current_rental_end, rental_periods, buffer_days
-  INTO v_current_end, v_rental_periods, v_buffer_days
+  SELECT current_rental_end, rental_periods
+  INTO v_current_end, v_rental_periods
   FROM property
   WHERE id = p_id;
   
   -- Check if currently rented and dates overlap
   IF v_current_end IS NOT NULL THEN
-    IF p_start_date <= (v_current_end + v_buffer_days) THEN
+    IF p_start_date <= v_current_end THEN
       RETURN FALSE;
     END IF;
   END IF;
@@ -52,8 +49,8 @@ BEGIN
     LOOP
       IF (v_period->>'status')::text = 'active' OR (v_period->>'status')::text = 'confirmed' THEN
         IF (
-          (p_start_date <= (v_period->>'end_date')::date + v_buffer_days) AND
-          (p_end_date >= (v_period->>'start_date')::date - v_buffer_days)
+          (p_start_date <= (v_period->>'end_date')::date) AND
+          (p_end_date >= (v_period->>'start_date')::date)
         ) THEN
           RETURN FALSE;
         END IF;
@@ -69,15 +66,14 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION get_next_available_date(p_id TEXT) RETURNS DATE AS $$
 DECLARE
   v_current_end DATE;
-  v_buffer_days INTEGER;
 BEGIN
-  SELECT current_rental_end, buffer_days
-  INTO v_current_end, v_buffer_days
+  SELECT current_rental_end
+  INTO v_current_end
   FROM property
   WHERE id = p_id;
   
   IF v_current_end IS NOT NULL THEN
-    RETURN v_current_end + v_buffer_days + 1;
+    RETURN v_current_end + 1;
   END IF;
   
   RETURN CURRENT_DATE;

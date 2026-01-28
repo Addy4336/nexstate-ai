@@ -30,7 +30,7 @@ export async function checkPropertyAvailability(
   try {
     const { data: property, error } = await supabaseAdmin
       .from("property")
-      .select("current_rental_end, rental_periods, buffer_days, price")
+      .select("current_rental_end, rental_periods, price")
       .eq("id", propertyId)
       .single();
 
@@ -49,8 +49,7 @@ export async function checkPropertyAvailability(
       startDate,
       endDate,
       property.current_rental_end,
-      property.rental_periods || [],
-      property.buffer_days || 2
+      property.rental_periods || []
     );
 
     if (!availabilityCheck.available) {
@@ -68,7 +67,6 @@ export async function checkPropertyAvailability(
       success: true,
       available: true,
       cost,
-      bufferDays: property.buffer_days,
     };
   } catch (error: any) {
     console.error("Error checking availability:", error);

@@ -15,26 +15,72 @@ export function isCurrentlyRented(
 
 /**
  * Get the next available date for a property
+ * Considers both current rental and future bookings to find earliest availability
  */
 export function getNextAvailableDate(
   currentRentalEnd: string | null,
-  bufferDays: number = 2
+  rentalPeriods: RentalPeriod[] = []
 ): Date {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  if (!currentRentalEnd) {
+  // If no rental periods, available from today
+  if (!rentalPeriods || rentalPeriods.length === 0) {
     return today;
   }
 
-  const endDate = new Date(currentRentalEnd);
-  if (endDate < today) {
+  // Get all active/confirmed bookings sorted by start date
+  const allBookings = rentalPeriods
+    .filter(p => (p.status === 'active' || p.status === 'confirmed'))
+    .map(p => ({
+      start: new Date(p.start_date),
+      end: new Date(p.end_date)
+    }))
+    .sort((a, b) => a.start.getTime() - b.start.getTime());
+
+  if (allBookings.length === 0) {
     return today;
   }
 
-  // Add buffer days after rental ends
-  const availableDate = new Date(endDate);
-  availableDate.setDate(availableDate.getDate() + bufferDays + 1);
+  // Check if today is before all bookings
+  const firstBooking = allBookings[0];
+  if (today < firstBooking.start) {
+    return today;
+  }
+
+  // Find the first booking that ends today or in the future
+  for (let i = 0; i < allBookings.length; i++) {
+    const currentBooking = allBookings[i];
+    
+    // If this booking ends today or in the future
+    if (currentBooking.end >= today) {
+      // Check if there's a gap before the next booking
+      if (i < allBookings.length - 1) {
+        const nextBooking = allBookings[i + 1];
+        const dayAfterCurrent = new Date(currentBooking.end);
+        dayAfterCurrent.setDate(dayAfterCurrent.getDate() + 1);
+        
+        const dayBeforeNext = new Date(nextBooking.start);
+        dayBeforeNext.setDate(dayBeforeNext.getDate() - 1);
+        
+        // If there's a gap of at least 1 day
+        if (dayAfterCurrent <= dayBeforeNext) {
+          return dayAfterCurrent;
+        }
+      } else {
+        // This is the last booking, return day after it ends
+        const dayAfterLast = new Date(currentBooking.end);
+        dayAfterLast.setDate(dayAfterLast.getDate() + 1);
+        return dayAfterLast;
+      }
+    }
+  }
+
+  // Fallback to day after last booking
+  const lastBooking = allBookings[allBookings.length - 1];
+  const availableDate = new Date(lastBooking.end);
+  availableDate.setDate(availableDate.getDate() + 1);
+  
   return availableDate;
 }
 
@@ -45,8 +91,7 @@ export function areDatesAvailable(
   startDate: string,
   endDate: string,
   currentRentalEnd: string | null,
-  rentalPeriods: RentalPeriod[],
-  bufferDays: number = 2
+  rentalPeriods: RentalPeriod[]
 ): { available: boolean; reason?: string } {
   const requestStart = new Date(startDate);
   const requestEnd = new Date(endDate);
@@ -67,7 +112,7 @@ export function areDatesAvailable(
   if (currentRentalEnd) {
     const currentEnd = new Date(currentRentalEnd);
     const minAvailableDate = new Date(currentEnd);
-    minAvailableDate.setDate(minAvailableDate.getDate() + bufferDays + 1);
+    minAvailableDate.setDate(minAvailableDate.getDate() + 1);
 
     if (requestStart < minAvailableDate) {
       return {
@@ -86,14 +131,8 @@ export function areDatesAvailable(
     const rentalStart = new Date(rental.start_date);
     const rentalEnd = new Date(rental.end_date);
 
-    // Add buffer to rental dates
-    const bufferStart = new Date(rentalStart);
-    bufferStart.setDate(bufferStart.getDate() - bufferDays);
-    const bufferEnd = new Date(rentalEnd);
-    bufferEnd.setDate(bufferEnd.getDate() + bufferDays);
-
-    // Check for overlap
-    if (requestStart <= bufferEnd && requestEnd >= bufferStart) {
+    // Check for overlap (no buffer)
+    if (requestStart <= rentalEnd && requestEnd >= rentalStart) {
       return {
         available: false,
         reason: `Dates overlap with existing booking (${rental.start_date} to ${rental.end_date})`,
