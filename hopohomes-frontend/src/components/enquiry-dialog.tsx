@@ -10,9 +10,16 @@ interface EnquiryDialogProps {
     onClose: () => void;
     propertyId: string;
     propertyTitle: string;
+    bookingData?: {
+        checkInDate?: string;
+        checkOutDate?: string;
+        guests?: number;
+        cancellationPolicy?: string;
+        totalAmount?: number;
+    } | null;
 }
 
-export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: EnquiryDialogProps) {
+export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle, bookingData }: EnquiryDialogProps) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -44,7 +51,15 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle }: En
                     ...formData,
                     propertyId: propertyId,
                     propertyTitle: propertyTitle,
-                    type: 'tenant_enquiry'
+                    type: 'tenant_enquiry',
+                    propertyDetails: bookingData ? {
+                        checkInDate: bookingData.checkInDate,
+                        checkOutDate: bookingData.checkOutDate,
+                        guests: bookingData.guests,
+                        cancellationPolicy: bookingData.cancellationPolicy,
+                        totalAmount: bookingData.totalAmount,
+                        bookingType: 'reservation',
+                    } : null,
                 }),
             });
 

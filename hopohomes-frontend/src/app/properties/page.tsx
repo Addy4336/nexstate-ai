@@ -13,7 +13,8 @@ import {
     Loader2,
     Star,
     SlidersHorizontal,
-    Heart
+    Heart,
+    Calendar
 } from 'lucide-react';
 
 // Property interface matching the CMS API response
@@ -31,6 +32,11 @@ interface Property {
     cover_image: string[] | null;
     featured: boolean;
     amenities: string[] | null;
+    current_rental_start: string | null;
+    current_rental_end: string | null;
+    rental_periods: any[];
+    min_rental_days: number;
+    buffer_days: number;
 }
 
 interface ApiResponse {
@@ -67,12 +73,44 @@ function formatPrice(price: number): string {
 
 function formatStatus(status: string): string {
     const statusMap: Record<string, string> = {
-        'available': 'For Sale',
+        'available': 'Available',
         'rented': 'Rented',
         'sold': 'Sold',
         'maintenance': 'Maintenance'
     };
-    return statusMap[status] || 'For Sale';
+    return statusMap[status] || 'Available';
+}
+
+function getStatusColor(status: string): string {
+    const colorMap: Record<string, string> = {
+        'available': 'bg-green-500',
+        'rented': 'bg-orange-500',
+        'sold': 'bg-red-500',
+        'maintenance': 'bg-yellow-500'
+    };
+    return colorMap[status] || 'bg-gray-500';
+}
+
+function getNextAvailableDate(currentRentalEnd: string | null, bufferDays: number = 2): Date | null {
+    if (!currentRentalEnd) return null;
+    
+    const endDate = new Date(currentRentalEnd);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (endDate < today) return null;
+    
+    const availableDate = new Date(endDate);
+    availableDate.setDate(availableDate.getDate() + bufferDays + 1);
+    return availableDate;
+}
+
+function formatDate(date: Date): string {
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
 }
 
 export default function Properties() {
@@ -400,8 +438,7 @@ export default function Properties() {
                                             className="object-cover transition-transform duration-500 group-hover:scale-105"
                                         />
 
-                                        {/* Status Badge */}
-                                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
+                                        {/* Status Badg{`absolute top-4 left-4 ${getStatusColor(property.status)} text-white px-3 py-1 rounded-full text-xs font-medium`}>
                                             {formatStatus(property.status)}
                                         </div>
 
@@ -436,6 +473,17 @@ export default function Properties() {
                                             <MapPin className="w-3.5 h-3.5" />
                                             {property.location}
                                         </p>
+                                        
+                                        {/* Available From Date for Rented Properties */}
+                                        {property.status === 'rented' && property.current_rental_end && (() => {
+                                            const availableDate = getNextAvailableDate(property.current_rental_end, property.buffer_days || 2);
+                                            return availableDate && (
+                                                <div className="flex items-center gap-1.5 text-sm text-orange-600 bg-orange-50 dark:bg-orange-950/20 px-2.5 py-1.5 rounded-md">
+                                                    <Calendar className="w-3.5 h-3.5" />
+                                                    <span>Available from {formatDate(availableDate)}</span>
+                                                </div>
+                                            );
+                                        })()}
 
                                         {/* Features */}
                                         <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">

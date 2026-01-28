@@ -47,6 +47,11 @@ export async function createProperty(formData: FormData) {
                 cover_image,
                 drive_folder_id,
                 amenities,
+                // Initialize rental tracking columns with defaults
+                rental_periods: [],
+                buffer_days: 2,
+                current_rental_start: null,
+                current_rental_end: null,
             });
 
         if (error) {

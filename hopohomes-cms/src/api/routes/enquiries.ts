@@ -11,7 +11,8 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
             return { success: false, error: "Missing required fields" };
         }
 
-        const { error } = await supabaseAdmin
+        // Insert enquiry
+        const { error: enquiryError } = await supabaseAdmin
             .from("enquiry")
             .insert({
                 type: type || "general_contact",
@@ -25,9 +26,56 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
                 status: "new",
             });
 
-        if (error) {
-            console.error("Error submitting enquiry:", error);
+        if (enquiryError) {
+            console.error("Error submitting enquiry:", enquiryError);
             return { success: false, error: "Failed to submit enquiry" };
+        }
+
+        // If booking data is included, update property table
+        if (propertyId && propertyDetails?.bookingType === 'reservation' && propertyDetails.checkInDate && propertyDetails.checkOutDate) {
+            try {
+                // Get current property data
+                const { data: property, error: fetchError } = await supabaseAdmin
+                    .from("property")
+                    .select("rental_periods, buffer_days")
+                    .eq("id", propertyId)
+                    .single();
+
+                if (fetchError) {
+                    console.error("Error fetching property:", fetchError);
+                } else {
+                    // Add new rental period to the array
+                    const newRentalPeriod = {
+                        start_date: propertyDetails.checkInDate,
+                        end_date: propertyDetails.checkOutDate,
+                        tenant_info: `${name} (${email})`,
+                        amount: propertyDetails.totalAmount || 0,
+                        status: "active",
+                        guests: propertyDetails.guests || 1,
+                        created_at: new Date().toISOString(),
+                    };
+
+                    const updatedRentalPeriods = [...(property?.rental_periods || []), newRentalPeriod];
+
+                    // Update property with rental info
+                    const { error: updateError } = await supabaseAdmin
+                        .from("property")
+                        .update({
+                            status: "rented",
+                            current_rental_start: propertyDetails.checkInDate,
+                            current_rental_end: propertyDetails.checkOutDate,
+                            rental_periods: updatedRentalPeriods,
+                            buffer_days: property?.buffer_days || 2,
+                        })
+                        .eq("id", propertyId);
+
+                    if (updateError) {
+                        console.error("Error updating property:", updateError);
+                    }
+                }
+            } catch (err) {
+                console.error("Error processing booking:", err);
+            }
         }
 
         return { success: true, message: "Enquiry submitted successfully" };

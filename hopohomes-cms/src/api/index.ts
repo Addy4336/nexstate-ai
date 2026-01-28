@@ -7,6 +7,10 @@ import { favoritesRoutes } from "./routes/favorites";
 import { blogsRoutes } from "./routes/blogs";
 import { faqsRoutes } from "./routes/faqs";
 import { storageRoutes } from "./routes/storage";
+import { initializeCronJobs } from "../lib/cron-jobs";
+
+// Initialize cron jobs when the API starts
+initializeCronJobs();
 
 // Create the main Elysia application
 // Prefix with /api to match Next.js catch-all route at /api/[[...slugs]]

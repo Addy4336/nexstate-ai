@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X, Plus, Minus, Camera, Heart, Share2, Bookmark, Bed, Bath, Square, Car, Shield, MapPin, Clock, Flag, Star, Check, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
 import { EnquiryDialog } from '@/components/enquiry-dialog';
-import { format } from "date-fns"
+import { format, addDays } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -60,22 +60,44 @@ export interface TripData {
   };
 }
 
+interface RentalData {
+  status: string;
+  currentRentalEnd: string | null;
+  currentRentalStart: string | null;
+  rentalPeriods: any[];
+  bufferDays: number;
+}
+
 interface TripExperienceClientProps {
   trip: TripData;
   slug: string;
   id: string;
+  rentalData?: RentalData | null;
 }
 
-export default function TripExperienceClient({ trip, slug, id }: TripExperienceClientProps) {
+export default function TripExperienceClient({ trip, slug, id, rentalData }: TripExperienceClientProps) {
   const [expandedRoom, setExpandedRoom] = useState<string | null>(null);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [selectedDateIndex, setSelectedDateIndex] = useState<number>(0);
-  const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date(2023, 8, 11));
-  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(new Date(2023, 8, 20));
+  
+  // Calculate minimum check-in date based on rental status
+  const getMinimumCheckInDate = () => {
+    if (rentalData?.status === 'rented' && rentalData.currentRentalEnd) {
+      const rentalEndDate = new Date(rentalData.currentRentalEnd);
+      const bufferDays = rentalData.bufferDays || 2;
+      return addDays(rentalEndDate, bufferDays + 1);
+    }
+    return new Date();
+  };
+  
+  const minimumDate = getMinimumCheckInDate();
+  const [checkInDate, setCheckInDate] = useState<Date | undefined>(minimumDate);
+  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(addDays(minimumDate, 1));
   const [guests, setGuests] = useState(3);
   const [isSaved, setIsSaved] = useState(false);
   const [selectedCancellation, setSelectedCancellation] = useState<'non-refundable' | 'refundable'>('non-refundable');
+  const [bookingData, setBookingData] = useState<any>(null);
 
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
@@ -997,12 +1019,16 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                   {/* Property Name & Tags */}
                   <div className="mb-3">
                     <h3 className="text-base font-bold text-foreground">{trip.title.split(' ').slice(0, 2).join(' ')}</h3>
-                    <div className="flex flex-wrap gap-1.5 mt-1.5">
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">Self check in</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">Superhost</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">Great location</span>
-                    </div>
                   </div>
+
+                  {/* Rental Status Alert */}
+                  {rentalData?.status === 'rented' && rentalData.currentRentalEnd && (
+                    <div className="mb-3 px-3 py-2 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/30 rounded-lg">
+                      <p className="text-xs text-orange-700 dark:text-orange-400 font-medium">
+                        Available from {minimumDate.toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
 
                   {/* Price */}
                   <div className="mb-4">
@@ -1034,6 +1060,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                             mode="single"
                             selected={checkInDate}
                             onSelect={setCheckInDate}
+                            disabled={(date) => date < minimumDate}
                             initialFocus
                           />
                         </PopoverContent>
@@ -1059,6 +1086,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                             mode="single"
                             selected={checkOutDate}
                             onSelect={setCheckOutDate}
+                            disabled={(date) => date < (checkInDate || minimumDate)}
                             initialFocus
                           />
                         </PopoverContent>
@@ -1143,7 +1171,17 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
 
                   {/* Reserve Button */}
                   <Button
-                    onClick={() => setIsEnquiryOpen(true)}
+                    onClick={() => {
+                      // Prepare booking data to be saved after enquiry
+                      setBookingData({
+                        checkInDate: checkInDate?.toISOString().split('T')[0],
+                        checkOutDate: checkOutDate?.toISOString().split('T')[0],
+                        guests,
+                        cancellationPolicy: selectedCancellation,
+                        totalAmount: selectedCancellation === 'refundable' ? Math.round(trip.pricing.from * 1.1) : trip.pricing.from,
+                      });
+                      setIsEnquiryOpen(true);
+                    }}
                     className="w-full h-10 bg-foreground hover:bg-foreground/90 text-background rounded-full font-semibold shadow-md transition-all duration-200 mt-1 text-sm"
                   >
                     Reserve
@@ -1211,6 +1249,15 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                     </Button>
                   </div>
 
+                  {/* Rental Status Alert - Mobile */}
+                  {rentalData?.status === 'rented' && rentalData.currentRentalEnd && (
+                    <div className="mb-4 px-3 py-2.5 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/30 rounded-lg">
+                      <p className="text-sm text-orange-700 dark:text-orange-400 font-medium">
+                        Available from {minimumDate.toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
+
                   {/* Price */}
                   <div className="mb-6">
                     <span className="text-3xl font-bold text-primary">
@@ -1241,6 +1288,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                             mode="single"
                             selected={checkInDate}
                             onSelect={setCheckInDate}
+                            disabled={(date) => date < minimumDate}
                             initialFocus
                           />
                         </PopoverContent>
@@ -1266,6 +1314,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
                             mode="single"
                             selected={checkOutDate}
                             onSelect={setCheckOutDate}
+                            disabled={(date) => date < (checkInDate || minimumDate)}
                             initialFocus
                           />
                         </PopoverContent>
@@ -1330,6 +1379,13 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
 
                   <Button
                     onClick={() => {
+                      setBookingData({
+                        checkInDate: checkInDate?.toISOString().split('T')[0],
+                        checkOutDate: checkOutDate?.toISOString().split('T')[0],
+                        guests,
+                        cancellationPolicy: selectedCancellation,
+                        totalAmount: selectedCancellation === 'refundable' ? Math.round(trip.pricing.from * 1.1) : trip.pricing.from,
+                      });
                       setIsMobileDrawerOpen(false);
                       setTimeout(() => setIsEnquiryOpen(true), 300);
                     }}
@@ -1348,7 +1404,7 @@ export default function TripExperienceClient({ trip, slug, id }: TripExperienceC
           onClose={() => setIsEnquiryOpen(false)}
           propertyId={id}
           propertyTitle={trip.title}
-        // Pass collected data to enquiry dialog if supported, or just open it
+          bookingData={bookingData}
         />
       </div>
     </>

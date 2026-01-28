@@ -1,15 +1,17 @@
 import { Elysia, t } from "elysia";
 import { supabaseAdmin } from "@/lib/db";
+import { areDatesAvailable, calculateRentalCost, validateMinimumStay } from "@/lib/rental-utils";
+import { RentalPeriod } from "@/types/property";
 
 export const propertiesRoutes = new Elysia({ prefix: "/properties" })
-    // Get all available properties (public)
+    // Get all available and rented properties (public)
     .get("/", async ({ query }) => {
         const { limit, featured } = query;
         
         let queryBuilder = supabaseAdmin
             .from("property")
             .select("*")
-            .eq("status", "available");
+            .in("status", ["available", "rented"]); // Include both available and rented
         
         if (featured === "true") {
             queryBuilder = queryBuilder.eq("featured", true);
@@ -49,7 +51,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         const { data, error } = await supabaseAdmin
             .from("property")
             .select("*")
-            .eq("status", "available")
+            .in("status", ["available", "rented"]) // Include rented properties
             .eq("featured", true)
             .order("created_at", { ascending: false })
             .limit(limit);
@@ -74,7 +76,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             const { data: availableData, error: availError } = await supabaseAdmin
                 .from("property")
                 .select("*")
-                .eq("status", "available")
+                .in("status", ["available", "rented"])
                 .order("created_at", { ascending: false })
                 .limit(limit);
             
@@ -113,7 +115,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         let queryBuilder = supabaseAdmin
             .from("property")
             .select("*")
-            .eq("status", "available");
+            .in("status", ["available", "rented"]);
         
         if (q) {
             queryBuilder = queryBuilder.or(
@@ -577,5 +579,256 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             tags: ["Properties"],
             summary: "Get furnishing options",
             description: "Get list of furnishing options for filtering",
+        },
+    })
+    
+    // Check property availability for specific dates
+    .get("/:id/availability", async ({ params, query }) => {
+        const { start_date, end_date } = query;
+        
+        if (!start_date || !end_date) {
+            return {
+                success: false,
+                error: "start_date and end_date are required",
+                available: false,
+            };
+        }
+        
+        const { data: property, error } = await supabaseAdmin
+            .from("property")
+            .select("*")
+            .eq("id", params.id)
+            .single();
+        
+        if (error || !property) {
+            return {
+                success: false,
+                error: "Property not found",
+                available: false,
+            };
+        }
+        
+        // No minimum stay validation - removed per requirement
+        
+        // Check availability
+        const availabilityCheck = areDatesAvailable(
+            start_date,
+            end_date,
+            property.current_rental_end,
+            property.rental_periods || [],
+            property.buffer_days || 2
+        );
+        
+        if (!availabilityCheck.available) {
+            return {
+                success: false,
+                error: availabilityCheck.reason,
+                available: false,
+            };
+        }
+        
+        // Calculate cost
+        const cost = calculateRentalCost(start_date, end_date, property.price);
+        
+        return {
+            success: true,
+            available: true,
+            cost,
+            bufferDays: property.buffer_days,
+            nextAvailableDate: property.current_rental_end,
+        };
+    }, {
+        params: t.Object({
+            id: t.String(),
+        }),
+        query: t.Object({
+            start_date: t.String(),
+            end_date: t.String(),
+        }),
+        detail: {
+            tags: ["Properties"],
+            summary: "Check property availability",
+            description: "Check if property is available for specific date range",
+        },
+    })
+    
+    // Create a booking
+    .post("/:id/book", async ({ params, body }) => {
+        const { start_date, end_date, tenant_name, tenant_email, tenant_phone, guests, notes } = body;
+        
+        // First check availability
+        const { data: property, error: fetchError } = await supabaseAdmin
+            .from("property")
+            .select("*")
+            .eq("id", params.id)
+            .single();
+        
+        if (fetchError || !property) {
+            return {
+                success: false,
+                error: "Property not found",
+            };
+        }
+        
+        // No minimum stay validation - removed per requirement
+        
+        // Check availability
+        const availabilityCheck = areDatesAvailable(
+            start_date,
+            end_date,
+            property.current_rental_end,
+            property.rental_periods || [],
+            property.buffer_days || 2
+        );
+        
+        if (!availabilityCheck.available) {
+            return {
+                success: false,
+                error: availabilityCheck.reason,
+            };
+        }
+        
+        // Calculate cost
+        const cost = calculateRentalCost(start_date, end_date, property.price);
+        
+        // Create new rental period
+        const newRental: RentalPeriod = {
+            start_date,
+            end_date,
+            tenant_name,
+            tenant_email,
+            tenant_phone,
+            amount: cost.total,
+            guests: guests || 1,
+            status: "confirmed",
+            created_at: new Date().toISOString(),
+            notes,
+        };
+        
+        // Update rental_periods array
+        const updatedRentalPeriods = [...(property.rental_periods || []), newRental];
+        
+        // Check if immediate rental
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const bookingStart = new Date(start_date);
+        const isImmediateRental = bookingStart <= today;
+        
+        const updateData: any = {
+            rental_periods: updatedRentalPeriods,
+            updated_at: new Date().toISOString(),
+        };
+        
+        if (isImmediateRental) {
+            updateData.current_rental_start = start_date;
+            updateData.current_rental_end = end_date;
+            updateData.status = "rented";
+        }
+        
+        const { error: updateError } = await supabaseAdmin
+            .from("property")
+            .update(updateData)
+            .eq("id", params.id);
+        
+        if (updateError) {
+            console.error("Error creating booking:", updateError);
+            return {
+                success: false,
+                error: "Failed to create booking",
+            };
+        }
+        
+        return {
+            success: true,
+            booking: newRental,
+            cost,
+            message: "Booking confirmed successfully!",
+        };
+    }, {
+        params: t.Object({
+            id: t.String(),
+        }),
+        body: t.Object({
+            start_date: t.String(),
+            end_date: t.String(),
+            tenant_name: t.String(),
+            tenant_email: t.String(),
+            tenant_phone: t.Optional(t.String()),
+            guests: t.Optional(t.Number()),
+            notes: t.Optional(t.String()),
+        }),
+        detail: {
+            tags: ["Properties"],
+            summary: "Book a property",
+            description: "Create a new booking for a property",
+        },
+    })
+    
+    // Get property bookings/rental history
+    .get("/:id/bookings", async ({ params }) => {
+        const { data: property, error } = await supabaseAdmin
+            .from("property")
+            .select("rental_periods, current_rental_start, current_rental_end")
+            .eq("id", params.id)
+            .single();
+        
+        if (error || !property) {
+            return {
+                success: false,
+                error: "Property not found",
+                data: [],
+            };
+        }
+        
+        return {
+            success: true,
+            data: {
+                bookings: property.rental_periods || [],
+                currentRental: {
+                    start: property.current_rental_start,
+                    end: property.current_rental_end,
+                },
+            },
+        };
+    }, {
+        params: t.Object({
+            id: t.String(),
+        }),
+        detail: {
+            tags: ["Properties"],
+            summary: "Get property bookings",
+            description: "Get all bookings and rental history for a property",
+        },
+    })
+    
+    // Update rental statuses (check expired rentals)
+    .post("/update-rental-statuses", async () => {
+        try {
+            const { error } = await supabaseAdmin.rpc("update_property_rental_status");
+            
+            if (error) {
+                console.error("Error updating rental statuses:", error);
+                return {
+                    success: false,
+                    error: "Failed to update rental statuses",
+                };
+            }
+            
+            return {
+                success: true,
+                message: "Rental statuses updated successfully",
+            };
+        } catch (error) {
+            console.error("Error updating rental statuses:", error);
+            return {
+                success: false,
+                error: "Failed to update rental statuses",
+            };
+        }
+    }, {
+        detail: {
+            tags: ["Properties"],
+            summary: "Update rental statuses",
+            description: "Manually trigger update of rental statuses (mark expired rentals as available)",
         },
     });
