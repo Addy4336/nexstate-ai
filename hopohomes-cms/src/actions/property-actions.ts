@@ -18,6 +18,13 @@ export async function createProperty(formData: FormData) {
     const featured = formData.get("featured") === "on";
     const drive_folder_id = formData.get("folderId") as string;
 
+    // Extract Fee Fields
+    const vat = parseFloat(formData.get("vat") as string) || 5;
+    const booking_fee = parseFloat(formData.get("booking_fee") as string) || 0;
+    const exit_cleaning_fee = parseFloat(formData.get("exit_cleaning_fee") as string) || 0;
+    const tourism_fee = parseFloat(formData.get("tourism_fee") as string) || 0;
+    const security_deposit = parseFloat(formData.get("security_deposit") as string) || 0;
+
     // Images are passed as comma-separated string from client component
     const imagesString = formData.get("images") as string;
     const images = imagesString ? imagesString.split(",").filter(Boolean) : [];
@@ -47,6 +54,11 @@ export async function createProperty(formData: FormData) {
                 cover_image,
                 drive_folder_id,
                 amenities,
+                vat,
+                booking_fee,
+                exit_cleaning_fee,
+                tourism_fee,
+                security_deposit,
                 // Initialize rental tracking columns with defaults
                 rental_periods: [],
                 current_rental_start: null,
@@ -68,23 +80,23 @@ export async function createProperty(formData: FormData) {
         if (configResult.success && configResult.data && configResult.data.auto_sync) {
             const config = configResult.data;
             const zoho = await getZohoCreatorService();
-            
+
             if (zoho) {
                 const zohoData: Record<string, any> = {};
                 const mapping = config.field_mapping || {};
-                
+
                 const propertyData = {
-                    title, description, price, location, 
-                    bedrooms, bathrooms, area_sqft, status, 
+                    title, description, price, location,
+                    bedrooms, bathrooms, area_sqft, status,
                     featured, amenities: amenities.join(", ")
                 };
-                
+
                 for (const [localField, zohoField] of Object.entries(mapping)) {
                     if (zohoField && propertyData[localField as keyof typeof propertyData] !== undefined) {
                         zohoData[zohoField as string] = propertyData[localField as keyof typeof propertyData];
                     }
                 }
-                
+
                 if (Object.keys(zohoData).length > 0) {
                     await zoho.addRecord(config.owner_name, config.app_name, config.form_name, zohoData);
                 }
@@ -112,6 +124,13 @@ export async function updateProperty(id: string, formData: FormData) {
     const featured = formData.get("featured") === "on";
     const drive_folder_id = formData.get("folderId") as string;
 
+    // Extract Fee Fields
+    const vat = parseFloat(formData.get("vat") as string) || 5;
+    const booking_fee = parseFloat(formData.get("booking_fee") as string) || 0;
+    const exit_cleaning_fee = parseFloat(formData.get("exit_cleaning_fee") as string) || 0;
+    const tourism_fee = parseFloat(formData.get("tourism_fee") as string) || 0;
+    const security_deposit = parseFloat(formData.get("security_deposit") as string) || 0;
+
     const imagesString = formData.get("images") as string;
     const images = imagesString ? imagesString.split(",").filter(Boolean) : [];
     const cover_image = images.length > 0 ? [images[0]] : [];
@@ -133,6 +152,11 @@ export async function updateProperty(id: string, formData: FormData) {
             featured,
             cover_image,
             amenities,
+            vat,
+            booking_fee,
+            exit_cleaning_fee,
+            tourism_fee,
+            security_deposit,
             updated_at: new Date().toISOString(),
         };
 
@@ -167,7 +191,7 @@ export async function deleteProperty(id: string) {
             .from("property")
             .delete()
             .eq("id", id);
-        
+
         if (error) {
             console.error("Error deleting property:", error);
             return { error: error.message };
@@ -189,7 +213,7 @@ export async function archiveProperty(id: string) {
                 updated_at: new Date().toISOString(),
             })
             .eq("id", id);
-        
+
         if (error) {
             console.error("Error archiving property:", error);
             return { error: error.message };
