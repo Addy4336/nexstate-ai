@@ -236,7 +236,7 @@ export default function Hero() {
 
                         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 sm:gap-6 lg:gap-8">
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.15] sm:leading-[1.1]">
-                                AI-powered network of <br className="hidden xs:block" /> fully furnished homes in Dubai
+                                AI-Powered Network of <br className="hidden xs:block" /> Fully Furnished Rented Homes in Dubai
                             </h1>
 
                             <p className="max-w-lg text-white/80 text-xs sm:text-sm leading-relaxed lg:text-right lg:pb-2">
