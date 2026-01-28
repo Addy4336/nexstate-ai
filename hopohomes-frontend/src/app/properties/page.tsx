@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -75,19 +76,45 @@ function formatStatus(status: string): string {
 }
 
 export default function Properties() {
+    const searchParams = useSearchParams();
+
     const [properties, setProperties] = useState<Property[]>([]);
     const [locations, setLocations] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [showFilters, setShowFilters] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
 
-    // Filter states
+    // Filter states - initialized from URL params
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedLocation, setSelectedLocation] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
     const [selectedBeds, setSelectedBeds] = useState('');
     const [selectedBaths, setSelectedBaths] = useState('');
+    const [selectedPropertyType, setSelectedPropertyType] = useState('');
+
+    // Read URL params on initial load
+    useEffect(() => {
+        const location = searchParams.get('location') || '';
+        const minPriceParam = searchParams.get('minPrice') || '';
+        const maxPriceParam = searchParams.get('maxPrice') || '';
+        const bedrooms = searchParams.get('bedrooms') || '';
+        const propertyType = searchParams.get('propertyType') || '';
+
+        setSelectedLocation(location);
+        setMinPrice(minPriceParam);
+        setMaxPrice(maxPriceParam);
+        setSelectedBeds(bedrooms);
+        setSelectedPropertyType(propertyType);
+
+        // Show filters panel if any URL params are present
+        if (location || minPriceParam || maxPriceParam || bedrooms || propertyType) {
+            setShowFilters(true);
+        }
+
+        setIsInitialized(true);
+    }, [searchParams]);
 
     useEffect(() => {
         async function fetchLocations() {
@@ -105,6 +132,8 @@ export default function Properties() {
     }, []);
 
     const fetchProperties = useCallback(async () => {
+        if (!isInitialized) return; // Don't fetch until URL params are read
+
         setLoading(true);
         setError(null);
 
@@ -124,7 +153,14 @@ export default function Properties() {
 
             if (data.success) {
                 let filtered = data.data;
-                // Removed status filtering
+                // Apply property type filter client-side if selected
+                if (selectedPropertyType) {
+                    filtered = filtered.filter(p =>
+                        p.title.toLowerCase().includes(selectedPropertyType.toLowerCase()) ||
+                        (p.description && p.description.toLowerCase().includes(selectedPropertyType.toLowerCase()))
+                    );
+                }
+                // Apply bathrooms filter
                 if (selectedBaths) filtered = filtered.filter(p => p.bathrooms >= parseInt(selectedBaths));
                 setProperties(filtered);
             } else {
@@ -137,7 +173,7 @@ export default function Properties() {
         } finally {
             setLoading(false);
         }
-    }, [searchQuery, selectedLocation, minPrice, maxPrice, selectedBeds, selectedBaths]);
+    }, [searchQuery, selectedLocation, minPrice, maxPrice, selectedBeds, selectedBaths, selectedPropertyType, isInitialized]);
 
     useEffect(() => {
         const timer = setTimeout(fetchProperties, 300);
@@ -151,9 +187,12 @@ export default function Properties() {
         setMaxPrice('');
         setSelectedBeds('');
         setSelectedBaths('');
+        setSelectedPropertyType('');
+        // Update URL without params
+        window.history.replaceState({}, '', '/properties');
     };
 
-    const hasActiveFilters = searchQuery || selectedLocation || minPrice || maxPrice || selectedBeds || selectedBaths;
+    const hasActiveFilters = searchQuery || selectedLocation || minPrice || maxPrice || selectedBeds || selectedBaths || selectedPropertyType;
 
     return (
         <div className="min-h-screen bg-background">
@@ -224,7 +263,7 @@ export default function Properties() {
                 <section className="px-6 lg:px-8 pb-8">
                     <div className="max-w-5xl mx-auto">
                         <div className="bg-card border border-border rounded-xl p-6">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                                 <div>
                                     <label className="text-xs text-muted-foreground mb-1.5 block">Min Price</label>
                                     <input
@@ -272,6 +311,22 @@ export default function Properties() {
                                         <option value="2">2+</option>
                                         <option value="3">3+</option>
                                         <option value="4">4+</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-xs text-muted-foreground mb-1.5 block">Property Type</label>
+                                    <select
+                                        value={selectedPropertyType}
+                                        onChange={(e) => setSelectedPropertyType(e.target.value)}
+                                        className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20 appearance-none"
+                                    >
+                                        <option value="">Any</option>
+                                        <option value="apartment">Apartment</option>
+                                        <option value="villa">Villa</option>
+                                        <option value="townhouse">Townhouse</option>
+                                        <option value="penthouse">Penthouse</option>
+                                        <option value="studio">Studio</option>
+                                        <option value="house">House</option>
                                     </select>
                                 </div>
                             </div>
