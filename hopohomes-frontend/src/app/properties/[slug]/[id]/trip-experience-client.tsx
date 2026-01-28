@@ -80,7 +80,7 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [selectedDateIndex, setSelectedDateIndex] = useState<number>(0);
-  
+
   // Calculate minimum check-in date based on rental status
   const getMinimumCheckInDate = () => {
     if (rentalData?.status === 'rented' && rentalData.currentRentalEnd) {
@@ -90,7 +90,7 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
     }
     return new Date();
   };
-  
+
   const minimumDate = getMinimumCheckInDate();
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(minimumDate);
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(addDays(minimumDate, 1));
@@ -1017,16 +1017,33 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
               <div className="flex rounded-xl overflow-hidden flex-col border bg-background border-border shadow-lg">
                 <div className="flex flex-col p-4">
                   {/* Property Name & Tags */}
-                  <div className="mb-3">
-                    <h3 className="text-base font-bold text-foreground">{trip.title.split(' ').slice(0, 2).join(' ')}</h3>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-bold text-foreground line-clamp-2 leading-tight">{trip.title}</h3>
+                    <div className="flex items-center gap-1.5 mt-1 text-muted-foreground">
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span className="text-xs">{trip.summary.location}</span>
+                    </div>
                   </div>
 
                   {/* Rental Status Alert */}
                   {rentalData?.status === 'rented' && rentalData.currentRentalEnd && (
-                    <div className="mb-3 px-3 py-2 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/30 rounded-lg">
-                      <p className="text-xs text-orange-700 dark:text-orange-400 font-medium">
-                        Available from {minimumDate.toLocaleDateString()}
-                      </p>
+                    <div className="mb-4 group relative overflow-hidden rounded-xl bg-gradient-to-br from-amber-50 to-orange-50/50 p-4 border border-amber-100 dark:from-amber-950/20 dark:to-orange-950/20 dark:border-amber-900/30">
+                      <div className="flex items-center gap-3">
+                        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-amber-100 dark:bg-amber-950 dark:ring-amber-900/50">
+                          <CalendarIcon className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                          <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 ring-2 ring-white dark:ring-amber-950">
+                            <Check className="h-2.5 w-2.5 text-white" />
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700/70 dark:text-amber-400/70">
+                            Available From
+                          </span>
+                          <span className="font-bold text-sm text-amber-900 dark:text-amber-100">
+                            {minimumDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -1251,10 +1268,23 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
 
                   {/* Rental Status Alert - Mobile */}
                   {rentalData?.status === 'rented' && rentalData.currentRentalEnd && (
-                    <div className="mb-4 px-3 py-2.5 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/30 rounded-lg">
-                      <p className="text-sm text-orange-700 dark:text-orange-400 font-medium">
-                        Available from {minimumDate.toLocaleDateString()}
-                      </p>
+                    <div className="mb-5 group relative overflow-hidden rounded-xl bg-gradient-to-br from-amber-50 to-orange-50/50 p-4 border border-amber-100 dark:from-amber-950/20 dark:to-orange-950/20 dark:border-amber-900/30">
+                      <div className="flex items-center gap-3">
+                        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-amber-100 dark:bg-amber-950 dark:ring-amber-900/50">
+                          <CalendarIcon className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                          <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 ring-2 ring-white dark:ring-amber-950">
+                            <Check className="h-2.5 w-2.5 text-white" />
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700/70 dark:text-amber-400/70">
+                            Available From
+                          </span>
+                          <span className="font-bold text-sm text-amber-900 dark:text-amber-100">
+                            {minimumDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -1404,6 +1434,8 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
           onClose={() => setIsEnquiryOpen(false)}
           propertyId={id}
           propertyTitle={trip.title}
+          propertyImage={trip.images[0]}
+          propertyLocation={trip.summary.location}
           bookingData={bookingData}
         />
       </div>

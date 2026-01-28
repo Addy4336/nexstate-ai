@@ -2,14 +2,17 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Loader2 } from 'lucide-react';
+import { X, Loader2, User, Mail, Phone, MessageSquare, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 interface EnquiryDialogProps {
     isOpen: boolean;
     onClose: () => void;
     propertyId: string;
     propertyTitle: string;
+    propertyImage?: string;
+    propertyLocation?: string;
     bookingData?: {
         checkInDate?: string;
         checkOutDate?: string;
@@ -19,7 +22,7 @@ interface EnquiryDialogProps {
     } | null;
 }
 
-export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle, bookingData }: EnquiryDialogProps) {
+export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle, propertyImage, propertyLocation, bookingData }: EnquiryDialogProps) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -120,23 +123,18 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle, book
                         </div>
 
                         {/* Header */}
-                        <div className="flex items-center justify-between px-5 py-4 border-b border-border/50 shrink-0">
-                            <div>
-                                <h2 className="text-lg font-bold">Reserve Property</h2>
-                                <p className="text-xs text-muted-foreground mt-0.5 text-ellipsis overflow-hidden whitespace-nowrap max-w-[250px] md:max-w-[300px]">
-                                    {propertyTitle}
-                                </p>
-                            </div>
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-border/40 shrink-0 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
+                            <h2 className="text-lg font-bold tracking-tight">Complete your Request</h2>
                             <button
                                 onClick={onClose}
-                                className="p-2 bg-secondary/50 hover:bg-secondary rounded-full transition-colors"
+                                className="p-2 -mr-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-all duration-200"
                             >
-                                <X className="w-4 h-4 text-foreground/70" />
+                                <X className="w-5 h-5" />
                             </button>
                         </div>
 
                         {/* Content */}
-                        <div className="p-5 overflow-y-auto flex-1 overscroll-contain">
+                        <div className="flex-1 overflow-y-auto overscroll-contain bg-background">
                             {isSuccess ? (
                                 <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
                                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -160,85 +158,139 @@ export function EnquiryDialog({ isOpen, onClose, propertyId, propertyTitle, book
                                     </div>
                                 </div>
                             ) : (
-                                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="name" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground ml-1">Full Name</label>
-                                        <input
-                                            id="name"
-                                            required
-                                            type="text"
-                                            className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/20 focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm font-medium"
-                                            placeholder="John Doe"
-                                            value={formData.name}
-                                            onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        />
+                                <>
+                                    <div className="flex items-center gap-4 p-4 bg-muted/20 border-b border-border/40">
+                                        <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded-lg border border-border/50 shadow-sm bg-muted">
+                                            {isOpen && (bookingData || propertyId) ? (
+                                                <Image
+                                                    src={propertyImage || '/placeholder-property.jpg'}
+                                                    alt={propertyTitle}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center bg-muted">
+                                                    <MapPin className="h-6 w-6 text-muted-foreground/50" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-primary uppercase tracking-wider mb-0.5">You are booking</p>
+                                            <h3 className="text-sm font-bold text-foreground line-clamp-1 leading-tight">{propertyTitle}</h3>
+                                            {propertyLocation && (
+                                                <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 truncate">
+                                                    <MapPin className="w-3 h-3 shrink-0" />
+                                                    {propertyLocation}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground ml-1">Email Address</label>
-                                        <input
-                                            id="email"
-                                            required
-                                            type="email"
-                                            className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/20 focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm font-medium"
-                                            placeholder="john@example.com"
-                                            value={formData.email}
-                                            onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        />
-                                    </div>
+                                    <div className="p-6 space-y-5">
+                                        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                                            <div className="grid gap-5">
+                                                <div className="space-y-1.5 group">
+                                                    <label htmlFor="name" className="text-xs font-semibold text-foreground/70 ml-1 group-focus-within:text-primary transition-colors">Full Name</label>
+                                                    <div className="relative">
+                                                        <div className="absolute left-3.5 top-3.5 text-muted-foreground/50 group-focus-within:text-primary/70 transition-colors">
+                                                            <User className="w-4 h-4" />
+                                                        </div>
+                                                        <input
+                                                            id="name"
+                                                            required
+                                                            type="text"
+                                                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background/50 ring-offset-background transition-all duration-200 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/40 text-sm"
+                                                            placeholder="e.g. John Doe"
+                                                            value={formData.name}
+                                                            onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
 
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground ml-1">Phone Number</label>
-                                        <input
-                                            id="phone"
-                                            required
-                                            type="tel"
-                                            className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/20 focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm font-medium"
-                                            placeholder="+971 50 123 4567"
-                                            value={formData.phone}
-                                            onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                        />
-                                    </div>
+                                                <div className="space-y-1.5 group">
+                                                    <label htmlFor="email" className="text-xs font-semibold text-foreground/70 ml-1 group-focus-within:text-primary transition-colors">Email Address</label>
+                                                    <div className="relative">
+                                                        <div className="absolute left-3.5 top-3.5 text-muted-foreground/50 group-focus-within:text-primary/70 transition-colors">
+                                                            <Mail className="w-4 h-4" />
+                                                        </div>
+                                                        <input
+                                                            id="email"
+                                                            required
+                                                            type="email"
+                                                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background/50 ring-offset-background transition-all duration-200 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/40 text-sm"
+                                                            placeholder="e.g. john@example.com"
+                                                            value={formData.email}
+                                                            onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
 
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="message" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground ml-1">Message (Optional)</label>
-                                        <textarea
-                                            id="message"
-                                            rows={2}
-                                            className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/20 focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none text-sm font-medium"
-                                            placeholder="I'm interested in this property..."
-                                            value={formData.message}
-                                            onChange={e => setFormData({ ...formData, message: e.target.value })}
-                                        />
-                                    </div>
+                                                <div className="space-y-1.5 group">
+                                                    <label htmlFor="phone" className="text-xs font-semibold text-foreground/70 ml-1 group-focus-within:text-primary transition-colors">Phone Number</label>
+                                                    <div className="relative">
+                                                        <div className="absolute left-3.5 top-3.5 text-muted-foreground/50 group-focus-within:text-primary/70 transition-colors">
+                                                            <Phone className="w-4 h-4" />
+                                                        </div>
+                                                        <input
+                                                            id="phone"
+                                                            required
+                                                            type="tel"
+                                                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background/50 ring-offset-background transition-all duration-200 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/40 text-sm"
+                                                            placeholder="e.g. +971 50 123 4567"
+                                                            value={formData.phone}
+                                                            onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
 
-                                    <Button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="w-full mt-2 h-12 text-base rounded-full font-bold shadow-lg shadow-primary/20"
-                                    >
-                                        {isSubmitting ? (
-                                            <>
-                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                Sending...
-                                            </>
-                                        ) : (
-                                            'Send Enquiry'
-                                        )}
-                                    </Button>
-                                </form>
+                                                <div className="space-y-1.5 group">
+                                                    <label htmlFor="message" className="text-xs font-semibold text-foreground/70 ml-1 group-focus-within:text-primary transition-colors">Message (Optional)</label>
+                                                    <div className="relative">
+                                                        <div className="absolute left-3.5 top-3.5 text-muted-foreground/50 group-focus-within:text-primary/70 transition-colors">
+                                                            <MessageSquare className="w-4 h-4" />
+                                                        </div>
+                                                        <textarea
+                                                            id="message"
+                                                            rows={3}
+                                                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background/50 ring-offset-background transition-all duration-200 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/40 resize-none text-sm"
+                                                            placeholder="Anything else we should know?"
+                                                            value={formData.message}
+                                                            onChange={e => setFormData({ ...formData, message: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <Button
+                                                type="submit"
+                                                disabled={isSubmitting}
+                                                className="w-full h-12 text-base rounded-full font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 hover:scale-[1.01] active:scale-[0.98] mt-2"
+                                            >
+                                                {isSubmitting ? (
+                                                    <>
+                                                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                                                        Submitting...
+                                                    </>
+                                                ) : (
+                                                    'Confirm Reservation'
+                                                )}
+                                            </Button>
+                                        </form>
+                                    </div>
+                                </>
                             )}
                         </div>
 
                         {/* Footer */}
                         {!isSuccess && (
-                            <div className="p-4 bg-secondary/10 text-center text-[10px] text-muted-foreground border-t border-border/50 shrink-0 pb-8 md:pb-4 safe-area-bottom">
+                            <div className="p-4 bg-muted/20 text-center text-[10px] text-muted-foreground/60 border-t border-border/40 shrink-0 pb-8 md:pb-4 safe-area-bottom">
                                 By submitting, you agree to our Terms of Service and Privacy Policy.
                             </div>
                         )}
                     </motion.div>
                 </>
-            )}
-        </AnimatePresence>
+            )
+            }
+        </AnimatePresence >
     );
 }
