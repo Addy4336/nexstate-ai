@@ -10,6 +10,7 @@ import CTASection from "@/components/tenants/CTASection";
 import LocationSection from "@/components/tenants/LocationSection";
 import CalculatorsSection from "@/components/CalculatorsSection";
 
+import TenantStories from "@/components/tenants/TenantStories";
 import DetailedContent from "@/components/landing/DetailedContent";
 
 export default function Home() {
@@ -38,13 +39,14 @@ export default function Home() {
       </div>
 
       <DetailedContent />
+      <TenantStories />
       <LocationSection />
       <MapFeatures />
       <PremierHouses />
       <CalculatorsSection />
 
       <FAQSection />
-      <ClientTestimonials />
+      {/* <ClientTestimonials /> */}
       <CTASection />
     </main>
   );
