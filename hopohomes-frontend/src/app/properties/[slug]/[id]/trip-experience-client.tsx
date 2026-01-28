@@ -51,6 +51,13 @@ export interface TripData {
   pricing: {
     from: number;
     currency: string;
+    fees?: {
+      vat: number;
+      bookingFee: number;
+      exitCleaningFee: number;
+      tourismFee: number;
+      securityDeposit: number;
+    };
     availableDates: {
       dates: string;
       price: number;
@@ -112,7 +119,7 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
     // Find the first booking that ends today or in the future
     for (let i = 0; i < allBookings.length; i++) {
       const currentBooking = allBookings[i];
-      
+
       // If we're currently in this booking period or it ends in the future
       if (currentBooking.end >= today) {
         // Check if there's a gap before the next booking
@@ -120,10 +127,10 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
           const nextBooking = allBookings[i + 1];
           const dayAfterCurrent = new Date(currentBooking.end);
           dayAfterCurrent.setDate(dayAfterCurrent.getDate() + 1);
-          
+
           const dayBeforeNext = new Date(nextBooking.start);
           dayBeforeNext.setDate(dayBeforeNext.getDate() - 1);
-          
+
           // If there's a gap of at least 1 day
           if (dayAfterCurrent <= dayBeforeNext) {
             return dayAfterCurrent;
@@ -171,8 +178,47 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
   const [selectedCancellation, setSelectedCancellation] = useState<'non-refundable' | 'refundable'>('non-refundable');
   const [bookingData, setBookingData] = useState<any>(null);
 
+  // Calculate booking details
+  const nights = checkInDate && checkOutDate
+    ? Math.max(1, Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)))
+    : 30; // Default to 30 for display if dates not picked? Or maybe 1. Let's use 1 if explicit dates, but maybe 30 for initial "Monthly" view if no dates?
+  // Actually, user state starts with minDate and minDate+1. So nights=1 initially.
+  // But initially the UI shows "Rent per month" / "Monthly".
+  // I should check if dates are default.
+  // For now, let's just make it dynamic. IF dates are selected, show dynamic.
+
+  const isMonthlyView = false; // logic could go here if we want to toggle "Monthly" vs "Nightly" text
+
+  const vatRate = trip.pricing.fees?.vat || 5;
+  const rentPerMonth = trip.pricing.from;
+  const rentPerNight = rentPerMonth / 30;
+
+  const rentAmount = Math.round(rentPerNight * nights);
+  const vatAmount = Math.round(rentAmount * (vatRate / 100));
+  const rentTotal = rentAmount + vatAmount;
+
+  const feesTotal = (trip.pricing.fees?.bookingFee || 0) +
+    (trip.pricing.fees?.exitCleaningFee || 0) +
+    (trip.pricing.fees?.tourismFee || 0) +
+    (trip.pricing.fees?.securityDeposit || 0);
+
+  const grandTotal = rentTotal + feesTotal;
+
+  const handleCheckInSelect = (date: Date | undefined) => {
+    setCheckInDate(date);
+    if (date) {
+      // Ensure minimum 14 nights (15 days) stay
+      const minCheckOutDate = addDays(date, 14);
+      if (!checkOutDate || checkOutDate < minCheckOutDate) {
+        setCheckOutDate(minCheckOutDate);
+      }
+    }
+  };
+
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [isPriceDetailsOpen, setIsPriceDetailsOpen] = useState(false);
+  const [isPaymentTimelineOpen, setIsPaymentTimelineOpen] = useState(false);
 
   // Image zoom modal state
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
@@ -1148,7 +1194,7 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                           <Calendar
                             mode="single"
                             selected={checkInDate}
-                            onSelect={setCheckInDate}
+                            onSelect={handleCheckInSelect}
                             disabled={(date) => {
                               const today = new Date();
                               today.setHours(0, 0, 0, 0);
@@ -1180,16 +1226,8 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                             selected={checkOutDate}
                             onSelect={setCheckOutDate}
                             disabled={(date) => {
-                              const minDate = checkInDate || minimumDate;
+                              const minDate = checkInDate ? addDays(checkInDate, 14) : (minimumDate ? addDays(minimumDate, 14) : new Date());
                               if (date < minDate || isDateBooked(date)) return true;
-                              
-                              // Maximum 14 nights (15 days including check-in day)
-                              if (checkInDate) {
-                                const maxDate = new Date(checkInDate);
-                                maxDate.setDate(maxDate.getDate() + 14);
-                                if (date > maxDate) return true;
-                              }
-                              
                               return false;
                             }}
                             initialFocus
@@ -1199,98 +1237,70 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                     </div>
                   </div>
 
-                  {/* Guests */}
-                  {/* Guests */}
-                  <div className="border border-border rounded-lg p-2 mb-3">
-                    <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide block mb-1">Guests</label>
-                    <Select value={guests.toString()} onValueChange={(value) => setGuests(parseInt(value))}>
-                      <SelectTrigger className="w-full border-0 p-0 h-auto text-xs font-medium focus:ring-0 shadow-none [&>span]:line-clamp-1">
-                        <SelectValue placeholder="Select guests" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Guests</SelectLabel>
-                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                            <SelectItem key={num} value={num.toString()}>
-                              {num} Guest{num > 1 ? 's' : ''}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
 
-                  {/* Cancellation Policies */}
+
+                  {/* Updated Sidebar Pricing Section - "You won't be charged yet" */}
                   <div className="mb-3">
-                    <h4 className="text-xs font-semibold mb-2">Cancellation Policies</h4>
+                   
 
-                    {/* Non-Refundable */}
-                    <div
-                      onClick={() => setSelectedCancellation('non-refundable')}
-                      className={`border rounded-lg p-2 mb-1.5 cursor-pointer transition-all ${selectedCancellation === 'non-refundable'
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border hover:border-foreground/30'
-                        }`}
+                    {/* Monthly Breakdown Summary */}
+                    <div className="space-y-3 mb-6">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground underline decoration-dotted underline-offset-2">
+                          Rent ({nights} night{nights !== 1 ? 's' : ''})
+                        </span>
+                        <span>{trip.pricing.currency} {rentAmount.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground underline decoration-dotted underline-offset-2">
+                          VAT ({vatRate}%)
+                        </span>
+                        <span>{trip.pricing.currency} {vatAmount.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between text-base font-bold text-foreground pt-1">
+                        <span>Stay charges</span>
+                        <span>{trip.pricing.currency} {rentTotal.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    {/* View Price Details Button */}
+                    <div className="relative flex items-center justify-center mb-6">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-border"></div>
+                      </div>
+                      <button
+                        onClick={() => setIsPriceDetailsOpen(true)}
+                        className="relative bg-background px-4 text-sm font-medium text-primary hover:text-primary/80 border border-border rounded-full py-1 shadow-sm hover:shadow-md transition-all z-10"
+                      >
+                        View price details
+                      </button>
+                    </div>
+
+                    {/* Total */}
+                    <div className="flex justify-between items-baseline mb-6">
+                      <span className="text-xl font-bold">Total</span>
+                      <span className="text-xl font-bold">
+                        {trip.pricing.currency} {grandTotal.toLocaleString()}
+                      </span>
+                    </div>
+
+                    {/* Reserve Button */}
+                    <Button
+                      onClick={() => {
+                        setBookingData({
+                          checkInDate: checkInDate?.toISOString().split('T')[0],
+                          checkOutDate: checkOutDate?.toISOString().split('T')[0],
+                          guests,
+                          cancellationPolicy: selectedCancellation,
+                          totalAmount: grandTotal,
+                        });
+                        setIsEnquiryOpen(true);
+                      }}
+                      className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center ${selectedCancellation === 'non-refundable' ? 'border-primary bg-primary' : 'border-border'
-                            }`}>
-                            {selectedCancellation === 'non-refundable' && <Check className="w-2 h-2 text-white" />}
-                          </div>
-                          <span className="font-medium text-xs">Non-Refundable</span>
-                        </div>
-                        <span className="text-xs font-semibold">{trip.pricing.currency} {trip.pricing.from}</span>
-                      </div>
-                    </div>
-
-                    {/* Refundable */}
-                    {/* <div
-                    onClick={() => setSelectedCancellation('refundable')}
-                    className={`border rounded-lg p-2 cursor-pointer transition-all ${selectedCancellation === 'refundable'
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-foreground/30'
-                      }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center ${selectedCancellation === 'refundable' ? 'border-primary bg-primary' : 'border-border'
-                          }`}>
-                          {selectedCancellation === 'refundable' && <Check className="w-2 h-2 text-white" />}
-                        </div>
-                        <span className="font-medium text-xs">Refundable</span>
-                      </div>
-                      <span className="text-xs font-semibold">{trip.pricing.currency} {Math.round(trip.pricing.from * 1.1)}</span>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground ml-5 mt-1">Free cancellation before sep21</p>
-                  </div> */}
+                      Check availability
+                    </Button>
                   </div>
-
-                  {/* Total */}
-                  <div className="flex items-center justify-between py-2.5 border-t border-border">
-                    <span className="text-xs font-medium">Total Before Taxes:</span>
-                    <span className="text-base font-bold">
-                      {trip.pricing.currency} {selectedCancellation === 'refundable' ? Math.round(trip.pricing.from * 1.1) : trip.pricing.from}
-                    </span>
-                  </div>
-
-                  {/* Reserve Button */}
-                  <Button
-                    onClick={() => {
-                      // Prepare booking data to be saved after enquiry
-                      setBookingData({
-                        checkInDate: checkInDate?.toISOString().split('T')[0],
-                        checkOutDate: checkOutDate?.toISOString().split('T')[0],
-                        guests,
-                        cancellationPolicy: selectedCancellation,
-                        totalAmount: selectedCancellation === 'refundable' ? Math.round(trip.pricing.from * 1.1) : trip.pricing.from,
-                      });
-                      setIsEnquiryOpen(true);
-                    }}
-                    className="w-full h-10 bg-foreground hover:bg-foreground/90 text-background rounded-full font-semibold shadow-md transition-all duration-200 mt-1 text-sm"
-                  >
-                    Reserve
-                  </Button>
                 </div>
 
                 {/* Bottom Info */}
@@ -1405,7 +1415,7 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                           <Calendar
                             mode="single"
                             selected={checkInDate}
-                            onSelect={setCheckInDate}
+                            onSelect={handleCheckInSelect}
                             disabled={(date) => {
                               const today = new Date();
                               today.setHours(0, 0, 0, 0);
@@ -1437,16 +1447,8 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                             selected={checkOutDate}
                             onSelect={setCheckOutDate}
                             disabled={(date) => {
-                              const minDate = checkInDate || minimumDate;
+                              const minDate = checkInDate ? addDays(checkInDate, 14) : (minimumDate ? addDays(minimumDate, 14) : new Date());
                               if (date < minDate || isDateBooked(date)) return true;
-                              
-                              // Maximum 14 nights (15 days including check-in day)
-                              if (checkInDate) {
-                                const maxDate = new Date(checkInDate);
-                                maxDate.setDate(maxDate.getDate() + 14);
-                                if (date > maxDate) return true;
-                              }
-                              
                               return false;
                             }}
                             initialFocus
@@ -1456,25 +1458,7 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                     </div>
                   </div>
 
-                  {/* Guests */}
-                  <div className="border border-border rounded-xl p-3 mb-5">
-                    <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide block mb-1.5">Guests</label>
-                    <Select value={guests.toString()} onValueChange={(value) => setGuests(parseInt(value))}>
-                      <SelectTrigger className="w-full border-0 p-0 h-auto text-sm font-medium focus:ring-0 shadow-none [&>span]:line-clamp-1">
-                        <SelectValue placeholder="Select guests" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[70]">
-                        <SelectGroup>
-                          <SelectLabel>Guests</SelectLabel>
-                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                            <SelectItem key={num} value={num.toString()}>
-                              {num} Guest{num > 1 ? 's' : ''}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
+
 
                   {/* Cancellation Policies */}
                   <div className="mb-6">
@@ -1542,6 +1526,195 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
           propertyLocation={trip.summary.location}
           bookingData={bookingData}
         />
+
+        {/* Price Details Dialog */}
+        {isPriceDetailsOpen && (
+          <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setIsPriceDetailsOpen(false)}
+            ></div>
+            <div className="relative bg-background w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h3 className="text-lg font-bold">Price details</h3>
+                <button
+                  onClick={() => setIsPriceDetailsOpen(false)}
+                  className="p-2 hover:bg-secondary rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="p-6 max-h-[80vh] overflow-y-auto">
+                {/* Monthly Charges */}
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between items-start">
+                    <span className="text-muted-foreground">Rent ({nights} nights)</span>
+                    <span>{trip.pricing.currency} {rentAmount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-start">
+                    <span className="text-muted-foreground">VAT ({vatRate}%)</span>
+                    <span>{trip.pricing.currency} {vatAmount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-start font-bold text-foreground">
+                    <span>Stay charges</span>
+                    <span>{trip.pricing.currency} {rentTotal.toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <div className="h-px bg-border my-4"></div>
+
+                {/* Total Charges section */}
+                <div className="space-y-4 mb-6">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="text-muted-foreground block">Total charges</span>
+                      <span className="text-xs text-muted-foreground block mt-0.5">
+                        {trip.pricing.currency} {rentTotal.toLocaleString()} for {nights} night{nights !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                    <span>{trip.pricing.currency} {rentTotal.toLocaleString()}</span>
+                  </div>
+
+                  <div className="flex justify-between items-start">
+                    <span className="text-muted-foreground">Booking fee</span>
+                    <span>{trip.pricing.currency} {(trip.pricing.fees?.bookingFee || 0).toLocaleString()}</span>
+                  </div>
+
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="text-muted-foreground block">Exit cleaning & restocking fee</span>
+                      <span className="text-xs text-muted-foreground block mt-0.5">Supplies, linens, towels</span>
+                    </div>
+                    <span>{trip.pricing.currency} {(trip.pricing.fees?.exitCleaningFee || 0).toLocaleString()}</span>
+                  </div>
+
+                  <div className="flex justify-between items-start">
+                    <span className="text-muted-foreground">Tourism fee</span>
+                    <span>{trip.pricing.currency} {(trip.pricing.fees?.tourismFee || 0).toLocaleString()}</span>
+                  </div>
+
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="text-muted-foreground block">Refundable security deposit</span>
+                      <span className="text-xs text-muted-foreground block mt-0.5">Refunded if no damage is discovered during inspection</span>
+                    </div>
+                    <span>{trip.pricing.currency} {(trip.pricing.fees?.securityDeposit || 0).toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <div className="h-px bg-border my-4"></div>
+
+                {/* Grand Total */}
+                <div className="flex justify-between items-baseline mb-6">
+                  <span className="text-lg font-bold">Total</span>
+                  <span className="text-lg font-bold text-primary">
+                    {trip.pricing.currency} {grandTotal.toLocaleString()}
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => setIsPaymentTimelineOpen(true)}
+                  className="text-primary font-medium text-sm hover:underline"
+                >
+                  View payment timeline
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Timeline Dialog */}
+        {isPaymentTimelineOpen && (
+          <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setIsPaymentTimelineOpen(false)}
+            ></div>
+            <div className="relative bg-background w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h3 className="text-lg font-bold">Payment timeline</h3>
+                <button
+                  onClick={() => setIsPaymentTimelineOpen(false)}
+                  className="p-2 hover:bg-secondary rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="p-6 max-h-[80vh] overflow-y-auto">
+                <p className="text-muted-foreground text-sm mb-6">
+                  Payments are pro-rated based on your chosen payment plan and dates of stay.
+                </p>
+
+                {/* Timeline Item: Due Now */}
+                <div className="relative pl-6 pb-6">
+                  {/* Timeline Line */}
+                  <div className="absolute top-2 left-0 w-1.5 h-1.5 bg-foreground rounded-full z-10"></div>
+                  <div className="absolute top-2 left-0.5 w-[2px] h-full bg-border -ml-px border-l-2 border-dotted border-border"></div>
+
+                  <div className="flex justify-between items-baseline mb-3">
+                    <span className="font-bold text-foreground">Due now</span>
+                    <span className="font-bold text-foreground">
+                      {trip.pricing.currency} {grandTotal.toLocaleString()}
+                    </span>
+                  </div>
+
+                  {/* Gray Box for Breakdown */}
+                  <div className="bg-secondary/30 rounded-lg p-4 mb-4">
+                    <h4 className="text-sm font-bold text-foreground mb-3">One-time charges for your full stay</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Rent</span>
+                        <span>{trip.pricing.currency} {rentAmount.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">VAT</span>
+                        <span>{trip.pricing.currency} {vatAmount.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Tourism fee</span>
+                        <span>{trip.pricing.currency} {(trip.pricing.fees?.tourismFee || 0).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Booking fee</span>
+                        <span>{trip.pricing.currency} {(trip.pricing.fees?.bookingFee || 0).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Exit cleaning & restocking fee</span>
+                        <span>{trip.pricing.currency} {(trip.pricing.fees?.exitCleaningFee || 0).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Security deposit</span>
+                        <span>{trip.pricing.currency} {(trip.pricing.fees?.securityDeposit || 0).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Timeline Item: Deposit Return */}
+                <div className="relative pl-6">
+                  {/* Timeline Line - End point */}
+                  <div className="absolute top-2 left-0 w-1.5 h-1.5 bg-foreground rounded-full z-10"></div>
+
+                  <div className="mb-1">
+                    <span className="text-foreground">
+                      Receive your {trip.pricing.currency} {(trip.pricing.fees?.securityDeposit || 0).toLocaleString()} deposit back
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground text-sm">
+                    Usually within 15 calendar days of move-out
+                  </p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
