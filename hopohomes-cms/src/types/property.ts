@@ -1,4 +1,21 @@
 /**
+ * Rental period information
+ */
+export interface RentalPeriod {
+  start_date: string;
+  end_date: string;
+  tenant_id?: string;
+  tenant_name: string;
+  tenant_email: string;
+  tenant_phone?: string;
+  amount: number;
+  guests?: number;
+  status: "confirmed" | "active" | "completed" | "cancelled";
+  created_at?: string;
+  notes?: string;
+}
+
+/**
  * Property type matching the database schema
  */
 export interface Property {
@@ -18,6 +35,11 @@ export interface Property {
   amenities: string[] | null;
   created_at: Date;
   updated_at: Date;
+  // Rental tracking fields
+  current_rental_start: string | null;
+  current_rental_end: string | null;
+  rental_periods: RentalPeriod[];
+  buffer_days: number;
 }
 
 /**

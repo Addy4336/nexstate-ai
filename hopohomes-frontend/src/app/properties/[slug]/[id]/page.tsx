@@ -286,5 +286,14 @@ export default async function PropertyDetailsPage({ params }: TripExperiencePage
     ? transformPropertyData(propertyData)
     : getFallbackData(slug);
 
-  return <TripExperienceClient trip={property} slug={slug} id={id} />;
+  // Pass rental data to client component
+  const rentalData = propertyData ? {
+    status: propertyData.status || 'available',
+    currentRentalEnd: propertyData.current_rental_end || null,
+    currentRentalStart: propertyData.current_rental_start || null,
+    rentalPeriods: propertyData.rental_periods || [],
+    bufferDays: propertyData.buffer_days || 2,
+  } : null;
+
+  return <TripExperienceClient trip={property} slug={slug} id={id} rentalData={rentalData} />;
 }
