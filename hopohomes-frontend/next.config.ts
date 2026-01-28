@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Enable standalone output for Docker
+  output: 'standalone',
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
@@ -59,8 +61,8 @@ const nextConfig: NextConfig = {
         hostname: 'incubees.com',
       },
       {
-        protocol:"https",
-        hostname:"lh3.googleusercontent.com"
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com"
       }
 
     ],

@@ -6,13 +6,17 @@ const CLIENT_ID = process.env.GOOGLE_DRIVE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
 // Determine base URL based on environment or default to localhost
 const NEXT_PUBLIC_APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
-const REDIRECT_URI = `${NEXT_PUBLIC_APP_URL}/api/auth/google/callback`;
+const REDIRECT_URI =`${NEXT_PUBLIC_APP_URL}/api/auth/google/callback`;
 
-if (!CLIENT_ID || !CLIENT_SECRET) {
-    throw new Error("Missing Google Client ID or Secret in environment variables");
-}
+// Only validate in production/runtime, not during build
+const validateCredentials = () => {
+    if (!CLIENT_ID || !CLIENT_SECRET || CLIENT_ID.startsWith('placeholder') || CLIENT_SECRET.startsWith('placeholder')) {
+        throw new Error("Missing Google Client ID or Secret in environment variables");
+    }
+};
 
 export const getOAuth2Client = () => {
+    validateCredentials();
     return new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 };
 
