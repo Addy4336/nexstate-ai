@@ -1,5 +1,6 @@
 import Hero from "@/components/tenants/Hero";
 import UserToggle from "@/components/tenants/UserToggle";
+import HopoSelect from "@/components/tenants/HopoSelect";
 import PropertyShowcase from "@/components/tenants/PropertyShowcase";
 import MapFeatures from "@/components/tenants/MapFeatures";
 import PremierHouses from "@/components/tenants/PremierHouses";
@@ -16,9 +17,27 @@ export default function Home() {
     <main className="min-h-screen bg-background text-foreground relative font-sans">
       {/* <Navbar /> */}
       <Hero />
-      {/* <UserToggle currentType="tenant" /> */}
+
+      {/* HOPO Select Segment */}
+      <HopoSelect />
+
+      {/* HOPO Standard Segment */}
+      <div className="py-12 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+          <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wider mb-2">
+            HOPO STANDARD
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+            Private Rooms & Co-living
+          </h2>
+          <p className="text-muted-foreground mt-2 max-w-2xl">
+            Quality living spaces designed for community, comfort, and affordability.
+          </p>
+        </div>
+        <PropertyShowcase />
+      </div>
+
       <DetailedContent />
-      <PropertyShowcase />
       <LocationSection />
       <MapFeatures />
       <PremierHouses />
