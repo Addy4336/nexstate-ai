@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -164,7 +164,7 @@ function formatDate(date: Date): string {
     });
 }
 
-export default function Properties() {
+function PropertiesContent() {
     const searchParams = useSearchParams();
 
     const [properties, setProperties] = useState<Property[]>([]);
@@ -560,5 +560,17 @@ export default function Properties() {
                 </div>
             </section>
         </div>
+    );
+}
+
+export default function Properties() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            </div>
+        }>
+            <PropertiesContent />
+        </Suspense>
     );
 }
