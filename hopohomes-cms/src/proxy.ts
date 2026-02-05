@@ -13,7 +13,55 @@ const STAFF_ROLES = ["admin", "manager", "editor"];
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Handle API routes specifically for CORS
+  if (pathname.startsWith("/api")) {
+    const origin = request.headers.get("origin") || "";
+
+    // Define allowed origins
+    const allowedOrigins = [
+      "https://hopohomes.slaab.ai",
+      "http://localhost:3000",
+      "http://localhost:3001",
+      process.env.FRONTEND_URL,
+      process.env.NEXT_PUBLIC_APP_URL,
+      "https://hopohomes-cms-hopohomes-cms.vercel.app"
+    ].filter(Boolean).map(url => url?.toLowerCase().replace(/\/$/, ""));
+
+    const normalizedOrigin = origin.toLowerCase().replace(/\/$/, "");
+    const isAllowed = allowedOrigins.includes(normalizedOrigin);
+
+    // Handle Preflight OPTIONS request
+    if (request.method === "OPTIONS") {
+      // For OPTIONS, if allowed return headers, otherwise just return valid OPTIONS response (some browsers expect 200/204 always)
+      const response = new NextResponse(null, { status: 204 });
+
+      if (isAllowed) {
+        response.headers.set("Access-Control-Allow-Origin", origin);
+        response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+        response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version");
+        response.headers.set("Access-Control-Allow-Credentials", "true");
+        response.headers.set("Access-Control-Max-Age", "86400");
+        response.headers.set("Vary", "Origin");
+      }
+      return response;
+    }
+
+    // Handle standard API requests
+    const response = NextResponse.next();
+
+    if (isAllowed && origin) {
+      response.headers.set("Access-Control-Allow-Origin", origin);
+      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+      response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version");
+      response.headers.set("Access-Control-Allow-Credentials", "true");
+      response.headers.set("Vary", "Origin");
+    }
+
+    return response;
+  }
+
   // Allow access to login, setup pages, and API routes without authentication/redirection
+  // (API routes already handled above, but double check doesn't hurt)
   if (
     pathname === "/admin/login" ||
     pathname === "/admin/setup" ||
@@ -34,6 +82,7 @@ export async function proxy(request: NextRequest) {
       email: string;
       name: string;
       role: string;
+      image?: string | null;  // Updated to match what might be coming from auth
     } | null;
   }>("/api/auth/get-session", {
     baseURL: request.nextUrl.origin,
@@ -73,14 +122,7 @@ export async function proxy(request: NextRequest) {
  */
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/api/:path*",
+    "/((?!_next/static|_next/image|favicon.ico).*)"
   ],
 };
-
