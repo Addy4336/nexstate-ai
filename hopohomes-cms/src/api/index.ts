@@ -19,7 +19,8 @@ export const api = new Elysia({ prefix: "/api" })
     .use(cors({
         origin: [
             "http://localhost:3000",  // hopohomes-frontend dev
-            "http://localhost:3001",  // hopohomes-cms dev
+            "http://localhost:3001",
+            "https://hopohomes.slaab.ai",
             process.env.FRONTEND_URL || "",
             process.env.NEXT_PUBLIC_APP_URL || "",
         ].filter(Boolean),
