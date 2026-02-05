@@ -1,6 +1,7 @@
 import React from 'react';
 import TripExperienceClient from './trip-experience-client';
 import { notFound } from 'next/navigation';
+import { processImageUrls, getFallbackImageUrl } from '@/lib/image-utils';
 
 interface TripExperiencePageProps {
   params: Promise<{
@@ -53,11 +54,11 @@ function transformPropertyData(property: any) {
     images.push(...property.images);
   }
 
-  // Remove duplicates
-  const uniqueImages = [...new Set(images)];
+  // Process images: filter empty values, convert Google Drive URLs, remove duplicates
+  const uniqueImages = processImageUrls(images);
 
   // Ensure we have at least 5 images for the gallery
-  const fallbackImage = 'https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=800&auto=format&fit=crop';
+  const fallbackImage = getFallbackImageUrl();
   while (uniqueImages.length < 5) {
     uniqueImages.push(uniqueImages[0] || fallbackImage);
   }

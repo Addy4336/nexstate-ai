@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X, Plus, Minus, Camera, Heart, Share2, Bookmark, Bed, Bath, Square, Car, Shield, MapPin, Clock, Flag, Star, Check, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X, Plus, Minus, Camera, Heart, Share2, Bookmark, Bed, Bath, Square, Car, Shield, MapPin, Clock, Flag, Star, Check, Calendar as CalendarIcon, ImageOff } from 'lucide-react';
 import Link from 'next/link';
 import { EnquiryDialog } from '@/components/enquiry-dialog';
 import { format, addDays } from "date-fns"
@@ -223,6 +223,7 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
   // Image zoom modal state
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
 
   // Open zoom modal with selected image
   const openZoomModal = (index: number) => {
@@ -238,6 +239,12 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
   // Navigate to next image
   const goToNextImage = () => {
     setSelectedImageIndex((prev) => (prev === trip.images.length - 1 ? 0 : prev + 1));
+  };
+
+  // Handle image loading errors
+  const handleImageError = (index: number) => {
+    console.error(`Failed to load image at index ${index}:`, trip.images[index]);
+    setFailedImages(prev => new Set(prev).add(index));
   };
 
   // Handle keyboard navigation
@@ -305,13 +312,23 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
             className="relative w-full h-full max-w-5xl max-h-[80vh] mx-16"
             onClick={(e) => e.stopPropagation()}
           >
-            <Image
-              src={trip.images[selectedImageIndex]}
-              alt={`Property image ${selectedImageIndex + 1}`}
-              fill
-              className="object-contain"
-              priority
-            />
+            {failedImages.has(selectedImageIndex) ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center text-white">
+                  <ImageOff className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <p className="text-sm">Failed to load image</p>
+                </div>
+              </div>
+            ) : (
+              <Image
+                src={trip.images[selectedImageIndex]}
+                alt={`Property image ${selectedImageIndex + 1}`}
+                fill
+                className="object-contain"
+                priority
+                onError={() => handleImageError(selectedImageIndex)}
+              />
+            )}
           </div>
 
           {/* Next Button */}
@@ -339,12 +356,19 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                   : 'opacity-60 hover:opacity-100'
                   }`}
               >
-                <Image
-                  src={image}
-                  alt={`Thumbnail ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
+                {failedImages.has(index) ? (
+                  <div className="flex items-center justify-center w-full h-full bg-muted">
+                    <ImageOff className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                ) : (
+                  <Image
+                    src={image}
+                    alt={`Thumbnail ${index + 1}`}
+                    fill
+                    className="object-cover"
+                    onError={() => handleImageError(index)}
+                  />
+                )}
               </button>
             ))}
           </div>
@@ -368,14 +392,24 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                 {trip.images.length === 1 && (
                   <div
                     className="w-full relative rounded-2xl overflow-hidden"
-                    onClick={() => openZoomModal(0)}
+                    onClick={() => !failedImages.has(0) && openZoomModal(0)}
                   >
-                    <Image
-                      src={trip.images[0]}
-                      alt="Property image"
-                      fill
-                      className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                    />
+                    {failedImages.has(0) ? (
+                      <div className="flex items-center justify-center w-full h-full bg-muted">
+                        <div className="text-center">
+                          <ImageOff className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground">Failed to load image</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <Image
+                        src={trip.images[0]}
+                        alt="Property image"
+                        fill
+                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                        onError={() => handleImageError(0)}
+                      />
+                    )}
                     <Link
                       href={`/properties/${slug}/${id}/photo`}
                       className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2 text-black font-medium hover:bg-white transition-colors"
@@ -392,25 +426,39 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                   <>
                     <div
                       className="w-1/2 relative rounded-xl overflow-hidden"
-                      onClick={() => openZoomModal(0)}
+                      onClick={() => !failedImages.has(0) && openZoomModal(0)}
                     >
-                      <Image
-                        src={trip.images[0]}
-                        alt="Property image 1"
-                        fill
-                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                      />
+                      {failedImages.has(0) ? (
+                        <div className="flex items-center justify-center w-full h-full bg-muted">
+                          <ImageOff className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <Image
+                          src={trip.images[0]}
+                          alt="Property image 1"
+                          fill
+                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                          onError={() => handleImageError(0)}
+                        />
+                      )}
                     </div>
                     <div
                       className="w-1/2 relative rounded-xl overflow-hidden"
-                      onClick={() => openZoomModal(1)}
+                      onClick={() => !failedImages.has(1) && openZoomModal(1)}
                     >
-                      <Image
-                        src={trip.images[1]}
-                        alt="Property image 2"
-                        fill
-                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                      />
+                      {failedImages.has(1) ? (
+                        <div className="flex items-center justify-center w-full h-full bg-muted">
+                          <ImageOff className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <Image
+                          src={trip.images[1]}
+                          alt="Property image 2"
+                          fill
+                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                          onError={() => handleImageError(1)}
+                        />
+                      )}
                       <Link
                         href={`/properties/${slug}/${id}/photo`}
                         className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2 text-black font-medium hover:bg-white transition-colors"
@@ -428,37 +476,58 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                   <>
                     <div
                       className="w-1/2 relative rounded-xl overflow-hidden"
-                      onClick={() => openZoomModal(0)}
+                      onClick={() => !failedImages.has(0) && openZoomModal(0)}
                     >
-                      <Image
-                        src={trip.images[0]}
-                        alt="Main property image"
-                        fill
-                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                      />
+                      {failedImages.has(0) ? (
+                        <div className="flex items-center justify-center w-full h-full bg-muted">
+                          <ImageOff className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <Image
+                          src={trip.images[0]}
+                          alt="Main property image"
+                          fill
+                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                          onError={() => handleImageError(0)}
+                        />
+                      )}
                     </div>
                     <div className="w-1/2 flex flex-col gap-2">
                       <div
                         className="flex-1 relative rounded-xl overflow-hidden"
-                        onClick={() => openZoomModal(1)}
+                        onClick={() => !failedImages.has(1) && openZoomModal(1)}
                       >
-                        <Image
-                          src={trip.images[1]}
-                          alt="Property image 2"
-                          fill
-                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                        />
+                        {failedImages.has(1) ? (
+                          <div className="flex items-center justify-center w-full h-full bg-muted">
+                            <ImageOff className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <Image
+                            src={trip.images[1]}
+                            alt="Property image 2"
+                            fill
+                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                            onError={() => handleImageError(1)}
+                          />
+                        )}
                       </div>
                       <div
                         className="flex-1 relative rounded-xl overflow-hidden"
-                        onClick={() => openZoomModal(2)}
+                        onClick={() => !failedImages.has(2) && openZoomModal(2)}
                       >
-                        <Image
-                          src={trip.images[2]}
-                          alt="Property image 3"
-                          fill
-                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                        />
+                        {failedImages.has(2) ? (
+                          <div className="flex items-center justify-center w-full h-full bg-muted">
+                            <ImageOff className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <Image
+                            src={trip.images[2]}
+                            alt="Property image 3"
+                            fill
+                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                            onError={() => handleImageError(2)}
+                          />
+                        )}
                         <Link
                           href={`/properties/${slug}/${id}/photo`}
                           className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 text-white font-medium hover:bg-black/50 transition-colors"
@@ -477,49 +546,77 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                   <>
                     <div
                       className="w-1/2 relative rounded-xl overflow-hidden"
-                      onClick={() => openZoomModal(0)}
+                      onClick={() => !failedImages.has(0) && openZoomModal(0)}
                     >
-                      <Image
-                        src={trip.images[0]}
-                        alt="Main property image"
-                        fill
-                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                      />
+                      {failedImages.has(0) ? (
+                        <div className="flex items-center justify-center w-full h-full bg-muted">
+                          <ImageOff className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <Image
+                          src={trip.images[0]}
+                          alt="Main property image"
+                          fill
+                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                          onError={() => handleImageError(0)}
+                        />
+                      )}
                     </div>
                     <div className="w-1/2 flex flex-col gap-2">
                       <div
                         className="flex-1 relative rounded-xl overflow-hidden"
-                        onClick={() => openZoomModal(1)}
+                        onClick={() => !failedImages.has(1) && openZoomModal(1)}
                       >
-                        <Image
-                          src={trip.images[1]}
-                          alt="Property image 2"
-                          fill
-                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                        />
+                        {failedImages.has(1) ? (
+                          <div className="flex items-center justify-center w-full h-full bg-muted">
+                            <ImageOff className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <Image
+                            src={trip.images[1]}
+                            alt="Property image 2"
+                            fill
+                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                            onError={() => handleImageError(1)}
+                          />
+                        )}
                       </div>
                       <div className="flex-1 flex gap-2">
                         <div
                           className="flex-1 relative rounded-xl overflow-hidden"
-                          onClick={() => openZoomModal(2)}
+                          onClick={() => !failedImages.has(2) && openZoomModal(2)}
                         >
-                          <Image
-                            src={trip.images[2]}
-                            alt="Property image 3"
-                            fill
-                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                          />
+                          {failedImages.has(2) ? (
+                            <div className="flex items-center justify-center w-full h-full bg-muted">
+                              <ImageOff className="w-8 h-8 text-muted-foreground" />
+                            </div>
+                          ) : (
+                            <Image
+                              src={trip.images[2]}
+                              alt="Property image 3"
+                              fill
+                              className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                              onError={() => handleImageError(2)}
+                            />
+                          )}
                         </div>
                         <div
                           className="flex-1 relative rounded-xl overflow-hidden"
-                          onClick={() => openZoomModal(3)}
+                          onClick={() => !failedImages.has(3) && openZoomModal(3)}
                         >
-                          <Image
-                            src={trip.images[3]}
-                            alt="Property image 4"
-                            fill
-                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                          />
+                          {failedImages.has(3) ? (
+                            <div className="flex items-center justify-center w-full h-full bg-muted">
+                              <ImageOff className="w-8 h-8 text-muted-foreground" />
+                            </div>
+                          ) : (
+                            <Image
+                              src={trip.images[3]}
+                              alt="Property image 4"
+                              fill
+                              className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                              onError={() => handleImageError(3)}
+                            />
+                          )}
                           <Link
                             href={`/properties/${slug}/${id}/photo`}
                             className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 text-white font-medium hover:bg-black/50 transition-colors"
@@ -539,59 +636,94 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                   <>
                     <div
                       className="w-1/2 relative rounded-xl overflow-hidden"
-                      onClick={() => openZoomModal(0)}
+                      onClick={() => !failedImages.has(0) && openZoomModal(0)}
                     >
-                      <Image
-                        src={trip.images[0]}
-                        alt="Main property image"
-                        fill
-                        className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                      />
+                      {failedImages.has(0) ? (
+                        <div className="flex items-center justify-center w-full h-full bg-muted">
+                          <ImageOff className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <Image
+                          src={trip.images[0]}
+                          alt="Main property image"
+                          fill
+                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                          onError={() => handleImageError(0)}
+                        />
+                      )}
                     </div>
                     <div className="w-1/2 grid grid-cols-2 grid-rows-2 gap-2">
                       <div
                         className="relative rounded-xl overflow-hidden"
-                        onClick={() => openZoomModal(1)}
+                        onClick={() => !failedImages.has(1) && openZoomModal(1)}
                       >
-                        <Image
-                          src={trip.images[1]}
-                          alt="Gallery image 2"
-                          fill
-                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                        />
+                        {failedImages.has(1) ? (
+                          <div className="flex items-center justify-center w-full h-full bg-muted">
+                            <ImageOff className="w-6 h-6 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <Image
+                            src={trip.images[1]}
+                            alt="Gallery image 2"
+                            fill
+                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                            onError={() => handleImageError(1)}
+                          />
+                        )}
                       </div>
                       <div
                         className="relative rounded-xl overflow-hidden"
-                        onClick={() => openZoomModal(2)}
+                        onClick={() => !failedImages.has(2) && openZoomModal(2)}
                       >
-                        <Image
-                          src={trip.images[2]}
-                          alt="Gallery image 3"
-                          fill
-                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                        />
+                        {failedImages.has(2) ? (
+                          <div className="flex items-center justify-center w-full h-full bg-muted">
+                            <ImageOff className="w-6 h-6 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <Image
+                            src={trip.images[2]}
+                            alt="Gallery image 3"
+                            fill
+                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                            onError={() => handleImageError(2)}
+                          />
+                        )}
                       </div>
                       <div
                         className="relative rounded-xl overflow-hidden"
-                        onClick={() => openZoomModal(3)}
+                        onClick={() => !failedImages.has(3) && openZoomModal(3)}
                       >
-                        <Image
-                          src={trip.images[3]}
-                          alt="Gallery image 4"
-                          fill
-                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                        />
+                        {failedImages.has(3) ? (
+                          <div className="flex items-center justify-center w-full h-full bg-muted">
+                            <ImageOff className="w-6 h-6 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <Image
+                            src={trip.images[3]}
+                            alt="Gallery image 4"
+                            fill
+                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                            onError={() => handleImageError(3)}
+                          />
+                        )}
                       </div>
                       <div
                         className="relative rounded-xl overflow-hidden"
-                        onClick={() => openZoomModal(4)}
+                        onClick={() => !failedImages.has(4) && openZoomModal(4)}
                       >
-                        <Image
-                          src={trip.images[4]}
-                          alt="Gallery image 5"
-                          fill
-                          className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
-                        />
+                        {failedImages.has(4) ? (
+                          <div className="flex items-center justify-center w-full h-full bg-muted">
+                            <ImageOff className="w-6 h-6 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <Image
+                            src={trip.images[4]}
+                            alt="Gallery image 5"
+                            fill
+                            className="object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+                            onError={() => handleImageError(4)}
+                          />
+                        )}
                         <Link
                           href={`/properties/${slug}/${id}/photo`}
                           className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 text-white font-medium hover:bg-black/50 transition-colors"
@@ -611,14 +743,21 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                 {trip.images.length === 1 ? (
                   <div
                     className="w-full relative rounded-2xl overflow-hidden"
-                    onClick={() => openZoomModal(0)}
+                    onClick={() => !failedImages.has(0) && openZoomModal(0)}
                   >
-                    <Image
-                      src={trip.images[0]}
-                      alt="Property image"
-                      fill
-                      className="object-cover cursor-pointer"
-                    />
+                    {failedImages.has(0) ? (
+                      <div className="flex items-center justify-center w-full h-full bg-muted">
+                        <ImageOff className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                    ) : (
+                      <Image
+                        src={trip.images[0]}
+                        alt="Property image"
+                        fill
+                        className="object-cover cursor-pointer"
+                        onError={() => handleImageError(0)}
+                      />
+                    )}
                     <Link
                       href={`/properties/${slug}/${id}/photo`}
                       className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2 text-black text-sm font-medium"
@@ -632,25 +771,39 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                   <>
                     <div
                       className="flex-1 relative rounded-l-2xl overflow-hidden"
-                      onClick={() => openZoomModal(0)}
+                      onClick={() => !failedImages.has(0) && openZoomModal(0)}
                     >
-                      <Image
-                        src={trip.images[0]}
-                        alt="Property image 1"
-                        fill
-                        className="object-cover cursor-pointer"
-                      />
+                      {failedImages.has(0) ? (
+                        <div className="flex items-center justify-center w-full h-full bg-muted">
+                          <ImageOff className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <Image
+                          src={trip.images[0]}
+                          alt="Property image 1"
+                          fill
+                          className="object-cover cursor-pointer"
+                          onError={() => handleImageError(0)}
+                        />
+                      )}
                     </div>
                     <div
                       className="flex-1 relative rounded-r-2xl overflow-hidden"
-                      onClick={() => openZoomModal(1)}
+                      onClick={() => !failedImages.has(1) && openZoomModal(1)}
                     >
-                      <Image
-                        src={trip.images[1]}
-                        alt="Property image 2"
-                        fill
-                        className="object-cover cursor-pointer"
-                      />
+                      {failedImages.has(1) ? (
+                        <div className="flex items-center justify-center w-full h-full bg-muted">
+                          <ImageOff className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <Image
+                          src={trip.images[1]}
+                          alt="Property image 2"
+                          fill
+                          className="object-cover cursor-pointer"
+                          onError={() => handleImageError(1)}
+                        />
+                      )}
                       <Link
                         href={`/properties/${slug}/${id}/photo`}
                         className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 text-white text-sm font-medium"
@@ -666,26 +819,40 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                     <div className="flex-1 grid grid-cols-1 grid-rows-2 gap-1">
                       <div
                         className="flex-1 relative rounded-tl-2xl rounded-bl-2xl overflow-hidden"
-                        onClick={() => openZoomModal(0)}
+                        onClick={() => !failedImages.has(0) && openZoomModal(0)}
                       >
-                        <Image
-                          src={trip.images[0]}
-                          alt="Gallery image 1"
-                          fill
-                          className="object-cover cursor-pointer"
-                        />
+                        {failedImages.has(0) ? (
+                          <div className="flex items-center justify-center w-full h-full bg-muted">
+                            <ImageOff className="w-6 h-6 text-muted-foreground" />
+                          </div>
+                        ) : (
+                          <Image
+                            src={trip.images[0]}
+                            alt="Gallery image 1"
+                            fill
+                            className="object-cover cursor-pointer"
+                            onError={() => handleImageError(0)}
+                          />
+                        )}
                       </div>
                       {trip.images[1] && (
                         <div
                           className="flex-1 relative overflow-hidden"
-                          onClick={() => openZoomModal(1)}
+                          onClick={() => !failedImages.has(1) && openZoomModal(1)}
                         >
-                          <Image
-                            src={trip.images[1]}
-                            alt="Gallery image 2"
-                            fill
-                            className="object-cover cursor-pointer"
-                          />
+                          {failedImages.has(1) ? (
+                            <div className="flex items-center justify-center w-full h-full bg-muted">
+                              <ImageOff className="w-6 h-6 text-muted-foreground" />
+                            </div>
+                          ) : (
+                            <Image
+                              src={trip.images[1]}
+                              alt="Gallery image 2"
+                              fill
+                              className="object-cover cursor-pointer"
+                              onError={() => handleImageError(1)}
+                            />
+                          )}
                         </div>
                       )}
                     </div>
@@ -693,26 +860,46 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                       {trip.images[2] && (
                         <div
                           className="flex-1 relative rounded-tr-2xl overflow-hidden"
-                          onClick={() => openZoomModal(2)}
+                          onClick={() => !failedImages.has(2) && openZoomModal(2)}
                         >
-                          <Image
-                            src={trip.images[2]}
-                            alt="Gallery image 3"
-                            fill
-                            className="object-cover cursor-pointer"
-                          />
+                          {failedImages.has(2) ? (
+                            <div className="flex items-center justify-center w-full h-full bg-muted">
+                              <ImageOff className="w-6 h-6 text-muted-foreground" />
+                            </div>
+                          ) : (
+                            <Image
+                              src={trip.images[2]}
+                              alt="Gallery image 3"
+                              fill
+                              className="object-cover cursor-pointer"
+                              onError={() => handleImageError(2)}
+                            />
+                          )}
                         </div>
                       )}
                       <div
                         className="flex-1 relative rounded-br-2xl overflow-hidden"
-                        onClick={() => openZoomModal(trip.images.length > 3 ? 3 : trip.images.length - 1)}
+                        onClick={() => {
+                          const idx = trip.images.length > 3 ? 3 : trip.images.length - 1;
+                          !failedImages.has(idx) && openZoomModal(idx);
+                        }}
                       >
-                        <Image
-                          src={trip.images[trip.images.length > 3 ? 3 : trip.images.length - 1]}
-                          alt="Gallery image 4"
-                          fill
-                          className="object-cover cursor-pointer"
-                        />
+                        {(() => {
+                          const idx = trip.images.length > 3 ? 3 : trip.images.length - 1;
+                          return failedImages.has(idx) ? (
+                            <div className="flex items-center justify-center w-full h-full bg-muted">
+                              <ImageOff className="w-6 h-6 text-muted-foreground" />
+                            </div>
+                          ) : (
+                            <Image
+                              src={trip.images[idx]}
+                              alt="Gallery image 4"
+                              fill
+                              className="object-cover cursor-pointer"
+                              onError={() => handleImageError(idx)}
+                            />
+                          );
+                        })()}
                         <Link
                           href={`/properties/${slug}/${id}/photo`}
                           className="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 text-white text-sm font-medium"

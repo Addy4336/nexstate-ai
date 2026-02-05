@@ -3,6 +3,7 @@ import React, { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Loader2, ImageOff, X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { convertGoogleDriveUrl, processImageUrls } from '@/lib/image-utils';
 
 // API base URL
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -73,43 +74,13 @@ export default function PropertyPhotosPage({ params }: { params: Promise<{ slug:
                     images.push(...property.images);
                 }
 
-                // Remove duplicates and empty strings
-                const uniqueImages = [...new Set(images)].filter(img => img && img.trim() !== '');
-
-                // Helper function to convert Google Drive URLs to embeddable format
-                const convertGoogleDriveUrl = (url: string): string => {
-                    if (url.includes('drive.google.com')) {
-                        let fileId = '';
-
-                        const ucMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-                        if (ucMatch) {
-                            fileId = ucMatch[1];
-                        }
-
-                        const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-                        if (fileMatch) {
-                            fileId = fileMatch[1];
-                        }
-
-                        const openMatch = url.match(/open\?id=([a-zA-Z0-9_-]+)/);
-                        if (openMatch) {
-                            fileId = openMatch[1];
-                        }
-
-                        if (fileId) {
-                            const driveUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
-                            return `https://images.weserv.nl/?url=${encodeURIComponent(driveUrl)}&w=1000&fit=cover`;
-                        }
-                    }
-                    return url;
-                };
+                // Process images: filter empty values, convert Google Drive URLs, remove duplicates
+                const uniqueImages = processImageUrls(images);
 
                 // Format images for gallery
                 const formattedPhotos: GalleryPhoto[] = uniqueImages.map((src, index) => {
-                    const imageUrl = convertGoogleDriveUrl(src);
-
                     return {
-                        src: imageUrl,
+                        src: src,
                         alt: `${property.title || propertyName} - Photo ${index + 1}`,
                         category: "All Photos"
                     };
