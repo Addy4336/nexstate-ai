@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { proxy } from "./proxy";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // Only run on API routes
+    // Handle API routes specifically for CORS
     if (pathname.startsWith("/api")) {
-        const origin = request.headers.get("origin");
+        const origin = request.headers.get("origin") || "";
 
         // Define allowed origins
         const allowedOrigins = [
@@ -15,30 +16,29 @@ export function middleware(request: NextRequest) {
             "http://localhost:3001",
             process.env.FRONTEND_URL,
             process.env.NEXT_PUBLIC_APP_URL,
-        ].filter(Boolean) as string[];
+            "https://hopohomes-cms-hopohomes-cms.vercel.app"
+        ].filter(Boolean).map(url => url?.toLowerCase().replace(/\/$/, ""));
 
-        // Check if the origin is allowed
-        const isAllowed = origin && allowedOrigins.includes(origin);
+        const normalizedOrigin = origin.toLowerCase().replace(/\/$/, "");
+        const isAllowed = allowedOrigins.includes(normalizedOrigin);
 
         // Handle Preflight OPTIONS request
         if (request.method === "OPTIONS") {
-            // If valid origin, return 200 with CORS headers
+            // For OPTIONS, if allowed return headers, otherwise just return valid OPTIONS response (some browsers expect 200/204 always)
+            const response = new NextResponse(null, { status: 204 });
+
             if (isAllowed) {
-                return new NextResponse(null, {
-                    status: 200,
-                    headers: {
-                        "Access-Control-Allow-Origin": origin!,
-                        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-                        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version",
-                        "Access-Control-Allow-Credentials": "true",
-                    },
-                });
+                response.headers.set("Access-Control-Allow-Origin", origin);
+                response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+                response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version");
+                response.headers.set("Access-Control-Allow-Credentials", "true");
+                response.headers.set("Access-Control-Max-Age", "86400");
+                response.headers.set("Vary", "Origin");
             }
-            // If not allowed or no origin (but OPTIONS usually has origin), return 200 without headers (CORS error)
-            return new NextResponse(null, { status: 200 });
+            return response;
         }
 
-        // Handle standard requests
+        // Handle standard API requests
         const response = NextResponse.next();
 
         if (isAllowed && origin) {
@@ -46,16 +46,22 @@ export function middleware(request: NextRequest) {
             response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
             response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version");
             response.headers.set("Access-Control-Allow-Credentials", "true");
+            response.headers.set("Vary", "Origin");
         }
 
         return response;
     }
 
-    // Default behavior for non-API routes check for proxy.ts logic if needed, 
-    // currently we only touch API routes logic to fix CORS
-    return NextResponse.next();
+    // For non-API routes, delegate to the proxy (admin logic)
+    return proxy(request);
 }
 
 export const config = {
-    matcher: "/api/:path*",
+    // Combine matchers: API routes AND everything else handled by proxy
+    // Actually, middleware usually catches everything and decices.
+    // We want to run on everything except static assets
+    matcher: [
+        "/api/:path*",
+        "/((?!_next/static|_next/image|favicon.ico).*)"
+    ],
 };
