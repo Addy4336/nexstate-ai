@@ -139,6 +139,37 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
                     </Select>
                 </div>
 
+                {/* Additional Fees Section */}
+                <div className="md:col-span-2 mt-4 mb-2">
+                    <h3 className="text-lg font-medium">Additional Fees</h3>
+                    <p className="text-sm text-muted-foreground">Detailed breakdown of extra charges</p>
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="vat">VAT (%)</Label>
+                    <Input id="vat" name="vat" type="number" step="0.01" min="0" defaultValue={initialData?.vat || 5} />
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="booking_fee">Booking Fee (AED)</Label>
+                    <Input id="booking_fee" name="booking_fee" type="number" step="0.01" min="0" defaultValue={initialData?.booking_fee} />
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="exit_cleaning_fee">Exit Cleaning & Restocking Fee (AED)</Label>
+                    <Input id="exit_cleaning_fee" name="exit_cleaning_fee" type="number" step="0.01" min="0" defaultValue={initialData?.exit_cleaning_fee} />
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="tourism_fee">Tourism Fee (AED)</Label>
+                    <Input id="tourism_fee" name="tourism_fee" type="number" step="0.01" min="0" defaultValue={initialData?.tourism_fee} />
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="security_deposit">Refundable Security Deposit (AED)</Label>
+                    <Input id="security_deposit" name="security_deposit" type="number" step="0.01" min="0" defaultValue={initialData?.security_deposit} />
+                </div>
+
                 <div className="flex items-center space-x-2 md:col-span-2">
                     <Switch id="featured" name="featured" defaultChecked={initialData?.featured} />
                     <Label htmlFor="featured">Featured Property</Label>
@@ -158,8 +189,8 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
                                     key={amenity}
                                     variant={isSelected ? "default" : "outline"}
                                     className={`cursor-pointer transition-all ${isSelected
-                                            ? "hover:bg-primary/90"
-                                            : "hover:bg-muted"
+                                        ? "hover:bg-primary/90"
+                                        : "hover:bg-muted"
                                         }`}
                                     onClick={() => toggleAmenity(amenity)}
                                 >

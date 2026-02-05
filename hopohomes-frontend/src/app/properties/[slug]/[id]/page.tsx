@@ -190,6 +190,13 @@ function transformPropertyData(property: any) {
     pricing: {
       from: property.price || 2500,
       currency: 'AED',
+      fees: {
+        vat: property.vat !== undefined ? property.vat : 5,
+        bookingFee: property.booking_fee || 0,
+        exitCleaningFee: property.exit_cleaning_fee || 0,
+        tourismFee: property.tourism_fee || 0,
+        securityDeposit: property.security_deposit || 0,
+      },
       availableDates: [
         {
           dates: 'Current Month',
