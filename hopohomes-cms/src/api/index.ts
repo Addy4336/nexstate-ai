@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { cors } from "@elysiajs/cors";
+// import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { propertiesRoutes } from "./routes/properties";
 import { enquiriesRoutes } from "./routes/enquiries";
@@ -16,18 +16,18 @@ initializeCronJobs();
 // Prefix with /api to match Next.js catch-all route at /api/[[...slugs]]
 export const api = new Elysia({ prefix: "/api" })
     // Add CORS for cross-origin requests from frontend
-    .use(cors({
-        origin: [
-            "http://localhost:3000",  // hopohomes-frontend dev
-            "http://localhost:3001",
-            "https://hopohomes.slaab.ai",
-            process.env.FRONTEND_URL || "",
-            process.env.NEXT_PUBLIC_APP_URL || "",
-        ].filter(Boolean),
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    }))
+    // .use(cors({
+    //     origin: [
+    //         "http://localhost:3000",  // hopohomes-frontend dev
+    //         "http://localhost:3001",
+    //         "https://hopohomes.slaab.ai",
+    //         process.env.FRONTEND_URL || "",
+    //         process.env.NEXT_PUBLIC_APP_URL || "",
+    //     ].filter(Boolean),
+    //     credentials: true,
+    //     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    //     allowedHeaders: ["Content-Type", "Authorization"],
+    // }))
     
     // Add Swagger documentation
     .use(swagger({
@@ -48,7 +48,7 @@ export const api = new Elysia({ prefix: "/api" })
             ],
         },
     }))
-    
+
     // Health check endpoint at /api/health
     .get("/health", () => ({
         status: "healthy",
@@ -61,7 +61,7 @@ export const api = new Elysia({ prefix: "/api" })
             description: "Check if the API is running",
         },
     })
-    
+
     // Register all route modules
     .use(propertiesRoutes)
     .use(enquiriesRoutes)
