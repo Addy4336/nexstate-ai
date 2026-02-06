@@ -1,24 +1,47 @@
 import { supabaseAdmin } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 
 /**
- * DELETE endpoint to clear stored Zoho tokens
- * This allows users to reset the connection and try again
+ * DELETE endpoint to clear stored Zoho tokens for the current admin
+ * This allows users to reset their connection and try again
  */
 export async function DELETE(request: NextRequest) {
     try {
+        // Get the logged-in admin user
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
+
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized - Please log in" },
+                { status: 401 }
+            );
+        }
+
+        const adminId = session.user.id;
+        console.log("🗑️ Revoking Zoho tokens for admin:", adminId);
+
+        // Delete this admin's tokens only
         const { error } = await supabaseAdmin
             .from("zoho_tokens")
             .delete()
-            .eq("id", 1);
+            .eq("admin_id", adminId);
 
         if (error) throw error;
 
-        console.log("✅ Zoho tokens cleared from database");
+        // Also delete this admin's config
+        await supabaseAdmin
+            .from("zoho_config")
+            .delete()
+            .eq("admin_id", adminId);
+
+        console.log("✅ Zoho tokens and config cleared for admin:", adminId);
 
         return NextResponse.json({
             success: true,
-            message: "Zoho tokens cleared. You can now reconnect.",
+            message: "Your Zoho connection has been removed. You can now reconnect.",
         });
     } catch (error: any) {
         console.error("❌ Error clearing Zoho tokens:", error);

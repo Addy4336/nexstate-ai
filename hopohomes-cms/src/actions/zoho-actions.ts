@@ -15,11 +15,11 @@ interface ZohoConfigData {
 /**
  * Get all Zoho Creator applications
  */
-export async function getZohoApplications() {
+export async function getZohoApplications(adminId: string) {
     try {
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
-            return { success: false, error: "Zoho Creator not connected" };
+            return { success: false, error: "Zoho Creator not connected for this admin" };
         }
 
         const result = await zoho.getApplications();
@@ -33,9 +33,9 @@ export async function getZohoApplications() {
 /**
  * Get forms for a specific Zoho Creator application
  */
-export async function getZohoForms(ownerName: string, appLinkName: string) {
+export async function getZohoForms(ownerName: string, appLinkName: string, adminId: string) {
     try {
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
             return { success: false, error: "Zoho Creator not connected" };
         }
@@ -51,9 +51,9 @@ export async function getZohoForms(ownerName: string, appLinkName: string) {
 /**
  * Get fields for a specific Zoho Creator form
  */
-export async function getZohoFormFields(ownerName: string, appLinkName: string, formLinkName: string) {
+export async function getZohoFormFields(ownerName: string, appLinkName: string, formLinkName: string, adminId: string) {
     try {
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
             return { success: false, error: "Zoho Creator not connected" };
         }
@@ -69,9 +69,9 @@ export async function getZohoFormFields(ownerName: string, appLinkName: string, 
 /**
  * Get reports for a specific Zoho Creator application
  */
-export async function getZohoReports(ownerName: string, appLinkName: string) {
+export async function getZohoReports(ownerName: string, appLinkName: string, adminId: string) {
     try {
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
             return { success: false, error: "Zoho Creator not connected" };
         }
@@ -85,14 +85,14 @@ export async function getZohoReports(ownerName: string, appLinkName: string) {
 }
 
 /**
- * Get Zoho Creator configuration from database
+ * Get Zoho Creator configuration from database for a specific admin
  */
-export async function getZohoConfig() {
+export async function getZohoConfig(adminId: string) {
     try {
         const { data, error } = await supabaseAdmin
             .from("zoho_config")
             .select("*")
-            .eq("id", 1)
+            .eq("admin_id", adminId)
             .single();
         
         if (error && error.code !== "PGRST116") {
@@ -109,14 +109,14 @@ export async function getZohoConfig() {
 }
 
 /**
- * Save Zoho Creator configuration to database
+ * Save Zoho Creator configuration to database for a specific admin
  */
-export async function saveZohoConfig(config: ZohoConfigData) {
+export async function saveZohoConfig(config: ZohoConfigData, adminId: string) {
     try {
         const { data: existing } = await supabaseAdmin
             .from("zoho_config")
             .select("*")
-            .eq("id", 1)
+            .eq("admin_id", adminId)
             .single();
 
         if (existing) {
@@ -131,7 +131,7 @@ export async function saveZohoConfig(config: ZohoConfigData) {
                     auto_sync: config.auto_sync,
                     updated_at: new Date().toISOString(),
                 })
-                .eq("id", 1);
+                .eq("admin_id", adminId);
             
             if (error) {
                 console.error("Error updating Zoho config:", error);
@@ -141,7 +141,7 @@ export async function saveZohoConfig(config: ZohoConfigData) {
             const { error } = await supabaseAdmin
                 .from("zoho_config")
                 .insert({
-                    id: 1,
+                    admin_id: adminId,
                     owner_name: config.owner_name,
                     app_name: config.app_name,
                     form_name: config.form_name,
@@ -166,15 +166,15 @@ export async function saveZohoConfig(config: ZohoConfigData) {
 /**
  * Sync properties from CMS to Zoho Creator
  */
-export async function syncPropertiesToZoho() {
+export async function syncPropertiesToZoho(adminId: string) {
     try {
         // Get Zoho service and config
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
             return { success: false, error: "Zoho Creator not connected" };
         }
 
-        const configResult = await getZohoConfig();
+        const configResult = await getZohoConfig(adminId);
         if (!configResult.success || !configResult.data) {
             return { success: false, error: "Zoho configuration not found" };
         }
@@ -238,7 +238,7 @@ export async function syncPropertiesToZoho() {
         await supabaseAdmin
             .from("zoho_config")
             .update({ last_synced_at: new Date().toISOString() })
-            .eq("id", 1);
+            .eq("admin_id", adminId);
 
         return { success: true, count: syncedCount };
     } catch (error: any) {
@@ -254,6 +254,7 @@ export async function getZohoCreatorRecords(
     ownerName: string,
     appName: string,
     reportName: string,
+    adminId: string,
     options?: {
         criteria?: string;
         limit?: number;
@@ -261,7 +262,7 @@ export async function getZohoCreatorRecords(
     }
 ) {
     try {
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
             return { success: false, error: "Zoho Creator not connected" };
         }
@@ -281,10 +282,11 @@ export async function addZohoCreatorRecord(
     ownerName: string,
     appName: string,
     formName: string,
-    data: Record<string, any>
+    data: Record<string, any>,
+    adminId: string
 ) {
     try {
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
             return { success: false, error: "Zoho Creator not connected" };
         }
@@ -305,10 +307,11 @@ export async function updateZohoCreatorRecord(
     appName: string,
     reportName: string,
     recordId: string,
-    data: Record<string, any>
+    data: Record<string, any>,
+    adminId: string
 ) {
     try {
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
             return { success: false, error: "Zoho Creator not connected" };
         }
@@ -328,10 +331,11 @@ export async function deleteZohoCreatorRecord(
     ownerName: string,
     appName: string,
     reportName: string,
-    recordId: string
+    recordId: string,
+    adminId: string
 ) {
     try {
-        const zoho = await getZohoCreatorService();
+        const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
             return { success: false, error: "Zoho Creator not connected" };
         }

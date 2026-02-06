@@ -11,7 +11,8 @@ interface ZohoTokenResponse {
 }
 
 interface StoredZohoTokens {
-    id: number;
+    id: string; // UUID
+    admin_id: string; // UUID of the admin who owns these tokens
     access_token: string;
     refresh_token: string;
     api_domain: string;
@@ -163,20 +164,21 @@ export async function exchangeCodeForTokens(code: string, accountsServerOverride
 /**
  * Save Zoho tokens to database
  */
-export async function saveZohoTokens(tokens: ZohoTokenResponse): Promise<void> {
+export async function saveZohoTokens(tokens: ZohoTokenResponse, adminId: string): Promise<void> {
     const expiresAt = new Date();
     expiresAt.setSeconds(expiresAt.getSeconds() + tokens.expires_in - 300); // 5 min buffer
 
     console.log("🔍 Token Response Debug:");
+    console.log("  - Admin ID:", adminId);
     console.log("  - Has refresh_token:", !!tokens.refresh_token);
     console.log("  - Has access_token:", !!tokens.access_token);
     console.log("  - Expires in:", tokens.expires_in, "seconds");
 
-    // Check if tokens already exist
+    // Check if tokens already exist for this admin
     const { data: existing, error: fetchError } = await supabaseAdmin
         .from("zoho_tokens")
         .select("*")
-        .eq("id", 1)
+        .eq("admin_id", adminId)
         .single();
 
     if (existing) {
@@ -199,10 +201,10 @@ export async function saveZohoTokens(tokens: ZohoTokenResponse): Promise<void> {
                 expires_at: expiresAt.toISOString(),
                 updated_at: new Date().toISOString(),
             })
-            .eq("id", 1);
+            .eq("admin_id", adminId);
 
         if (error) throw error;
-        console.log("✅ Zoho tokens updated in database (refresh token preserved)");
+        console.log("✅ Zoho tokens updated in database (refresh token preserved) for admin:", adminId);
     } else {
         // Insert - This is the first connection
         if (!tokens.refresh_token) {
@@ -217,7 +219,7 @@ export async function saveZohoTokens(tokens: ZohoTokenResponse): Promise<void> {
         const { error } = await supabaseAdmin
             .from("zoho_tokens")
             .insert({
-                id: 1,
+                admin_id: adminId,
                 access_token: tokens.access_token,
                 refresh_token: tokens.refresh_token,
                 api_domain: tokens.api_domain || getZohoDomains().api,
@@ -225,19 +227,19 @@ export async function saveZohoTokens(tokens: ZohoTokenResponse): Promise<void> {
             });
 
         if (error) throw error;
-        console.log("✅ Zoho tokens saved to database (first connection)");
+        console.log("✅ Zoho tokens saved to database (first connection) for admin:", adminId);
     }
 }
 
 /**
- * Get stored Zoho tokens from database
+ * Get stored Zoho tokens from database for a specific admin
  */
-export async function getStoredZohoTokens(): Promise<StoredZohoTokens | null> {
+export async function getStoredZohoTokens(adminId: string): Promise<StoredZohoTokens | null> {
     try {
         const { data, error } = await supabaseAdmin
             .from("zoho_tokens")
             .select("*")
-            .eq("id", 1)
+            .eq("admin_id", adminId)
             .single();
 
         if (error) {
@@ -262,6 +264,7 @@ export class ZohoCreatorService {
     private clientId: string;
     private clientSecret: string;
     private refreshToken: string;
+    private adminId: string;
     private accessToken: string | null = null;
     private tokenExpiresAt: Date | null = null;
     private creatorDomain: string;
@@ -271,6 +274,7 @@ export class ZohoCreatorService {
         clientId: string,
         clientSecret: string,
         refreshToken: string,
+        adminId: string,
         options?: {
             accessToken?: string;
             expiresAt?: Date;
@@ -279,6 +283,7 @@ export class ZohoCreatorService {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.refreshToken = refreshToken;
+        this.adminId = adminId;
 
         const { creator, accounts } = getZohoDomains();
         this.creatorDomain = creator;
@@ -322,9 +327,9 @@ export class ZohoCreatorService {
             this.tokenExpiresAt.setSeconds(this.tokenExpiresAt.getSeconds() + tokens.expires_in - 300);
 
             // Save updated tokens to database
-            await saveZohoTokens(tokens);
+            await saveZohoTokens(tokens, this.adminId);
 
-            console.log("✅ Zoho Creator access token refreshed");
+            console.log("✅ Zoho Creator access token refreshed for admin:", this.adminId);
             return this.accessToken;
         } catch (error: any) {
             console.error("❌ Failed to refresh Zoho token:", error.message);
@@ -438,6 +443,11 @@ export class ZohoCreatorService {
             }
 
             console.log("✅ Form fields fetched from Zoho Creator");
+            console.log("📋 Available fields:", result.fields?.map((f: any) => ({
+                display_name: f.display_name,
+                link_name: f.link_name,
+                type: f.type
+            })));
             return { success: true, fields: result.fields || [] };
         } catch (error: any) {
             console.error("❌ Failed to fetch form fields:", error.message);
@@ -687,21 +697,21 @@ export class ZohoCreatorService {
 }
 
 /**
- * Get Zoho Creator service instance from stored tokens
+ * Get Zoho Creator service instance from stored tokens for a specific admin
  */
-export async function getZohoCreatorService(): Promise<ZohoCreatorService | null> {
+export async function getZohoCreatorService(adminId: string): Promise<ZohoCreatorService | null> {
     if (!ZOHO_CLIENT_ID || !ZOHO_CLIENT_SECRET) {
         console.warn("⚠️ Zoho Creator credentials not configured");
         return null;
     }
 
-    const tokens = await getStoredZohoTokens();
+    const tokens = await getStoredZohoTokens(adminId);
     if (!tokens) {
-        console.warn("⚠️ No Zoho tokens found. Please connect your account.");
+        console.warn("⚠️ No Zoho tokens found for admin:", adminId);
         return null;
     }
 
-    return new ZohoCreatorService(ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, tokens.refresh_token, {
+    return new ZohoCreatorService(ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, tokens.refresh_token, adminId, {
         accessToken: tokens.access_token,
         expiresAt: tokens.expires_at || undefined,
     });
