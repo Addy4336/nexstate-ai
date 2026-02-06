@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, ".."),
   // Enable standalone output for Docker
   output: 'standalone',
-  
+
   // Skip TypeScript errors during Docker build
   typescript: {
     ignoreBuildErrors: true,
@@ -46,6 +46,9 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
+    // Limit concurrency for Docker builds to prevent OOM
+    workerThreads: false,
+    cpus: 1,
   },
 };
 

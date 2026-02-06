@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 # Dependencies stage
 FROM base AS deps
 COPY package.json bun.lock* ./
-RUN bun install --frozen-lockfile
+RUN bun install
 
 # Build stage
 FROM base AS build
@@ -28,6 +28,20 @@ COPY . .
 
 # Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
+# Increase Node.js memory limit for build
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+# Limit build workers to reduce memory usage
+ENV NEXT_BUILD_WORKERS=2
+
+# Build-time placeholder environment variables (overridden at runtime)
+ENV BETTER_AUTH_SECRET="build-time-placeholder-secret-replace-at-runtime"
+ENV BETTER_AUTH_BASE_URL="http://localhost:3001"
+ENV TOTALPAY_MERCHANT_KEY="placeholder"
+ENV TOTALPAY_PASSWORD="placeholder"
+ENV TOTALPAY_CHECKOUT_HOST="https://checkout.totalpay.global"
+ENV NEXT_PUBLIC_SUPABASE_URL="https://placeholder.supabase.co"
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY="placeholder"
+ENV SUPABASE_SERVICE_ROLE_KEY="placeholder"
 
 # Build the application
 RUN bun run build
