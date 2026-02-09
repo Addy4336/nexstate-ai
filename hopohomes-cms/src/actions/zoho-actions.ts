@@ -201,6 +201,8 @@ export async function syncPropertiesToZoho(adminId: string) {
 
         // Map and sync each property
         const fieldMapping = config.field_mapping || {};
+        console.log("🗺️ Field mapping from config:", JSON.stringify(fieldMapping, null, 2));
+        
         let syncedCount = 0;
 
         for (const property of properties) {
@@ -208,17 +210,45 @@ export async function syncPropertiesToZoho(adminId: string) {
 
             // Map CMS fields to Zoho fields
             for (const [cmsField, zohoField] of Object.entries(fieldMapping) as [string, string][]) {
-                if (zohoField && property[cmsField] !== undefined) {
-                    // Special handling for location field - Zoho Address fields need structured data
-                    if (zohoField === 'location' || zohoField === 'Location') {
-                        zohoData[zohoField as string] = {
-                            address_line_1: String(property[cmsField])
+                if (zohoField && zohoField !== "" && property[cmsField] !== undefined && property[cmsField] !== null) {
+                    const fieldValue = property[cmsField];
+                    
+                    // Special handling for Full_Address - Zoho Address fields need structured data
+                    if (zohoField === 'Full_Address') {
+                        zohoData[zohoField] = {
+                            address_line_1: String(fieldValue)
                         };
-                    } else {
-                        zohoData[zohoField as string] = property[cmsField];
+                    } 
+                    // Handle array fields (images, amenities, etc.)
+                    else if (Array.isArray(fieldValue)) {
+                        if (cmsField === 'cover_image' || cmsField === 'images') {
+                            // For image fields, use the first URL if available
+                            zohoData[zohoField] = fieldValue.length > 0 ? fieldValue[0] : "";
+                        } else if (cmsField === 'amenities') {
+                            // For amenities, join with commas
+                            zohoData[zohoField] = fieldValue.join(", ");
+                        } else {
+                            // For other arrays, convert to JSON string or comma-separated
+                            zohoData[zohoField] = fieldValue.join(", ");
+                        }
+                    }
+                    // Handle boolean fields
+                    else if (typeof fieldValue === 'boolean') {
+                        zohoData[zohoField] = fieldValue ? "Yes" : "No";
+                    }
+                    // Handle numeric fields
+                    else if (typeof fieldValue === 'number') {
+                        // Convert numbers to strings for Zoho (handles currency, decimal, number fields)
+                        zohoData[zohoField] = String(fieldValue);
+                    } 
+                    // Handle regular string fields
+                    else {
+                        zohoData[zohoField] = fieldValue;
                     }
                 }
             }
+
+            console.log("📤 Mapped property data for Zoho:", JSON.stringify(zohoData, null, 2));
 
             if (Object.keys(zohoData).length > 0) {
                 const result = await zoho.addRecord(
@@ -230,6 +260,8 @@ export async function syncPropertiesToZoho(adminId: string) {
 
                 if (result.success) {
                     syncedCount++;
+                } else {
+                    console.error(`❌ Failed to sync property ${property.id}:`, result.error);
                 }
             }
         }
