@@ -17,6 +17,7 @@ import {
     getZohoFormFields
 } from "@/actions/zoho-actions";
 import { toast } from "sonner";
+import { useSession } from "@/lib/auth-client";
 
 interface ZohoConfig {
     owner_name: string;
@@ -66,12 +67,19 @@ const CMS_FIELDS = [
     { key: "location", label: "Location" },
     { key: "bedrooms", label: "Bedrooms" },
     { key: "bathrooms", label: "Bathrooms" },
-    { key: "area", label: "Area (sq ft)" },
-    { key: "property_type", label: "Property Type" },
+    { key: "area_sqft", label: "Area (sq ft)" },
     { key: "status", label: "Status" },
+    { key: "cover_image", label: "Cover Image (URL)" },
+    { key: "images", label: "Gallery Images (URLs)" },
+    { key: "amenities", label: "Amenities" },
+    { key: "featured", label: "Featured" },
+    { key: "drive_folder_id", label: "Drive Folder ID" },
 ];
 
 export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps) {
+    const { data: session } = useSession();
+    const adminId = session?.user?.id;
+
     const [config, setConfig] = useState<ZohoConfig>({
         owner_name: initialConfig?.owner_name || "",
         app_name: initialConfig?.app_name || "",
@@ -110,9 +118,14 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
     }, [config.owner_name, config.app_name]);
 
     const loadApplications = async () => {
+        if (!adminId) {
+            toast.error("Session expired. Please log in again.");
+            return;
+        }
+
         setLoadingApps(true);
         try {
-            const result = await getZohoApplications();
+            const result = await getZohoApplications(adminId);
             if (result.success && 'applications' in result && result.applications) {
                 setApplications(result.applications);
                 // If we have an initial app, move to step 2
@@ -130,11 +143,16 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
     };
 
     const loadFormsAndReports = async (ownerName: string, appLinkName: string) => {
+        if (!adminId) {
+            toast.error("Session expired. Please log in again.");
+            return;
+        }
+
         setLoadingForms(true);
         try {
             const [formsResult, reportsResult] = await Promise.all([
-                getZohoForms(ownerName, appLinkName),
-                getZohoReports(ownerName, appLinkName)
+                getZohoForms(ownerName, appLinkName, adminId),
+                getZohoReports(ownerName, appLinkName, adminId)
             ]);
 
             if (formsResult.success && 'forms' in formsResult && formsResult.forms) {
@@ -158,11 +176,22 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
     }, [config.owner_name, config.app_name, config.form_name]);
 
     const loadFormFields = async (ownerName: string, appLinkName: string, formLinkName: string) => {
+        if (!adminId) {
+            toast.error("Session expired. Please log in again.");
+            return;
+        }
+
         setLoadingFields(true);
         try {
-            const result = await getZohoFormFields(ownerName, appLinkName, formLinkName);
+            const result = await getZohoFormFields(ownerName, appLinkName, formLinkName, adminId);
             if (result.success && 'fields' in result && result.fields) {
                 setFormFields(result.fields as ZohoField[]);
+                console.log("📋 Zoho Form Fields Available:");
+                console.table(result.fields.map((field: any) => ({
+                    display_name: field.display_name,
+                    link_name: field.link_name,
+                    type: field.type
+                })));
             }
         } catch (error) {
             toast.error("Failed to load form fields");
@@ -196,6 +225,11 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
     };
 
     const handleSave = async () => {
+        if (!adminId) {
+            toast.error("Session expired. Please log in again.");
+            return;
+        }
+
         if (!config.app_name) {
             toast.error("Please select an application");
             return;
@@ -210,7 +244,7 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
                 report_name: config.report_name,
                 field_mapping: config.field_mapping,
                 auto_sync: config.auto_sync,
-            });
+            }, adminId);
 
             if (result.success) {
                 toast.success("Configuration saved successfully");
@@ -226,9 +260,14 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
     };
 
     const handleSync = async () => {
+        if (!adminId) {
+            toast.error("Session expired. Please log in again.");
+            return;
+        }
+
         setSyncing(true);
         try {
-            const result = await syncPropertiesToZoho();
+            const result = await syncPropertiesToZoho(adminId);
 
             if (result.success) {
                 toast.success(`Synced ${result.count || 0} properties to Zoho Creator`);

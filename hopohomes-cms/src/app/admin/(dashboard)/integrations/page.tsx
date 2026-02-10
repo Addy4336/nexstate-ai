@@ -8,12 +8,25 @@ import Link from "next/link";
 import { ZohoResetButton } from "@/components/admin/ZohoResetButton";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function IntegrationsPage() {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    });
+
+    if (!session?.user?.id) {
+        redirect("/api/auth/signin");
+    }
+
+    const adminId = session.user.id;
+
     const tokens = await getStoredTokens();
     const isConnected = !!tokens;
 
-    const zohoTokens = await getStoredZohoTokens();
+    const zohoTokens = await getStoredZohoTokens(adminId);
     const isZohoConnected = !!zohoTokens;
 
     return (
