@@ -93,7 +93,7 @@ function PaymentSuccessContent() {
                             <div className="grid grid-cols-2 gap-3 text-sm">
                                 <div className="text-gray-600">Amount Paid:</div>
                                 <div className="font-semibold text-green-600">
-                                    ${Number(payment.amount).toFixed(2)} {payment.currency}
+                                    {Number(payment.amount).toFixed(2)} {payment.currency || 'AED'}
                                 </div>
                                 
                                 <div className="text-gray-600">Status:</div>

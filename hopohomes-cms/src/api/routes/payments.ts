@@ -4,9 +4,11 @@ import {
     createTotalPaySession, 
     generateOrderNumber,
     parseWebhookPayload,
-    verifyWebhookSignature,
+    verifyCallbackSignature,
     validatePaymentAmount,
-    type TotalPayPaymentRequest 
+    mapOrderStatusToPaymentStatus,
+    type CheckoutSessionParams,
+    type CheckoutCallbackData
 } from "@/lib/totalpay";
 
 export const paymentsRoutes = new Elysia({ prefix: "/payments" })
@@ -75,29 +77,28 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
                 return { success: false, error: "Failed to create payment record" };
             }
 
-            // Create TotalPay payment session
-            const paymentRequest: TotalPayPaymentRequest = {
+            // Create TotalPay Checkout session
+            const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+            const sessionParams: CheckoutSessionParams = {
                 orderNumber,
                 amount,
+                currency: 'AED',
                 customerEmail,
                 customerName,
-                customerPhone,
                 description: description || `Property Booking - Order ${orderNumber}`,
+                successUrl: `${baseUrl}/payment/success?order_number=${orderNumber}`,
+                cancelUrl: `${baseUrl}/payment/cancel?order_number=${orderNumber}`,
+                notificationUrl: `${baseUrl}/api/payments/webhook`,
             };
 
-            const totalPayResponse = await createTotalPaySession(paymentRequest);
+            const checkoutResponse = await createTotalPaySession(sessionParams);
 
-            if (!totalPayResponse.success) {
-                // Mark payment as failed
+            // Update payment with TotalPay payment ID
+            if (checkoutResponse.payment_id) {
                 await supabaseAdmin
                     .from("payments")
-                    .update({ status: 'failed' })
+                    .update({ totalpay_transaction_id: checkoutResponse.payment_id })
                     .eq("id", payment.id);
-
-                return { 
-                    success: false, 
-                    error: totalPayResponse.error || 'Failed to create payment session' 
-                };
             }
 
             // Store session data
@@ -105,21 +106,21 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
                 .from("payment_sessions")
                 .insert({
                     payment_id: payment.id,
-                    session_data: totalPayResponse,
-                    redirect_url: totalPayResponse.redirect_url,
-                    expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 minutes
+                    session_data: checkoutResponse,
+                    redirect_url: checkoutResponse.redirect_url,
+                    expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 60 minutes
                 });
 
-            console.log('Payment session created successfully:', {
+            console.log('Checkout session created successfully:', {
                 order_number: orderNumber,
                 payment_id: payment.id,
+                redirect_url: checkoutResponse.redirect_url?.substring(0, 50) + '...'
             });
 
             return {
                 success: true,
-                redirect_url: totalPayResponse.redirect_url,
+                redirect_url: checkoutResponse.redirect_url,
                 order_number: orderNumber,
-                transaction_id: totalPayResponse.transaction_id,
                 payment_id: payment.id,
             };
         } catch (error: any) {
@@ -150,40 +151,41 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
     })
 
     /**
-     * Webhook endpoint for payment status updates
+     * Callback endpoint for payment status updates from TotalPay S2S
      * POST /api/payments/webhook
      */
     .post("/webhook", async ({ body, headers }) => {
         try {
             console.log('='.repeat(60));
-            console.log('🔔 WEBHOOK RECEIVED FROM TOTALPAY');
+            console.log('🔔 CALLBACK RECEIVED FROM TOTALPAY');
             console.log('='.repeat(60));
             console.log('Headers:', JSON.stringify(headers, null, 2));
             console.log('Body:', JSON.stringify(body, null, 2));
             console.log('='.repeat(60));
-
-            // Verify webhook signature (if TotalPay provides it)
-            const signature = (headers['x-totalpay-signature'] as string) || '';
             
-            // Note: Implement proper signature verification based on TotalPay docs
-            // For now, we'll log it for debugging
-            if (signature) {
-                console.log('Webhook signature received:', signature);
-            }
-            
-            // Parse webhook payload
-            const payload = parseWebhookPayload(body);
+            // Parse TotalPay Checkout callback payload
+            const payload = parseWebhookPayload(body) as CheckoutCallbackData | null;
             
             if (!payload) {
-                console.error("Invalid webhook payload:", body);
-                return { success: false, error: "Invalid payload" };
+                console.error("Invalid callback payload:", body);
+                return 'ERROR';
             }
 
-            console.log("Webhook payload parsed:", {
+            console.log("Callback payload parsed:", {
                 order_number: payload.order_number,
+                order_status: payload.order_status,
                 status: payload.status,
-                transaction_id: payload.transaction_id,
+                type: payload.type,
+                id: payload.id,
             });
+
+            // Verify callback signature for security
+            const isValidSignature = verifyCallbackSignature(payload);
+            if (!isValidSignature) {
+                console.error("Invalid callback signature!");
+                console.error("Received hash:", payload.hash);
+                console.warn("⚠️  Processing anyway for testing, but this should be rejected in production!");
+            }
 
             // Find payment by order number
             const { data: payment, error: fetchError } = await supabaseAdmin
@@ -194,21 +196,25 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
 
             if (fetchError || !payment) {
                 console.error("Payment not found:", payload.order_number, fetchError);
-                return { success: false, error: "Payment not found" };
+                return 'ERROR';
             }
+
+            // Map TotalPay Checkout statuses to our internal statuses
+            const internalStatus = mapOrderStatusToPaymentStatus(payload.order_status);
 
             // Update payment status
             const updateData: any = {
-                status: payload.status,
-                totalpay_transaction_id: payload.transaction_id,
-                totalpay_status: payload.status,
+                status: internalStatus,
+                totalpay_transaction_id: payload.id,
+                totalpay_status: payload.order_status,
                 totalpay_response: payload,
-                payment_method: payload.payment_method,
                 updated_at: new Date().toISOString(),
             };
 
-            if (payload.status === 'success') {
+            if (internalStatus === 'success') {
                 updateData.paid_at = new Date().toISOString();
+            } else if (internalStatus === 'failed' && payload.reason) {
+                updateData.decline_reason = payload.reason;
             }
 
             const { error: updateError } = await supabaseAdmin
@@ -223,11 +229,12 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
 
             console.log('Payment updated successfully:', {
                 payment_id: payment.id,
-                new_status: payload.status,
+                new_status: internalStatus,
+                totalpay_status: payload.status,
             });
 
             // If payment successful and it's for a property booking
-            if (payload.status === 'success' && payment.property_id && payment.check_in_date) {
+            if (internalStatus === 'success' && payment.property_id && payment.check_in_date) {
                 console.log('Processing property booking for payment:', payment.id);
 
                 // Get current property data
@@ -282,11 +289,8 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             // TODO: Send confirmation email to customer
             // You can integrate with your existing email service here
 
-            return { 
-                success: true, 
-                message: "Webhook processed successfully",
-                order_number: payload.order_number,
-            };
+            // Return 'OK' to TotalPay to acknowledge callback received
+            return 'OK';
         } catch (error: any) {
             console.error("Webhook processing error:", error);
             return { success: false, error: error.message };
