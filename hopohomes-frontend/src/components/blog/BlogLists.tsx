@@ -14,15 +14,27 @@ interface Blog {
     created_at: string;
 }
 
+import { convertGoogleDriveUrl } from '@/lib/image-utils';
+
 // Get blog cover image
 function getBlogImage(blog: Blog): string | null {
-    if (blog.cover_image) {
-        return blog.cover_image;
+    let url = blog.cover_image;
+
+    if (!url && blog.images && blog.images.length > 0) {
+        url = blog.images[0];
     }
-    if (blog.images && blog.images.length > 0) {
-        return blog.images[0];
+
+    if (!url) return null;
+
+    // Handle relative URLs
+    if (url.startsWith('/')) {
+        const apiUrl = process.env.NEXT_PUBLIC_CMS_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        // Remove trailing slash from base URL to avoid double slashes
+        const cleanBaseUrl = apiUrl.replace(/\/$/, '');
+        url = `${cleanBaseUrl}${url}`;
     }
-    return null;
+
+    return convertGoogleDriveUrl(url);
 }
 
 interface ListCategory {
