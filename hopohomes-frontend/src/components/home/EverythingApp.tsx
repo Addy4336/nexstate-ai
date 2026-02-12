@@ -14,7 +14,7 @@ export default function EverythingApp() {
                         The HOPO Difference
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold font-serif text-foreground leading-tight mb-6">
-                        Not Just a Rental, It's a <span className="text-primary/60">Smart Ecosystem</span>
+                        Not Just a Rental, It's a <span className="text-primary">Smart Ecosystem</span>
                     </h2>
                     <p className="text-xl text-muted-foreground">
                         We are the first in the industry to offer a home fully managed by AI. From the moment you search to the moment you leave, AI ensures perfection.
