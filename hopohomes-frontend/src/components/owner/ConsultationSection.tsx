@@ -153,7 +153,7 @@ export default function ConsultationSection() {
                     <div className="space-y-6 md:space-y-8 text-white text-center lg:text-left">
                         <div className="space-y-6">
                             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs md:text-sm font-medium">
-                                <Sparkles size={16} />
+                                <Sparkles size={16} className="text-secondary" />
                                 Free Property Consultation
                             </span>
 

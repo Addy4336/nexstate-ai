@@ -17,7 +17,7 @@ export function Hero() {
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-primary/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent" />
       </div>
 
       {/* Content */}
