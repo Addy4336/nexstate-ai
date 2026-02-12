@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getZohoConfig } from "./zoho-actions";
 import { getZohoCreatorService } from "@/lib/zoho-crm";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function createProperty(formData: FormData) {
     const title = formData.get("title") as string;
@@ -33,6 +35,9 @@ export async function createProperty(formData: FormData) {
     const amenitiesString = formData.get("amenities") as string;
     const amenities = amenitiesString ? amenitiesString.split(",").filter(Boolean) : [];
 
+    // Extract property video URL
+    const property_video = (formData.get("property_video") as string) || null;
+
     // Extract cover image (first image in the list)
     // IMPORTANT: The schema says cover_image is text[] (ARRAY), so we wrap it in an array
     const cover_image = images.length > 0 ? [images[0]] : [];
@@ -53,6 +58,7 @@ export async function createProperty(formData: FormData) {
                 featured,
                 cover_image,
                 drive_folder_id,
+                property_video,
                 amenities,
                 vat,
                 booking_fee,
@@ -76,29 +82,37 @@ export async function createProperty(formData: FormData) {
 
     // Sync to Zoho Creator if enabled
     try {
-        const configResult = await getZohoConfig();
-        if (configResult.success && configResult.data && configResult.data.auto_sync) {
-            const config = configResult.data;
-            const zoho = await getZohoCreatorService();
+        const session = await auth.api.getSession({
+            headers: await headers()
+        });
+        
+        if (session?.user?.id) {
+            const adminId = session.user.id;
+            const configResult = await getZohoConfig(adminId);
+            
+            if (configResult.success && configResult.data && configResult.data.auto_sync) {
+                const config = configResult.data;
+                const zoho = await getZohoCreatorService(adminId);
 
-            if (zoho) {
-                const zohoData: Record<string, any> = {};
-                const mapping = config.field_mapping || {};
+                if (zoho) {
+                    const zohoData: Record<string, any> = {};
+                    const mapping = config.field_mapping || {};
 
-                const propertyData = {
-                    title, description, price, location,
-                    bedrooms, bathrooms, area_sqft, status,
-                    featured, amenities: amenities.join(", ")
-                };
+                    const propertyData = {
+                        title, description, price, location,
+                        bedrooms, bathrooms, area_sqft, status,
+                        featured, amenities: amenities.join(", ")
+                    };
 
-                for (const [localField, zohoField] of Object.entries(mapping)) {
-                    if (zohoField && propertyData[localField as keyof typeof propertyData] !== undefined) {
-                        zohoData[zohoField as string] = propertyData[localField as keyof typeof propertyData];
+                    for (const [localField, zohoField] of Object.entries(mapping)) {
+                        if (zohoField && propertyData[localField as keyof typeof propertyData] !== undefined) {
+                            zohoData[zohoField as string] = propertyData[localField as keyof typeof propertyData];
+                        }
                     }
-                }
 
-                if (Object.keys(zohoData).length > 0) {
-                    await zoho.addRecord(config.owner_name, config.app_name, config.form_name, zohoData);
+                    if (Object.keys(zohoData).length > 0) {
+                        await zoho.addRecord(config.owner_name, config.app_name, config.form_name, zohoData);
+                    }
                 }
             }
         }
@@ -138,6 +152,9 @@ export async function updateProperty(id: string, formData: FormData) {
     const amenitiesString = formData.get("amenities") as string;
     const amenities = amenitiesString ? amenitiesString.split(",").filter(Boolean) : [];
 
+    // Extract property video URL
+    const property_video = (formData.get("property_video") as string) || null;
+
     try {
         const updateData: any = {
             title,
@@ -151,6 +168,7 @@ export async function updateProperty(id: string, formData: FormData) {
             images,
             featured,
             cover_image,
+            property_video,
             amenities,
             vat,
             booking_fee,
