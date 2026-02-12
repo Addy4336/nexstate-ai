@@ -12,7 +12,7 @@ export default function Hero() {
                 <div className="flex flex-col items-start max-w-xl z-20">
                     {/* Badge */}
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/5 border border-primary/20 rounded-full text-xs sm:text-sm font-medium text-primary mb-6 sm:mb-8">
-                        <svg className="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-secondary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 2L14.09 8.26L20.79 9.27L15.9 14.14L17.18 20.82L12 17.77L6.82 20.82L8.1 14.14L3.21 9.27L9.91 8.26L12 2Z" fill="currentColor" opacity="0.3" />
                             <path d="M12 2L14.09 8.26L20.79 9.27L15.9 14.14L17.18 20.82L12 17.77L6.82 20.82L8.1 14.14L3.21 9.27L9.91 8.26L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -22,7 +22,7 @@ export default function Hero() {
 
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-serif font-bold tracking-tight text-foreground leading-[1.15] mb-4 sm:mb-6">
                         The World's First<br />
-                        <span className="text-primary/60">Fully AI-Managed</span><br />
+                        <span className="text-primary">Fully AI-Managed</span><br />
                         Rental Ecosystem.
                     </h1>
 
@@ -54,7 +54,7 @@ export default function Hero() {
                         </div>
                         <div className="w-px h-10 sm:h-12 bg-border"></div>
                         <div className="flex flex-col">
-                            <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">0</span>
+                            <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">zero</span>
                             <span className="text-xs sm:text-sm text-muted-foreground">Wait Time</span>
                         </div>
                     </div>

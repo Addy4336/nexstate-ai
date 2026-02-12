@@ -20,7 +20,7 @@ export default function ResidentsVsOwners() {
                         viewport={{ once: true }}
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border/50 text-sm font-medium mb-6 backdrop-blur-sm"
                     >
-                        <Crown className="w-4 h-4 text-primary" />
+                        <Crown className="w-4 h-4 text-secondary" />
                         <span>Premium Ecosystem</span>
                     </motion.div>
 

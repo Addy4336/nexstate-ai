@@ -21,7 +21,7 @@ const types = [
         title: "Complete apartments",
         description: "Fully furnished 1–3 BHK units for couples, families, and long-stay residents wanting more privacy and space.",
         image: "/images/types/apartment.png",
-        color: "from-primary/60 to-primary/90"
+        color: "from-primary to-primary/90"
     },
     {
         id: "room",

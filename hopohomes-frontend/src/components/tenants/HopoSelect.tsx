@@ -24,7 +24,7 @@ export default function HopoSelect() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16 md:mb-32 border-b border-primary/20 pb-8 md:pb-12">
                     <div className="lg:col-span-8">
                         <div className="flex items-center gap-2 mb-4 md:mb-6 text-[10px] md:text-xs font-bold tracking-[0.25em] text-foreground uppercase">
-                            <Star className="w-3 h-3 text-primary fill-primary" />
+                            <Star className="w-3 h-3 text-secondary fill-secondary" />
                             Affordable Luxury Collection
                         </div>
                         <h2 className="text-5xl md:text-7xl lg:text-9xl font-serif text-primary leading-[0.9] tracking-tight mb-6 md:mb-8">
@@ -44,7 +44,7 @@ export default function HopoSelect() {
                 <div className="mb-16 md:mb-32">
                     <div className="flex items-baseline justify-between mb-6 md:mb-8">
                         <h3 className="text-xl md:text-2xl font-serif text-primary">Ideal Residents</h3>
-                        <span className="text-xs md:text-sm font-mono text-primary/60">01 — 04</span>
+                        <span className="text-xs md:text-sm font-mono text-primary">01 — 04</span>
                     </div>
 
                     <div className="divide-y divide-primary/20 border-t border-b border-primary/20">
