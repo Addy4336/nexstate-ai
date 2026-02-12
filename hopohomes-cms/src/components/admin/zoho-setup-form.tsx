@@ -67,9 +67,13 @@ const CMS_FIELDS = [
     { key: "location", label: "Location" },
     { key: "bedrooms", label: "Bedrooms" },
     { key: "bathrooms", label: "Bathrooms" },
-    { key: "area", label: "Area (sq ft)" },
-    { key: "property_type", label: "Property Type" },
+    { key: "area_sqft", label: "Area (sq ft)" },
     { key: "status", label: "Status" },
+    { key: "cover_image", label: "Cover Image (URL)" },
+    { key: "images", label: "Gallery Images (URLs)" },
+    { key: "amenities", label: "Amenities" },
+    { key: "featured", label: "Featured" },
+    { key: "drive_folder_id", label: "Drive Folder ID" },
 ];
 
 export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps) {
@@ -182,6 +186,12 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
             const result = await getZohoFormFields(ownerName, appLinkName, formLinkName, adminId);
             if (result.success && 'fields' in result && result.fields) {
                 setFormFields(result.fields as ZohoField[]);
+                console.log("📋 Zoho Form Fields Available:");
+                console.table(result.fields.map((field: any) => ({
+                    display_name: field.display_name,
+                    link_name: field.link_name,
+                    type: field.type
+                })));
             }
         } catch (error) {
             toast.error("Failed to load form fields");

@@ -583,8 +583,8 @@ export class ZohoCreatorService {
             // Debug: log the full response to understand its structure
             console.log("🔍 Zoho addRecord response:", JSON.stringify(result, null, 2));
 
-            // Check for errors - Zoho may return 200 OK but with error in body
-            if (!response.ok || result.code || result.error) {
+            // Check for errors - Zoho returns code 3000 for success, other codes for errors
+            if (!response.ok || (result.code && result.code !== 3000) || result.error) {
                 console.error("❌ Zoho Creator API error:", result);
                 const errorMessage = result.error
                     ? (Array.isArray(result.error) ? result.error.join(", ") : result.error)
