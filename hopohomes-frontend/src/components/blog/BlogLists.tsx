@@ -8,9 +8,21 @@ interface Blog {
     id: string;
     title: string;
     slug: string;
-    image?: string;
+    cover_image?: string | null;
+    images?: string[] | null;
     excerpt?: string;
     created_at: string;
+}
+
+// Get blog cover image
+function getBlogImage(blog: Blog): string | null {
+    if (blog.cover_image) {
+        return blog.cover_image;
+    }
+    if (blog.images && blog.images.length > 0) {
+        return blog.images[0];
+    }
+    return null;
 }
 
 interface ListCategory {
@@ -122,9 +134,9 @@ export default function BlogLists() {
                                     <Link href={`/blog/${item.slug}`} key={item.id} className="group flex gap-3 md:gap-4 items-start">
                                         {/* Image */}
                                         <div className="relative w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-lg overflow-hidden bg-muted">
-                                            {item.image ? (
+                                            {getBlogImage(item) ? (
                                                 <Image
-                                                    src={item.image}
+                                                    src={getBlogImage(item)!}
                                                     alt={item.title || "Blog thumbnail"}
                                                     fill
                                                     className="object-cover group-hover:scale-105 transition-transform duration-300"
