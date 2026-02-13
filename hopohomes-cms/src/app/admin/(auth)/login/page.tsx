@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
+import logoImg from "@/assets/images/logo.webp";
 
 function LoginForm() {
     const router = useRouter();
@@ -61,7 +62,7 @@ function LoginForm() {
             <Link href="/" className="flex items-center gap-2 mb-8">
                 <div className="relative w-24 h-8">
                     <Image
-                        src="/images/logo.webp"
+                        src={logoImg}
                         alt="HOPO Homes"
                         fill
                         className="object-contain object-left"
@@ -180,7 +181,7 @@ export default function LoginPage() {
                     >
                         <div className="relative w-48 h-16 mx-auto mb-8">
                             <Image
-                                src="/images/logo.webp"
+                                src={logoImg}
                                 alt="HOPO Homes"
                                 fill
                                 className="object-contain"

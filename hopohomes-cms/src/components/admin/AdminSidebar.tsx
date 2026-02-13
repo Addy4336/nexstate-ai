@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signOut, useSession } from "@/lib/auth-client";
 import { Badge } from "@/components/ui/badge";
+import logoImg from "@/assets/images/logo.webp";
 
 type UserRole = "admin" | "manager" | "editor";
 
@@ -142,7 +143,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
                                 isCollapsed ? "w-9" : "w-20 lg:w-24"
                             )}>
                                 <Image
-                                    src="/images/logo.webp"
+                                    src={logoImg}
                                     alt="HOPO Homes"
                                     fill
                                     className={cn(
