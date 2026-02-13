@@ -4,8 +4,9 @@ import path from "path";
 
 const nextConfig: NextConfig = {
 
+
   // Enable standalone output for Docker
-  output: 'standalone',
+  // output: 'standalone',
 
   // Skip TypeScript errors during Docker build
   typescript: {
