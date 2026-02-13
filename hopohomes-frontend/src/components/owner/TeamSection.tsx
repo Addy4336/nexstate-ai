@@ -5,27 +5,27 @@ import { ArrowUpRight } from 'lucide-react';
 
 const aiAgents = [
     {
-        name: "Sales & Guide Agent",
-        role: "24/7 Personal Guide",
-        description: "Helps residents explore listings and Instant Book stays immediately. No waiting for human brokers.",
-        image: "https://static.vecteezy.com/system/resources/previews/029/849/348/large_2x/cute-artificial-intelligence-robot-with-notebook-ai-generated-free-photo.jpg",
-        isGrayscale: true,
+        name: "Riya",
+        role: "Sales & Guide Agent",
+        description: "Your 24/7 Personal Guide. Helps residents explore listings and Instant Book stays immediately. No waiting for human brokers.",
+        image: "/images/riya.png",
+        isGrayscale: false,
         hasCardBackground: false
     },
     {
-        name: "Maintenance Agent",
-        role: "Instant Repairs & Solutions",
-        description: "Solves maintenance issues in minutes, not days. Leaky tap? WiFi down? Consider it sorted.",
-        image: "https://imgcdn.stablediffusionweb.com/2024/9/20/d95bf635-fec3-46b6-9364-917344abbe10.jpg",
+        name: "Maya",
+        role: "Maintenance Agent",
+        description: "Zero Wait Time Repairs. Solves maintenance issues in minutes, not days. Leaky tap? WiFi down? Consider it sorted.",
+        image: "/images/maya.png",
         isGrayscale: false,
         hasCardBackground: true
     },
     {
-        name: "Management Agent",
-        role: "Business Operations",
-        description: "Ensures 100% uptime and efficiency. Handles logistics and operations so no task is ever delayed.",
-        image: "https://incubees.com/wp-content/uploads/2024/10/ai-chatbots-750x470.jpg",
-        isGrayscale: true,
+        name: "Zia",
+        role: "Management Agent",
+        description: "Flawless Business Operations. Ensures 100% uptime and efficiency. Handles logistics and operations so no task is ever delayed.",
+        image: "/images/zia.png",
+        isGrayscale: false,
         hasCardBackground: false
     }
 ];
@@ -66,7 +66,7 @@ export default function TeamSection() {
                         >
                             {/* Image Container */}
                             <div
-                                className={`relative w-full overflow-hidden rounded-3xl mb-6 ${agent.hasCardBackground ? 'aspect-[4/3]' : 'aspect-[3/4]'
+                                className={`relative w-full overflow-hidden rounded-3xl mb-6 ${agent.hasCardBackground ? 'aspect-square' : 'aspect-[3/4]'
                                     } ${agent.isGrayscale ? 'grayscale hover:grayscale-0 transition-all duration-500' : ''}`}
                             >
                                 <Image

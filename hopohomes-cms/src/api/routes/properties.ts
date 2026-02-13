@@ -1,17 +1,17 @@
 import { Elysia, t } from "elysia";
 import { supabaseAdmin } from "@/lib/db";
-import { areDatesAvailable, calculateRentalCost, validateMinimumStay } from "@/lib/rental-utils";
+import { areDatesAvailable, calculateRentalCost, validateMinimumStay, filterAvailableProperties } from "@/lib/rental-utils";
 import { RentalPeriod } from "@/types/property";
 
 export const propertiesRoutes = new Elysia({ prefix: "/properties" })
-    // Get all available and rented properties (public)
+    // Get all available properties (public) - excludes currently rented
     .get("/", async ({ query }) => {
         const { limit, featured } = query;
         
         let queryBuilder = supabaseAdmin
             .from("property")
             .select("*")
-            .in("status", ["available", "rented"]); // Include both available and rented
+            .in("status", ["available", "rented"]); // Fetch both, filter out active rentals later
         
         if (featured === "true") {
             queryBuilder = queryBuilder.eq("featured", true);
@@ -22,7 +22,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             .order("created_at", { ascending: false });
         
         if (limit) {
-            queryBuilder = queryBuilder.limit(parseInt(limit));
+            queryBuilder = queryBuilder.limit(parseInt(limit) * 2); // Fetch extra to account for filtering
         }
         
         const { data, error } = await queryBuilder;
@@ -31,7 +31,15 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        return { success: true, data: data || [] };
+        // Filter out currently rented properties
+        let availableProperties = filterAvailableProperties(data || []);
+        
+        // Apply limit after filtering
+        if (limit) {
+            availableProperties = availableProperties.slice(0, parseInt(limit));
+        }
+        
+        return { success: true, data: availableProperties };
     }, {
         query: t.Object({
             limit: t.Optional(t.String()),
@@ -44,17 +52,17 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         },
     })
     
-    // Get featured properties
+    // Get featured properties (excludes currently rented)
     .get("/featured", async ({ query }) => {
         const limit = query.limit ? parseInt(query.limit) : 6;
         
         const { data, error } = await supabaseAdmin
             .from("property")
             .select("*")
-            .in("status", ["available", "rented"]) // Include rented properties
+            .in("status", ["available", "rented"])
             .eq("featured", true)
             .order("created_at", { ascending: false })
-            .limit(limit);
+            .limit(limit * 2); // Fetch extra to account for filtering
         
         if (error) {
             console.error("Error fetching featured properties:", error);
@@ -70,33 +78,38 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             }));
         }
         
-        // If no featured, return available properties
-        if (!data || data.length === 0) {
-            console.log("No featured properties, fetching all available...");
+        // Filter out currently rented properties
+        let availableProperties = filterAvailableProperties(data || []);
+        
+        // If no featured available properties, try fetching all available
+        if (availableProperties.length === 0) {
+            console.log("No featured properties available, fetching all available...");
             const { data: availableData, error: availError } = await supabaseAdmin
                 .from("property")
                 .select("*")
                 .in("status", ["available", "rented"])
                 .order("created_at", { ascending: false })
-                .limit(limit);
+                .limit(limit * 2);
             
             if (availError) {
                 console.error("Error fetching available properties:", availError);
                 return { success: false, error: availError.message, data: [] };
             }
             
-            console.log("Available properties found:", availableData?.length);
-            if (availableData && availableData.length > 0) {
+            availableProperties = filterAvailableProperties(availableData || []);
+            console.log("Available properties found after filtering:", availableProperties.length);
+            if (availableProperties.length > 0) {
                 console.log("Sample available property images:", JSON.stringify({
-                    images: availableData[0].images,
-                    cover_image: availableData[0].cover_image,
-                    title: availableData[0].title
+                    images: availableProperties[0].images,
+                    cover_image: availableProperties[0].cover_image,
+                    title: availableProperties[0].title
                 }));
             }
-            return { success: true, data: availableData || [] };
         }
         
-        return { success: true, data };
+        // Apply limit after filtering
+        const finalProperties = availableProperties.slice(0, limit);
+        return { success: true, data: finalProperties };
     }, {
         query: t.Object({
             limit: t.Optional(t.String()),
@@ -108,7 +121,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         },
     })
     
-    // Search/filter properties
+    // Search/filter properties (excludes currently rented)
     .get("/search", async ({ query }) => {
         const { q, location, minPrice, maxPrice, bedrooms } = query;
         
@@ -149,7 +162,10 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        return { success: true, data: data || [] };
+        // Filter out currently rented properties
+        const availableProperties = filterAvailableProperties(data || []);
+        
+        return { success: true, data: availableProperties };
     }, {
         query: t.Object({
             q: t.Optional(t.String()),
@@ -193,15 +209,18 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
     .get("/meta/locations", async () => {
         const { data, error } = await supabaseAdmin
             .from("property")
-            .select("location")
-            .eq("status", "available");
+            .select("location, current_rental_end, rental_periods")
+            .in("status", ["available", "rented"]);
         
         if (error) {
             return { success: false, error: error.message, data: [] };
         }
         
-        // Get unique locations
-        const locations = [...new Set(data?.map(p => p.location).filter(Boolean))];
+        // Filter out currently rented properties
+        const availableProperties = filterAvailableProperties(data || []);
+        
+        // Get unique locations from available properties
+        const locations = [...new Set(availableProperties.map(p => p.location).filter(Boolean))];
         
         return { success: true, data: locations };
     }, {
@@ -212,7 +231,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         },
     })
     
-    // Advanced search with filters and pagination
+    // Advanced search with filters and pagination (excludes currently rented)
     .post("/search/advanced", async ({ body }) => {
         const { 
             filters = {}, 
@@ -222,8 +241,8 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         let query = supabaseAdmin
             .from("property")
-            .select("*", { count: "exact" })
-            .eq("status", "available");
+            .select("*")
+            .in("status", ["available", "rented"]); // Fetch both, filter later
         
         // Location filter
         if (filters.location) {
@@ -279,14 +298,12 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             query = query.lte("available_from", filters.availableFrom);
         }
         
-        // Pagination
-        const offset = (page - 1) * pageSize;
+        // Fetch extra data to account for filtering
         query = query
             .order("featured", { ascending: false })
-            .order("created_at", { ascending: false })
-            .range(offset, offset + pageSize - 1);
+            .order("created_at", { ascending: false });
         
-        const { data, error, count } = await query;
+        const { data, error } = await query;
         
         if (error) {
             return { 
@@ -296,11 +313,19 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             };
         }
         
+        // Filter out currently rented properties
+        const availableProperties = filterAvailableProperties(data || []);
+        
+        // Apply pagination after filtering
+        const total = availableProperties.length;
+        const offset = (page - 1) * pageSize;
+        const paginatedProperties = availableProperties.slice(offset, offset + pageSize);
+        
         return { 
             success: true, 
             data: {
-                properties: data || [],
-                total: count || 0,
+                properties: paginatedProperties,
+                total,
                 page,
                 pageSize,
             }

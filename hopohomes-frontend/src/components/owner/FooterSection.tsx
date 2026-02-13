@@ -1,20 +1,20 @@
 'use client';
 
-import { ArrowRight, Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
+import { ArrowRight, Facebook, Instagram, Linkedin } from 'lucide-react';
 import Link from 'next/link';
 
 export default function FooterSection() {
     return (
-        <div className='px-4 py-8 md:px-8 md:py-12'>
-            <footer className="rounded-3xl md:rounded-[2.5rem] bg-foreground text-white py-12 md:py-20 relative overflow-hidden">
+        <div className='px-4 py-6 md:px-8 md:py-12'>
+            <footer className="rounded-3xl md:rounded-[2.5rem] bg-foreground text-white py-8 md:py-20 relative overflow-hidden">
 
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
 
                     {/* Main Content */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-24 mb-16 md:mb-24">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-24 mb-8 md:mb-24">
 
                         {/* Brand & Newsletter (Col 5) */}
-                        <div className="lg:col-span-5 flex flex-col gap-8 md:gap-10">
+                        <div className="lg:col-span-5 flex flex-col gap-6 md:gap-10">
                             <div className="flex flex-col gap-4">
                                 <h2 className="text-2xl md:text-3xl font-bold font-sans tracking-tighter">HOPO HOMES.</h2>
                                 <p className="text-zinc-400 text-base md:text-lg leading-relaxed max-w-md font-light">
@@ -29,7 +29,7 @@ export default function FooterSection() {
                             </div>
 
                             {/* Minimalist Newsletter */}
-                            <div className="flex flex-col gap-6 mt-0 md:mt-2">
+                            {/* <div className="flex flex-col gap-6 mt-0 md:mt-2">
                                 <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Newsletter</h4>
                                 <div className="flex gap-4 items-center border-b border-zinc-800 pb-3 md:pb-4 focus-within:border-white transition-colors duration-500 group max-w-md">
                                     <input
@@ -41,11 +41,11 @@ export default function FooterSection() {
                                         <ArrowRight className="w-5 h-5" />
                                     </button>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Navigation Links (Col 7) */}
-                        <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-10 sm:gap-12 lg:gap-8">
+                        <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-12 lg:gap-8">
                             {/* Column 1: For You */}
                             <div className="flex flex-col gap-5 md:gap-6">
                                 <h4 className="font-medium text-white text-base md:text-lg">For You</h4>
@@ -95,15 +95,19 @@ export default function FooterSection() {
                     </div>
 
                     {/* Footer Bottom */}
-                    <div className="border-t border-white/5 md:border-none pt-8 md:pt-10 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+                    <div className="border-t border-white/5 md:border-none pt-6 md:pt-10 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
 
                         <p className="text-zinc-600 text-sm">© {new Date().getFullYear()} HOPO Homes. All rights reserved.</p>
 
                         <div className="flex items-center gap-6 md:gap-8">
-                            <Link href="https://instagram.com" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Instagram className="w-5 h-5 stroke-1" /></Link>
-                            <Link href="https://twitter.com" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Twitter className="w-5 h-5 stroke-1" /></Link>
-                            <Link href="https://linkedin.com" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Linkedin className="w-5 h-5 stroke-1" /></Link>
-                            <Link href="https://facebook.com" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Facebook className="w-5 h-5 stroke-1" /></Link>
+                            <Link href="https://www.instagram.com/hopohomes/" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Instagram className="w-5 h-5 stroke-1" /></Link>
+                            <Link href="https://x.com/hopohomes?lang=en" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-twitter-x w-4 h-4" viewBox="0 0 16 16">
+                                    <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
+                                </svg>
+                            </Link>
+                            <Link href="https://www.linkedin.com/company/hopo-homes/" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Linkedin className="w-5 h-5 stroke-1" /></Link>
+                            <Link href="https://www.facebook.com/hopohomes/" target="_blank" className="text-zinc-500 hover:text-white transition-colors duration-300"><Facebook className="w-5 h-5 stroke-1" /></Link>
                         </div>
                     </div>
 

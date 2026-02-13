@@ -19,7 +19,7 @@ export async function proxy(request: NextRequest) {
 
     // Define allowed origins
     const allowedOrigins = [
-      "https://hopohomes.slaab.ai",
+      "https://hopohomes.slaab.ai",    
       "http://localhost:3000",
       "http://localhost:3001",
       process.env.FRONTEND_URL,

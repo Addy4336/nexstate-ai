@@ -116,10 +116,10 @@ export default function ProcessSection() {
                                 {activeStep.description}
                             </p>
                             <Link href="/owner#owner-consultation-form">
-                            <button className="bg-primary hover:bg-primary/90 text-white px-5 sm:px-6 md:px-8 py-3.5 md:py-4 rounded-2xl font-medium transition-colors inline-flex items-center gap-2 w-fit shadow-lg shadow-primary/25 text-sm md:text-base">
-                                List Your Property
-                                <ArrowUpRight size={18} className="sm:w-5 sm:h-5" />
-                            </button>
+                                <button className="bg-primary hover:bg-primary/90 text-white px-5 sm:px-6 md:px-8 py-3.5 md:py-4 rounded-2xl font-medium transition-colors inline-flex items-center gap-2 w-fit shadow-lg shadow-primary/25 text-sm md:text-base">
+                                    List Your Property
+                                    <ArrowUpRight size={18} className="sm:w-5 sm:h-5" />
+                                </button>
                             </Link>
                         </div>
 

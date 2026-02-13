@@ -82,7 +82,7 @@ export const getStoredTokens = async () => {
 export const getDriveClient = async () => {
     const tokens = await getStoredTokens();
     if (!tokens) {
-        throw new Error("No Google Drive tokens found. Please connect your account.");
+        throw new Error("No Google Drive tokens found. Please connect your Google Drive account in the Integrations page (/admin/integrations).");
     }
 
     const oauth2Client = getOAuth2Client();
