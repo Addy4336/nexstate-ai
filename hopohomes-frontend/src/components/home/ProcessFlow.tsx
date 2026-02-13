@@ -5,27 +5,27 @@ import Image from 'next/image';
 export default function ProcessFlow() {
     const agents = [
         {
-            title: "The Sales & Guide Agent",
-            description: "Your 24/7 Personal Guide. Need a home? Our Sales Agent helps you explore listings and Instant Book your stay immediately. No waiting for human brokers.",
-            image: "https://static.vecteezy.com/system/resources/previews/029/849/348/large_2x/cute-artificial-intelligence-robot-with-notebook-ai-generated-free-photo.jpg",
-            isGrayscale: true
-        },
-        {
-            title: "The Maintenance Agent",
-            description: "Zero Wait Time Repairs. Leaky tap? WiFi down? Report it to our Maintenance Agent and get solutions in minutes, not days. We solve problems instantly while other properties make you wait.",
-            image: "https://imgcdn.stablediffusionweb.com/2024/9/20/d95bf635-fec3-46b6-9364-917344abbe10.jpg",
+            title: "Riya - The Sales & Guide AI",
+            description: "Your 24/7 Personal Guide. Helps residents explore listings and Instant Book stays immediately. No waiting for human brokers.",
+            image: "/images/riya.png",
             isGrayscale: false
         },
         {
-            title: "The Management Agent",
-            description: "Flawless Business Operations. This agent works 24/7 so no task is ever delayed. For property owners, it ensures 100% uptime and efficiency.",
-            image: "https://incubees.com/wp-content/uploads/2024/10/ai-chatbots-750x470.jpg",
-            isGrayscale: true
+            title: "Maya - The Maintenance AI",
+            description: "Zero Wait Time Repairs. Solves maintenance issues in minutes, not days. Leaky tap? WiFi down? Consider it sorted.",
+            image: "/images/maya.png",
+            isGrayscale: false
+        },
+        {
+            title: "Zia - The Management AI",
+            description: "Flawless Business Operations. Ensures 100% uptime and efficiency. Handles logistics and operations so no task is ever delayed.",
+            image: "/images/zia.png",
+            isGrayscale: false
         }
     ];
 
     return (
-        <section className="py-16 sm:py-20 lg:py-24 bg-background">
+        <section className="pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16 bg-background">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* Header */}
@@ -89,12 +89,12 @@ export default function ProcessFlow() {
                         {/* Image Side */}
                         <div className="relative group">
                             <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-                            <div className="relative rounded-2xl sm:rounded-[2rem] shadow-2xl overflow-hidden aspect-[4/3]">
+                            <div className="relative rounded-2xl sm:rounded-[2rem] shadow-2xl overflow-hidden aspect-square">
                                 <Image
                                     src={agents[0].image}
                                     alt={agents[0].title}
                                     fill
-                                    className="object-cover transition-all duration-500 hover:scale-105"
+                                    className="object-cover object-top transition-all duration-500 hover:scale-105"
                                 />
                                 {/* Overlay Gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -127,12 +127,12 @@ export default function ProcessFlow() {
                         {/* Image Side - Order 1 on Mobile, Order 2 on Desktop */}
                         <div className="relative group order-1 lg:order-2">
                             <div className="absolute -inset-4 bg-gradient-to-l from-primary/20 to-secondary/20 rounded-[2rem] blur-xl opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
-                            <div className="relative rounded-2xl sm:rounded-[2rem] shadow-2xl overflow-hidden aspect-[4/3]">
+                            <div className="relative rounded-2xl sm:rounded-[2rem] shadow-2xl overflow-hidden aspect-square">
                                 <Image
                                     src={agents[1].image}
                                     alt={agents[1].title}
                                     fill
-                                    className="object-cover transition-all duration-500 hover:scale-105"
+                                    className="object-cover object-top transition-all duration-500 hover:scale-105"
                                 />
                                 {/* Overlay Gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -145,12 +145,12 @@ export default function ProcessFlow() {
                         {/* Image Side */}
                         <div className="relative group">
                             <div className="absolute -inset-4 bg-gradient-to-r from-secondary/20 to-primary/20 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-                            <div className="relative rounded-2xl sm:rounded-[2rem] shadow-2xl overflow-hidden aspect-[4/3]">
+                            <div className="relative rounded-2xl sm:rounded-[2rem] shadow-2xl overflow-hidden aspect-square">
                                 <Image
                                     src={agents[2].image}
                                     alt={agents[2].title}
                                     fill
-                                    className="object-cover transition-all duration-500 hover:scale-105"
+                                    className="object-cover object-top transition-all duration-500 hover:scale-105"
                                 />
                                 {/* Overlay Gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -168,7 +168,7 @@ export default function ProcessFlow() {
                         </div>
                     </div>
 
-               </div>
+                </div>
             </div>
         </section>
     );

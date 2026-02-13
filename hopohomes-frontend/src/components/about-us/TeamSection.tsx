@@ -4,21 +4,21 @@ import Link from 'next/link';
 
 const teamMembers = [
     {
-        name: "The Sales & Guide AI",
+        name: "Riya - The Sales & Guide AI",
         role: "Instant bookings, zero waiting. I help you find and tour your dream home in seconds, 24/7.",
-        image: "https://static.vecteezy.com/system/resources/previews/029/849/348/large_2x/cute-artificial-intelligence-robot-with-notebook-ai-generated-free-photo.jpg",
+        image: "/images/avatar-riya.jpg",
         slug: "sales-guide-ai"
     },
     {
-        name: "The Maintenance AI",
+        name: "Maya - The Maintenance AI",
         role: "I handle repairs instantly. Report an issue, and I dispatch solutions immediately—no follow-ups needed.",
-        image: "https://imgcdn.stablediffusionweb.com/2024/9/20/d95bf635-fec3-46b6-9364-917344abbe10.jpg",
+        image: "/images/avatar-maya.jpg",
         slug: "maintenance-ai"
     },
     {
-        name: "The Management AI",
+        name: "Zia - The Management AI",
         role: "I protect your investment. I track ROI in real-time and ensure 100% operational efficiency for owners.",
-        image: "https://incubees.com/wp-content/uploads/2024/10/ai-chatbots-750x470.jpg",
+        image: "/images/avatar-zia.jpg",
         slug: "management-ai"
     }
 ];
@@ -53,7 +53,7 @@ const TeamSection = () => {
                     {teamMembers.map((member, index) => (
                         <div key={index} className="group flex flex-col h-full">
                             {/* Image */}
-                            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl mb-4">
+                            <div className="relative aspect-[2/3] overflow-hidden rounded-2xl mb-4">
                                 <Image
                                     src={member.image}
                                     alt={member.name}

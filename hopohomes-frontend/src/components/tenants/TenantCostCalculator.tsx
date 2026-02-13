@@ -335,7 +335,7 @@ export default function TenantCostCalculator() {
                         <div className="h-px bg-border/40 w-full" />
 
                         {/* 3. ADDITIONAL COSTS GRID */}
-                        <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+                        <div className="grid grid-cols-2 gap-3 md:gap-12">
                             {/* Hidden Costs */}
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2 mb-1">
