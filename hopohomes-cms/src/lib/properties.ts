@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/lib/db";
 import { Property } from "@/types/property";
+import { filterAvailableProperties } from "@/lib/rental-utils";
 
 /**
  * Fetches all properties from the database
@@ -26,17 +27,19 @@ export async function getFeaturedProperties(limit: number = 6): Promise<Property
     const { data, error } = await supabaseAdmin
         .from("property")
         .select("*")
-        .eq("status", "available")
+        .in("status", ["available", "rented"])
         .eq("featured", true)
         .order("created_at", { ascending: false })
-        .limit(limit);
+        .limit(limit * 2); // Fetch extra to account for filtering
 
     if (error) {
         console.error("Error fetching featured properties:", error);
         return [];
     }
 
-    return (data as Property[]) || [];
+    // Filter out currently rented properties
+    const availableProperties = filterAvailableProperties(data as Property[] || []);
+    return availableProperties.slice(0, limit);
 }
 
 /**
@@ -46,12 +49,12 @@ export async function getAvailableProperties(limit?: number): Promise<Property[]
     let query = supabaseAdmin
         .from("property")
         .select("*")
-        .eq("status", "available")
+        .in("status", ["available", "rented"])
         .order("featured", { ascending: false })
         .order("created_at", { ascending: false });
 
     if (limit) {
-        query = query.limit(limit);
+        query = query.limit(limit * 2); // Fetch extra to account for filtering
     }
 
     const { data, error } = await query;
@@ -61,7 +64,14 @@ export async function getAvailableProperties(limit?: number): Promise<Property[]
         return [];
     }
 
-    return (data as Property[]) || [];
+    // Filter out currently rented properties
+    const availableProperties = filterAvailableProperties(data as Property[] || []);
+    
+    if (limit) {
+        return availableProperties.slice(0, limit);
+    }
+    
+    return availableProperties;
 }
 
 /**
@@ -95,7 +105,7 @@ export async function getFilteredProperties(searchParams: {
     let queryBuilder = supabaseAdmin
         .from("property")
         .select("*")
-        .eq("status", "available");
+        .in("status", ["available", "rented"]);
 
     if (searchParams.query) {
         queryBuilder = queryBuilder.or(
@@ -130,5 +140,6 @@ export async function getFilteredProperties(searchParams: {
         return [];
     }
 
-    return (data as Property[]) || [];
+    // Filter out currently rented properties
+    return filterAvailableProperties(data as Property[] || []);
 }
