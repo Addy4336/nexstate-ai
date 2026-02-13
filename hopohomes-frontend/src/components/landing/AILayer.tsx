@@ -115,17 +115,18 @@ export default function AILayer() {
                         {/* Main Tech Visual */}
                         <div className="relative w-full h-full">
                             <Image
-                                src="/images/ai-layer-tech.png"
+                                src="/images/DYNAMIC_PRICES_8K.PNG"
                                 alt="AI Technology Layer"
                                 fill
-                                className="object-contain drop-shadow-2xl z-10 animate-pulse-slow"
+                                unoptimized
+                                className="object-cover rounded-4xl drop-shadow-2xl z-10 animate-pulse-slow"
                             />
 
                             {/* Floating Data Points (Just for flair) */}
                             <motion.div
                                 animate={{ y: [0, -10, 0] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute top-[20%] right-[10%] bg-black/60 backdrop-blur-md border border-indigo-500/30 p-4 rounded-xl z-20 shadow-2xl"
+                                className="absolute top-[2%] right-[0%] bg-black/60 backdrop-blur-md border border-indigo-500/30 p-4 rounded-xl z-20 shadow-2xl"
                             >
                                 <div className="flex items-center gap-3 mb-2">
                                     <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
