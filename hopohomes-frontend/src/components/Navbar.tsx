@@ -53,8 +53,8 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    {/* Desktop Menu - Centered */}
-                    <div className="hidden lg:flex items-center justify-center flex-1">
+                    {/* Desktop Menu - Right Aligned */}
+                    <div className="hidden lg:flex items-center justify-end flex-1">
                         <div className="flex items-center gap-8">
                             {navItems.map((item) => (
                                 <Link
@@ -74,20 +74,6 @@ export default function Navbar() {
 
                     {/* Right Actions & Mobile Toggle */}
                     <div className="flex items-center gap-4">
-
-                        {/* Language Selector - Desktop */}
-                        {/* <button className="hidden sm:flex items-center gap-2 text-foreground font-medium hover:text-primary transition-colors">
-                            <Globe className="w-5 h-5" />
-                            <span className="text-sm">Eng</span>
-                        </button> */}
-
-                        {/* Sign Up / Login Button */}
-                        <Link
-                            href={`${process.env.NEXT_PUBLIC_CMS_API_URL}/admin/login`}
-                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 sm:px-7 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md transform hover:scale-105"
-                        >
-                            Login
-                        </Link>
 
                         {/* Mobile Menu Button */}
                         <button
@@ -123,12 +109,6 @@ export default function Navbar() {
                                 {item.label}
                             </Link>
                         ))}
-                        <div className="pt-4 border-t border-border mt-2 flex items-center justify-between px-2">
-                            <button className="flex items-center gap-2 text-foreground font-medium">
-                                <Globe className="w-5 h-5" />
-                                <span>English</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
             )}

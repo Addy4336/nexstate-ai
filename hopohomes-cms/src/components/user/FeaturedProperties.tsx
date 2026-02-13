@@ -106,7 +106,7 @@ export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
                       onError={handleImageError}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent" />
 
                     {/* Badges */}
                     <div className="absolute top-4 left-4 flex gap-2">
@@ -116,8 +116,8 @@ export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
                         </span>
                       )}
                       <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${property.status === 'available'
-                          ? 'bg-secondary text-secondary-foreground'
-                          : 'bg-card/90 text-foreground'
+                        ? 'bg-secondary text-secondary-foreground'
+                        : 'bg-card/90 text-foreground'
                         }`}>
                         {property.status}
                       </span>

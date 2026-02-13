@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+      {
+        protocol: 'https',
         hostname: 'api.dicebear.com',
       },
       {
@@ -59,6 +67,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'incubees.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'drive.slaab.ai',
       },
       {
         protocol: "https",

@@ -8,9 +8,33 @@ interface Blog {
     id: string;
     title: string;
     slug: string;
-    image?: string;
+    cover_image?: string | null;
+    images?: string[] | null;
     excerpt?: string;
     created_at: string;
+}
+
+import { convertGoogleDriveUrl } from '@/lib/image-utils';
+
+// Get blog cover image
+function getBlogImage(blog: Blog): string | null {
+    let url = blog.cover_image;
+
+    if (!url && blog.images && blog.images.length > 0) {
+        url = blog.images[0];
+    }
+
+    if (!url) return null;
+
+    // Handle relative URLs
+    if (url.startsWith('/')) {
+        const apiUrl = process.env.NEXT_PUBLIC_CMS_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        // Remove trailing slash from base URL to avoid double slashes
+        const cleanBaseUrl = apiUrl.replace(/\/$/, '');
+        url = `${cleanBaseUrl}${url}`;
+    }
+
+    return convertGoogleDriveUrl(url);
 }
 
 interface ListCategory {
@@ -122,9 +146,9 @@ export default function BlogLists() {
                                     <Link href={`/blog/${item.slug}`} key={item.id} className="group flex gap-3 md:gap-4 items-start">
                                         {/* Image */}
                                         <div className="relative w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-lg overflow-hidden bg-muted">
-                                            {item.image ? (
+                                            {getBlogImage(item) ? (
                                                 <Image
-                                                    src={item.image}
+                                                    src={getBlogImage(item)!}
                                                     alt={item.title || "Blog thumbnail"}
                                                     fill
                                                     className="object-cover group-hover:scale-105 transition-transform duration-300"
