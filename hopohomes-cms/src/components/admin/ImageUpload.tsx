@@ -6,6 +6,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { uploadImageToDriveAction } from "@/actions/google-drive-actions";
 
 interface ImageUploadProps {
     onImagesChange: (urls: string[]) => void;
@@ -32,44 +33,38 @@ export function ImageUpload({
             const files = Array.from(e.target.files);
             const newUploadedUrls: string[] = [];
 
-            // Convert files to base64 and upload via API
+            const cleanFolderName = folderName
+                .toLowerCase()
+                .replace(/[^a-z0-9-_\s]/g, "-")
+                .replace(/-+/g, "-")
+                .trim() || "properties";
+
+            // Upload each file to Google Drive
             const uploadPromises = files.map(async (file) => {
-                const base64 = await new Promise<string>((resolve) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result as string);
-                    reader.readAsDataURL(file);
-                });
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("folderName", cleanFolderName);
 
-                const cleanFolderName = folderName
-                    .toLowerCase()
-                    .replace(/[^a-z0-9-_]/g, "-")
-                    .replace(/-+/g, "-")
-                    .trim() || "properties";
+                const result = await uploadImageToDriveAction(formData);
 
-                const response = await fetch('/api/storage/upload', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        file: {
-                            data: base64,
-                            name: file.name,
-                            type: file.type,
-                        },
-                        folderName: cleanFolderName,
-                    }),
-                });
-
-                const result = await response.json();
-
-                if (!result.success || !result.data?.url) {
+                if (!result.success || !result.url) {
                     throw new Error(`Failed to upload ${file.name}: ${result.error}`);
                 }
 
-                if (result.data.path && onFolderIdChange) {
-                    onFolderIdChange(cleanFolderName);
+                // Log all available URLs for debugging
+                console.log('Upload successful:', { 
+                    fileName: file.name, 
+                    url: result.url, 
+                    fileId: result.fileId,
+                    webViewLink: result.webViewLink
+                });
+
+                if (result.parentId && onFolderIdChange) {
+                    onFolderIdChange(result.parentId);
                 }
 
-                return result.data.url;
+                // Use the proxy URL (already set in result.url)
+                return result.url;
             });
 
             const results = await Promise.all(uploadPromises);
@@ -89,7 +84,7 @@ export function ImageUpload({
 
             setImages(updatedImages);
             onImagesChange(updatedImages);
-            toast.success("Images uploaded successfully!");
+            toast.success("Images uploaded to Google Drive successfully!");
 
         } catch (error: any) {
             console.error(error);
@@ -113,7 +108,7 @@ export function ImageUpload({
             {/* Left Column: Cover Image */}
             <div className="flex flex-col gap-3">
                 <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                    Cover Image
+                    Cover Image (Google Drive)
                 </Label>
 
                 <div className={`group relative w-full rounded-2xl overflow-hidden border border-border bg-muted/20 hover:bg-muted/30 transition-all duration-300 ${layoutMode === 'stack' ? 'aspect-video' : 'aspect-video md:aspect-[4/3]'}`}>
@@ -127,8 +122,9 @@ export function ImageUpload({
                                 className="absolute inset-0 opacity-0 cursor-pointer z-10"
                             />
                             {uploading ? (
-                                <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-20">
+                                <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm z-20">
                                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                                    <p className="text-xs text-muted-foreground mt-2">Uploading to Google Drive...</p>
                                 </div>
                             ) : (
                                 <>
@@ -138,6 +134,9 @@ export function ImageUpload({
                                     <p className="font-semibold text-sm text-foreground">Upload Cover</p>
                                     <p className="text-xs text-muted-foreground mt-1 px-4">
                                         Support for JPEG, PNG, WEBP
+                                    </p>
+                                    <p className="text-xs text-primary mt-2 font-medium">
+                                        Stored in Google Drive
                                     </p>
                                 </>
                             )}
@@ -150,6 +149,10 @@ export function ImageUpload({
                                 fill
                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 unoptimized
+                                onError={(e) => {
+                                    console.error('Failed to load cover image:', coverImage);
+                                    toast.error('Failed to load cover image from Google Drive');
+                                }}
                             />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
                                 <button
@@ -172,7 +175,7 @@ export function ImageUpload({
             {/* Right Column: Gallery Images */}
             <div className="flex flex-col gap-3">
                 <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    Gallery
+                    Gallery (Google Drive)
                 </Label>
 
                 <div className="grid grid-cols-3 gap-3">
@@ -202,6 +205,9 @@ export function ImageUpload({
                                     fill
                                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                                     unoptimized
+                                    onError={(e) => {
+                                        console.error(`Failed to load gallery image ${index + 1}:`, url);
+                                    }}
                                 />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
                                     <button

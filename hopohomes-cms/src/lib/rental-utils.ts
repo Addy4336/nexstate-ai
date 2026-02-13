@@ -1,4 +1,4 @@
-import { RentalPeriod } from "@/types/property";
+import { RentalPeriod, Property } from "@/types/property";
 
 /**
  * Check if a property is currently rented
@@ -11,6 +11,54 @@ export function isCurrentlyRented(
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return endDate >= today;
+}
+
+/**
+ * Filter out properties that are currently rented
+ * This prevents showing properties to users during active rental periods
+ */
+export function filterAvailableProperties<T extends Pick<Property, 'current_rental_end' | 'rental_periods'>>(
+  properties: T[]
+): T[] {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return properties.filter(property => {
+    // Check if property has an active rental period using current_rental_end
+    if (property.current_rental_end) {
+      const rentalEndDate = new Date(property.current_rental_end);
+      rentalEndDate.setHours(0, 0, 0, 0);
+      
+      // If rental end date is today or in the future, property is currently rented
+      if (rentalEndDate >= today) {
+        return false;
+      }
+    }
+
+    // Double-check against rental_periods array for active/confirmed bookings
+    if (property.rental_periods && property.rental_periods.length > 0) {
+      const hasActiveRental = property.rental_periods.some(period => {
+        if (period.status !== 'active' && period.status !== 'confirmed') {
+          return false;
+        }
+
+        const startDate = new Date(period.start_date);
+        const endDate = new Date(period.end_date);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+
+        // Check if today falls within the rental period
+        return today >= startDate && today <= endDate;
+      });
+
+      if (hasActiveRental) {
+        return false;
+      }
+    }
+
+    // Property is available
+    return true;
+  });
 }
 
 /**

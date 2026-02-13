@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ImageUpload } from "./ImageUpload";
+import { VideoUpload } from "./VideoUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,6 +28,7 @@ interface PropertyFormProps {
 
 export function PropertyForm({ initialData }: PropertyFormProps) {
     const [images, setImages] = useState<string[]>(initialData?.images || []);
+    const [videoUrl, setVideoUrl] = useState<string | null>(initialData?.property_video || null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [title, setTitle] = useState(initialData?.title || "");
     const [folderId, setFolderId] = useState(initialData?.drive_folder_id || "");
@@ -45,6 +47,11 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
         setIsSubmitting(true);
         formData.set("images", images.join(","));
         formData.set("folderId", folderId);
+        
+        // Add video URL to form data
+        if (videoUrl) {
+            formData.set("property_video", videoUrl);
+        }
         formData.set("amenities", selectedAmenities.join(","));
 
         try {
@@ -212,6 +219,14 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
                         onImagesChange={setImages}
                         onFolderIdChange={setFolderId}
                         defaultImages={initialData?.images}
+                        folderName={title}
+                    />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                    <VideoUpload
+                        onVideoChange={setVideoUrl}
+                        defaultVideo={initialData?.property_video}
                         folderName={title}
                     />
                 </div>

@@ -23,8 +23,20 @@ export const storageRoutes = new Elysia({ prefix: "/storage" })
                     .storage
                     .createBucket(BUCKET_NAME, {
                         public: true,
-                        fileSizeLimit: 10485760, // 10MB
-                        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+                        fileSizeLimit: 104857600, // 100MB (increased for video support)
+                        allowedMimeTypes: [
+                            // Images
+                            'image/jpeg', 
+                            'image/png', 
+                            'image/webp', 
+                            'image/gif',
+                            // Videos
+                            'video/mp4',
+                            'video/webm',
+                            'video/quicktime', // .mov files
+                            'video/x-msvideo', // .avi files
+                            'video/ogg'
+                        ]
                     });
                 
                 if (createError) {
@@ -41,6 +53,41 @@ export const storageRoutes = new Elysia({ prefix: "/storage" })
             tags: ["Storage"],
             summary: "Initialize storage bucket",
             description: "Creates the property-images bucket if it doesn't exist",
+        },
+    })
+    
+    // Update bucket configuration (for adding video support to existing bucket)
+    .post("/update-bucket", async () => {
+        try {
+            // Note: Supabase JS client doesn't have updateBucket method
+            // This needs to be done via Supabase Dashboard or SQL
+            // We'll provide the SQL command instead
+            const sqlCommand = `
+-- Update bucket configuration to support videos
+UPDATE storage.buckets 
+SET 
+    file_size_limit = 104857600,  -- 100MB
+    allowed_mime_types = ARRAY[
+        'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+        'video/mp4', 'video/webm', 'video/quicktime', 
+        'video/x-msvideo', 'video/ogg'
+    ]
+WHERE name = 'property-images';
+            `;
+            
+            return {
+                success: true,
+                message: "Bucket update requires manual SQL execution",
+                sql: sqlCommand
+            };
+        } catch (error: any) {
+            return { success: false, error: error.message };
+        }
+    }, {
+        detail: {
+            tags: ["Storage"],
+            summary: "Update bucket configuration",
+            description: "Returns SQL to update bucket for video support",
         },
     })
     
@@ -76,7 +123,9 @@ export const storageRoutes = new Elysia({ prefix: "/storage" })
                 .storage
                 .from(BUCKET_NAME)
                 .upload(filePath, buffer, {
-                    contentType: file.type || 'image/jpeg',
+                    contentType: file.type || (extension === 'mov' ? 'video/quicktime' : 
+                                               extension === 'mp4' ? 'video/mp4' : 
+                                               extension === 'webm' ? 'video/webm' : 'image/jpeg'),
                     cacheControl: '31536000',
                     upsert: false
                 });

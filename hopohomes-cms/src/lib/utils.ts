@@ -16,12 +16,17 @@ function getSupabaseUrl(): string {
 
 /**
  * Converts an image URL to a direct displayable link
- * Handles: Supabase Storage URLs, Google Drive URLs, and direct URLs
+ * Handles: Supabase Storage URLs, Google Drive URLs (via drive.slaab.ai proxy), and direct URLs
  * @param url The original image URL
  * @returns A direct link to the image
  */
 export function getImageUrl(url: string | null | undefined): string {
     if (!url) return PLACEHOLDER_IMAGE;
+
+    // If it's already a drive.slaab.ai URL, return as-is (optimized proxy)
+    if (url.includes('drive.slaab.ai')) {
+        return url;
+    }
 
     // Check if it's already a Supabase Storage URL (new format)
     const supabaseUrl = getSupabaseUrl();
@@ -35,13 +40,14 @@ export function getImageUrl(url: string | null | undefined): string {
         return `${supabaseUrl}/storage/v1/object/public/${url}`;
     }
 
-    // Check if it's a Google Drive URL with file ID (legacy support)
-    // Format: https://drive.google.com/uc?export=view&id=FILE_ID
-    const driveMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    // Check if it's a Google Drive URL with file ID
+    // Supports multiple formats: uc?export=view&id=, /file/d/{id}/, thumbnail?id=, etc.
+    // Convert ALL Google Drive URLs to use drive.slaab.ai proxy for faster loading
+    const driveMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)|\/d\/([a-zA-Z0-9_-]+)|\/content\/([a-zA-Z0-9_-]+)/);
     if (driveMatch) {
-        const fileId = driveMatch[1];
-        // Use Google Drive CDN thumbnail for faster loading
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+        const fileId = driveMatch[1] || driveMatch[2] || driveMatch[3];
+        // Use drive.slaab.ai proxy with inline parameter to display (not download)
+        return `https://drive.slaab.ai/api/drive/content/${fileId}?inline=true`;
     }
 
     // Return original if no match (could be already valid or different provider)
