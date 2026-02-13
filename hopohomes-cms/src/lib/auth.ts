@@ -67,5 +67,6 @@ export const auth = betterAuth({
             createdAt: "created_at",
             updatedAt: "updated_at",
         }
-    }
+    },
+    secret: process.env.BETTER_AUTH_SECRET 
 });
