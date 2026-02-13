@@ -29,7 +29,7 @@ export default function FooterSection() {
                             </div>
 
                             {/* Minimalist Newsletter */}
-                            <div className="flex flex-col gap-6 mt-0 md:mt-2">
+                            {/* <div className="flex flex-col gap-6 mt-0 md:mt-2">
                                 <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Newsletter</h4>
                                 <div className="flex gap-4 items-center border-b border-zinc-800 pb-3 md:pb-4 focus-within:border-white transition-colors duration-500 group max-w-md">
                                     <input
@@ -41,7 +41,7 @@ export default function FooterSection() {
                                         <ArrowRight className="w-5 h-5" />
                                     </button>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Navigation Links (Col 7) */}
