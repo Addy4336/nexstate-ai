@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/lib/db";
 import { Property } from "@/types/property";
-import { filterAvailableProperties } from "@/lib/rental-utils";
+import { enrichPropertiesWithTenantInfo } from "@/lib/rental-utils";
 
 /**
  * Fetches all properties from the database
@@ -30,16 +30,16 @@ export async function getFeaturedProperties(limit: number = 6): Promise<Property
         .in("status", ["available", "rented"])
         .eq("featured", true)
         .order("created_at", { ascending: false })
-        .limit(limit * 2); // Fetch extra to account for filtering
+        .limit(limit);
 
     if (error) {
         console.error("Error fetching featured properties:", error);
         return [];
     }
 
-    // Filter out currently rented properties
-    const availableProperties = filterAvailableProperties(data as Property[] || []);
-    return availableProperties.slice(0, limit);
+    // Enrich properties with tenant information
+    const enrichedProperties = await enrichPropertiesWithTenantInfo(data as Property[] || []);
+    return enrichedProperties;
 }
 
 /**
@@ -54,7 +54,7 @@ export async function getAvailableProperties(limit?: number): Promise<Property[]
         .order("created_at", { ascending: false });
 
     if (limit) {
-        query = query.limit(limit * 2); // Fetch extra to account for filtering
+        query = query.limit(limit);
     }
 
     const { data, error } = await query;
@@ -64,14 +64,9 @@ export async function getAvailableProperties(limit?: number): Promise<Property[]
         return [];
     }
 
-    // Filter out currently rented properties
-    const availableProperties = filterAvailableProperties(data as Property[] || []);
-    
-    if (limit) {
-        return availableProperties.slice(0, limit);
-    }
-    
-    return availableProperties;
+    // Enrich properties with tenant information
+    const enrichedProperties = await enrichPropertiesWithTenantInfo(data as Property[] || []);
+    return enrichedProperties;
 }
 
 /**
@@ -140,6 +135,7 @@ export async function getFilteredProperties(searchParams: {
         return [];
     }
 
-    // Filter out currently rented properties
-    return filterAvailableProperties(data as Property[] || []);
+    // Enrich properties with tenant information
+    const enrichedProperties = await enrichPropertiesWithTenantInfo(data as Property[] || []);
+    return enrichedProperties;
 }

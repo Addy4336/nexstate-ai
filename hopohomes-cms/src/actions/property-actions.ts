@@ -101,12 +101,19 @@ export async function createProperty(formData: FormData) {
                     const propertyData = {
                         title, description, price, location,
                         bedrooms, bathrooms, area_sqft, status,
-                        featured, amenities: amenities.join(", ")
+                        featured, amenities: amenities.join(", "),
+                        cover_image: cover_image.length > 0 ? cover_image[0] : "",
+                        images: images.length > 0 ? images[0] : "",
+                        property_video: property_video || "",
                     };
 
                     for (const [localField, zohoField] of Object.entries(mapping)) {
                         if (zohoField && propertyData[localField as keyof typeof propertyData] !== undefined) {
-                            zohoData[zohoField as string] = propertyData[localField as keyof typeof propertyData];
+                            const value = propertyData[localField as keyof typeof propertyData];
+                            // Only add non-empty values
+                            if (value !== "" && value !== null && value !== undefined) {
+                                zohoData[zohoField as string] = value;
+                            }
                         }
                     }
 

@@ -232,6 +232,11 @@ export async function syncPropertiesToZoho(adminId: string) {
                             zohoData[zohoField] = fieldValue.join(", ");
                         }
                     }
+                    // Handle video URL field (property_video)
+                    else if (cmsField === 'property_video' && typeof fieldValue === 'string') {
+                        // Send the Google Drive embed URL directly to Zoho
+                        zohoData[zohoField] = fieldValue;
+                    }
                     // Handle boolean fields
                     else if (typeof fieldValue === 'boolean') {
                         zohoData[zohoField] = fieldValue ? "Yes" : "No";

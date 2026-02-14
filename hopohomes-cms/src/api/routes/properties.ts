@@ -1,17 +1,17 @@
 import { Elysia, t } from "elysia";
 import { supabaseAdmin } from "@/lib/db";
-import { areDatesAvailable, calculateRentalCost, validateMinimumStay, filterAvailableProperties } from "@/lib/rental-utils";
+import { areDatesAvailable, calculateRentalCost, validateMinimumStay, enrichPropertiesWithTenantInfo } from "@/lib/rental-utils";
 import { RentalPeriod } from "@/types/property";
 
 export const propertiesRoutes = new Elysia({ prefix: "/properties" })
-    // Get all available properties (public) - excludes currently rented
+    // Get all properties (public) - shows all with rental status
     .get("/", async ({ query }) => {
         const { limit, featured } = query;
         
         let queryBuilder = supabaseAdmin
             .from("property")
             .select("*")
-            .in("status", ["available", "rented"]); // Fetch both, filter out active rentals later
+            .in("status", ["available", "rented"]);
         
         if (featured === "true") {
             queryBuilder = queryBuilder.eq("featured", true);
@@ -22,7 +22,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             .order("created_at", { ascending: false });
         
         if (limit) {
-            queryBuilder = queryBuilder.limit(parseInt(limit) * 2); // Fetch extra to account for filtering
+            queryBuilder = queryBuilder.limit(parseInt(limit));
         }
         
         const { data, error } = await queryBuilder;
@@ -31,15 +31,10 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        // Filter out currently rented properties
-        let availableProperties = filterAvailableProperties(data || []);
+        // Enrich properties with current tenant information
+        const enrichedProperties = await enrichPropertiesWithTenantInfo(data || []);
         
-        // Apply limit after filtering
-        if (limit) {
-            availableProperties = availableProperties.slice(0, parseInt(limit));
-        }
-        
-        return { success: true, data: availableProperties };
+        return { success: true, data: enrichedProperties };
     }, {
         query: t.Object({
             limit: t.Optional(t.String()),
@@ -52,7 +47,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         },
     })
     
-    // Get featured properties (excludes currently rented)
+    // Get featured properties (shows all, including rented)
     .get("/featured", async ({ query }) => {
         const limit = query.limit ? parseInt(query.limit) : 6;
         
@@ -62,7 +57,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             .in("status", ["available", "rented"])
             .eq("featured", true)
             .order("created_at", { ascending: false })
-            .limit(limit * 2); // Fetch extra to account for filtering
+            .limit(limit);
         
         if (error) {
             console.error("Error fetching featured properties:", error);
@@ -78,38 +73,37 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             }));
         }
         
-        // Filter out currently rented properties
-        let availableProperties = filterAvailableProperties(data || []);
-        
-        // If no featured available properties, try fetching all available
-        if (availableProperties.length === 0) {
-            console.log("No featured properties available, fetching all available...");
+        // If no featured properties, try fetching all available
+        if (!data || data.length === 0) {
+            console.log("No featured properties, fetching all available...");
             const { data: availableData, error: availError } = await supabaseAdmin
                 .from("property")
                 .select("*")
                 .in("status", ["available", "rented"])
                 .order("created_at", { ascending: false })
-                .limit(limit * 2);
+                .limit(limit);
             
             if (availError) {
                 console.error("Error fetching available properties:", availError);
                 return { success: false, error: availError.message, data: [] };
             }
             
-            availableProperties = filterAvailableProperties(availableData || []);
-            console.log("Available properties found after filtering:", availableProperties.length);
-            if (availableProperties.length > 0) {
+            // Enrich with tenant info
+            const enrichedProperties = await enrichPropertiesWithTenantInfo(availableData || []);
+            console.log("Available properties found after enrichment:", enrichedProperties.length);
+            if (enrichedProperties.length > 0) {
                 console.log("Sample available property images:", JSON.stringify({
-                    images: availableProperties[0].images,
-                    cover_image: availableProperties[0].cover_image,
-                    title: availableProperties[0].title
+                    images: enrichedProperties[0].images,
+                    cover_image: enrichedProperties[0].cover_image,
+                    title: enrichedProperties[0].title
                 }));
             }
+            return { success: true, data: enrichedProperties };
         }
         
-        // Apply limit after filtering
-        const finalProperties = availableProperties.slice(0, limit);
-        return { success: true, data: finalProperties };
+        // Enrich properties with tenant information
+        const enrichedProperties = await enrichPropertiesWithTenantInfo(data);
+        return { success: true, data: enrichedProperties };
     }, {
         query: t.Object({
             limit: t.Optional(t.String()),
@@ -121,7 +115,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         },
     })
     
-    // Search/filter properties (excludes currently rented)
+    // Search/filter properties (shows all including rented)
     .get("/search", async ({ query }) => {
         const { q, location, minPrice, maxPrice, bedrooms } = query;
         
@@ -162,10 +156,10 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        // Filter out currently rented properties
-        const availableProperties = filterAvailableProperties(data || []);
+        // Enrich properties with tenant information
+        const enrichedProperties = await enrichPropertiesWithTenantInfo(data || []);
         
-        return { success: true, data: availableProperties };
+        return { success: true, data: enrichedProperties };
     }, {
         query: t.Object({
             q: t.Optional(t.String()),
@@ -193,7 +187,10 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: "Property not found", data: null };
         }
         
-        return { success: true, data };
+        // Enrich with tenant information
+        const enrichedProperties = await enrichPropertiesWithTenantInfo([data]);
+        
+        return { success: true, data: enrichedProperties[0] };
     }, {
         params: t.Object({
             id: t.String(),
@@ -209,18 +206,15 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
     .get("/meta/locations", async () => {
         const { data, error } = await supabaseAdmin
             .from("property")
-            .select("location, current_rental_end, rental_periods")
+            .select("location")
             .in("status", ["available", "rented"]);
         
         if (error) {
             return { success: false, error: error.message, data: [] };
         }
         
-        // Filter out currently rented properties
-        const availableProperties = filterAvailableProperties(data || []);
-        
-        // Get unique locations from available properties
-        const locations = [...new Set(availableProperties.map(p => p.location).filter(Boolean))];
+        // Get unique locations
+        const locations = [...new Set(data?.map(p => p.location).filter(Boolean))];
         
         return { success: true, data: locations };
     }, {
@@ -231,7 +225,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         },
     })
     
-    // Advanced search with filters and pagination (excludes currently rented)
+    // Advanced search with filters and pagination (shows all including rented)
     .post("/search/advanced", async ({ body }) => {
         const { 
             filters = {}, 
@@ -242,7 +236,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         let query = supabaseAdmin
             .from("property")
             .select("*")
-            .in("status", ["available", "rented"]); // Fetch both, filter later
+            .in("status", ["available", "rented"]);
         
         // Location filter
         if (filters.location) {
@@ -298,7 +292,6 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             query = query.lte("available_from", filters.availableFrom);
         }
         
-        // Fetch extra data to account for filtering
         query = query
             .order("featured", { ascending: false })
             .order("created_at", { ascending: false });
@@ -313,13 +306,13 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             };
         }
         
-        // Filter out currently rented properties
-        const availableProperties = filterAvailableProperties(data || []);
+        // Enrich properties with tenant information
+        const enrichedProperties = await enrichPropertiesWithTenantInfo(data || []);
         
-        // Apply pagination after filtering
-        const total = availableProperties.length;
+        // Apply pagination after enrichment
+        const total = enrichedProperties.length;
         const offset = (page - 1) * pageSize;
-        const paginatedProperties = availableProperties.slice(offset, offset + pageSize);
+        const paginatedProperties = enrichedProperties.slice(offset, offset + pageSize);
         
         return { 
             success: true, 

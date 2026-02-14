@@ -71,6 +71,7 @@ const CMS_FIELDS = [
     { key: "status", label: "Status" },
     { key: "cover_image", label: "Cover Image (URL)" },
     { key: "images", label: "Gallery Images (URLs)" },
+    { key: "property_video", label: "Property Video (URL)" },
     { key: "amenities", label: "Amenities" },
     { key: "featured", label: "Featured" },
     { key: "drive_folder_id", label: "Drive Folder ID" },
