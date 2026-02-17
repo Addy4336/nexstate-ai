@@ -13,7 +13,7 @@ import CalculatorsSection from "@/components/CalculatorsSection";
 import TenantStories from "@/components/tenants/TenantStories";
 import DetailedContent from "@/components/landing/DetailedContent";
 
-export default function Home() {
+export default function HomeTenants() {
   return (
     <main className="min-h-screen bg-background text-foreground relative font-sans">
       {/* <Navbar /> */}

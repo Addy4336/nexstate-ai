@@ -5,6 +5,7 @@
 }
 
 .prose h1 {
+  font-family: var(--font-serif);
   font-size: 2.25em;
   font-weight: 800;
   line-height: 1.1111111;
@@ -13,6 +14,7 @@
 }
 
 .prose h2 {
+  font-family: var(--font-serif);
   font-size: 1.5em;
   font-weight: 700;
   line-height: 1.3333333;
@@ -21,6 +23,7 @@
 }
 
 .prose h3 {
+  font-family: var(--font-serif);
   font-size: 1.25em;
   font-weight: 600;
   line-height: 1.6;
