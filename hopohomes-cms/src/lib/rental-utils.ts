@@ -1,4 +1,5 @@
-import { RentalPeriod, Property } from "@/types/property";
+import { RentalPeriod, Property, CurrentTenant } from "@/types/property";
+import { supabaseAdmin } from "@/lib/db";
 
 /**
  * Check if a property is currently rented
@@ -14,50 +15,74 @@ export function isCurrentlyRented(
 }
 
 /**
- * Filter out properties that are currently rented
- * This prevents showing properties to users during active rental periods
+ * Enrich properties with current tenant information if they are rented
+ * This adds is_currently_rented and current_tenant fields to each property
  */
-export function filterAvailableProperties<T extends Pick<Property, 'current_rental_end' | 'rental_periods'>>(
+export async function enrichPropertiesWithTenantInfo<T extends Property>(
   properties: T[]
-): T[] {
+): Promise<T[]> {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  return properties.filter(property => {
-    // Check if property has an active rental period using current_rental_end
-    if (property.current_rental_end) {
-      const rentalEndDate = new Date(property.current_rental_end);
-      rentalEndDate.setHours(0, 0, 0, 0);
-      
-      // If rental end date is today or in the future, property is currently rented
-      if (rentalEndDate >= today) {
-        return false;
-      }
-    }
+  // Get all property IDs that might be rented
+  const rentedPropertyIds = properties
+    .filter(p => p.current_rental_end)
+    .map(p => p.id);
 
-    // Double-check against rental_periods array for active/confirmed bookings
-    if (property.rental_periods && property.rental_periods.length > 0) {
-      const hasActiveRental = property.rental_periods.some(period => {
-        if (period.status !== 'active' && period.status !== 'confirmed') {
-          return false;
+  if (rentedPropertyIds.length === 0) {
+    // No rented properties, just mark all as available
+    return properties.map(p => ({
+      ...p,
+      is_currently_rented: false,
+      current_tenant: null,
+    }));
+  }
+
+  // Fetch active payments for these properties
+  const { data: payments } = await supabaseAdmin
+    .from("payments")
+    .select("property_id, user_name, user_email, user_phone, check_in_date, check_out_date, guests, amount")
+    .in("property_id", rentedPropertyIds)
+    .eq("status", "success")
+    .gte("check_out_date", today.toISOString().split('T')[0])
+    .order("created_at", { ascending: false });
+
+  // Create a map of property_id to tenant info
+  const tenantInfoMap = new Map<string, CurrentTenant>();
+  
+  if (payments) {
+    for (const payment of payments) {
+      if (!tenantInfoMap.has(payment.property_id)) {
+        // Only store the most recent payment (already ordered by created_at desc)
+        const checkOutDate = new Date(payment.check_out_date);
+        checkOutDate.setHours(0, 0, 0, 0);
+        
+        // Only include if rental is currently active
+        if (checkOutDate >= today) {
+          tenantInfoMap.set(payment.property_id, {
+            name: payment.user_name,
+            email: payment.user_email,
+            phone: payment.user_phone,
+            check_in_date: payment.check_in_date,
+            check_out_date: payment.check_out_date,
+            guests: payment.guests,
+            amount_paid: Number(payment.amount),
+          });
         }
-
-        const startDate = new Date(period.start_date);
-        const endDate = new Date(period.end_date);
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(0, 0, 0, 0);
-
-        // Check if today falls within the rental period
-        return today >= startDate && today <= endDate;
-      });
-
-      if (hasActiveRental) {
-        return false;
       }
     }
+  }
 
-    // Property is available
-    return true;
+  // Enrich properties with tenant information
+  return properties.map(property => {
+    const isRented = isCurrentlyRented(property.current_rental_end);
+    const tenantInfo = tenantInfoMap.get(property.id);
+
+    return {
+      ...property,
+      is_currently_rented: isRented && !!tenantInfo,
+      current_tenant: isRented && tenantInfo ? tenantInfo : null,
+    };
   });
 }
 

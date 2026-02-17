@@ -16,6 +16,19 @@ export interface RentalPeriod {
 }
 
 /**
+ * Current tenant information for rented properties
+ */
+export interface CurrentTenant {
+  name: string;
+  email: string;
+  phone: string | null;
+  check_in_date: string;
+  check_out_date: string;
+  guests: number | null;
+  amount_paid: number;
+}
+
+/**
  * Property type matching the database schema
  */
 export interface Property {
@@ -40,6 +53,9 @@ export interface Property {
   current_rental_start: string | null;
   current_rental_end: string | null;
   rental_periods: RentalPeriod[];
+  // Runtime fields (populated dynamically)
+  is_currently_rented?: boolean;
+  current_tenant?: CurrentTenant | null;
 }
 
 /**
