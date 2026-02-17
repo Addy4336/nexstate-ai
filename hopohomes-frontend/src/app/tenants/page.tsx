@@ -20,10 +20,10 @@ export default function HomeTenants() {
       <Hero />
 
       {/* HOPO Select Segment */}
-      <HopoSelect />
+      {/* <HopoSelect /> */}
 
       {/* HOPO Standard Segment */}
-      <div className="py-12 bg-muted/30">
+      {/* <div className="py-12 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-8">
           <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wider mb-2">
             HOPO STANDARD
@@ -36,18 +36,18 @@ export default function HomeTenants() {
           </p>
         </div>
         <PropertyShowcase />
-      </div>
+      </div> */}
 
       <DetailedContent />
       <TenantStories />
-      <LocationSection />
-      <MapFeatures />
-      <PremierHouses />
-      <CalculatorsSection />
+      {/* <LocationSection /> */}
+      {/* <MapFeatures /> */}
+      {/* <PremierHouses /> */}
+      {/* <CalculatorsSection /> */}
 
-      <FAQSection />
+      {/* <FAQSection /> */}
       {/* <ClientTestimonials /> */}
-      <CTASection />
+      {/* <CTASection /> */}
     </main>
   );
 }

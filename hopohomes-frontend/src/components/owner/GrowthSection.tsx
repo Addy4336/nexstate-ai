@@ -82,9 +82,9 @@ export default function GrowthSection() {
                 </div>
 
                 {/* Property Listings & Image Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 pt-8 md:pt-20 border-t border-border mt-8 md:mt-12">
+                {/* <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 pt-8 md:pt-20 border-t border-border mt-8 md:mt-12">
 
-                    {/* Column 1: Featured Strategies List (Span 5) */}
+                   
                     <div className="lg:col-span-5 flex flex-col justify-center space-y-4 md:space-y-6 order-2 lg:order-1">
                         <h3 className="text-xl font-semibold mb-4">Rental Strategies</h3>
 
@@ -110,9 +110,9 @@ export default function GrowthSection() {
                         ))}
                     </div>
 
-                    {/* Column 2: Image with custom shape (Span 4) */}
+
                     <div className="lg:col-span-4 relative flex justify-center order-1 lg:order-2">
-                        {/* SVG Clip Path */}
+                       
                         <svg className="absolute w-0 h-0" aria-hidden="true">
                             <defs>
                                 <clipPath id="center-image-mask" clipPathUnits="objectBoundingBox">
@@ -149,14 +149,14 @@ export default function GrowthSection() {
                                         fill
                                         className="object-cover"
                                     />
-                                    {/* Overlay */}
+                                 
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Column 3: Stats (Span 3) */}
+                
                     <div className="lg:col-span-3 flex flex-col justify-center gap-6 md:gap-8 lg:pl-4 order-3">
                         <h3 className="text-2xl sm:text-3xl md:text-4xl font-medium text-foreground leading-tight">
                             Your Partner <br /> in Property
@@ -173,7 +173,7 @@ export default function GrowthSection() {
                         </div>
                     </div>
 
-                </div>
+                </div> */}
 
             </div>
         </section>
