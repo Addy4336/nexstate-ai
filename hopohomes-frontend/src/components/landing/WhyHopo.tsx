@@ -1,22 +1,22 @@
 "use client";
 
-import { Bot, Armchair, Clock, Sparkles, Briefcase } from "lucide-react";
+import { Bot, Armchair, Clock, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const features = [
     {
         icon: <Bot className="w-8 h-8 text-primary-foreground" />,
-        title: "AI-first operations",
-        description: "Our proprietary AI optimizes everything from dynamic pricing and occupancy management to predictive maintenance, ensuring owners get maximum yields and residents enjoy seamless, uninterrupted stays.",
+        title: "Fully managed, ready-to-move-in homes",
+        description: "Hopo Homes manages everything from dynamic pricing and occupancy management to predictive maintenance, ensuring owners get maximum yields and residents enjoy seamless, uninterrupted stays.",
         className: "md:col-span-4 bg-primary text-primary-foreground border-none",
         iconBg: "bg-primary-foreground/20",
         lightText: true
     },
     {
         icon: <Armchair className="w-6 h-6 text-primary" />,
-        title: "Fully furnished & Ready",
-        description: "Designer furniture, premium appliances, and dedicated workspaces in every home.",
+        title: "All bills included in one monthly payment",
+        description: "No hidden fees or additional charges. One simple, all-inclusive bill covers rent, wifi, and utilities.",
         className: "md:col-span-2",
         iconBg: "bg-secondary",
         lightText: false
@@ -38,9 +38,9 @@ const features = [
         lightText: false
     },
     {
-        icon: <Briefcase className="w-6 h-6 text-primary" />,
-        title: "End-to-end management",
-        description: "We handle marketing, screening, contracts, and compliance so owners don't have to.",
+        icon: <Bot className="w-6 h-6 text-primary" />,
+        title: "AI Powered Support",
+        description: "AI-powered support for 24/7 availability, so you don't have to worry about anything.",
         className: "md:col-span-2",
         iconBg: "bg-secondary",
         lightText: false

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Zap, Clock, Star } from 'lucide-react';
 
-export default function Hero() {
+export default function HomeHero() {
     return (
         <section className="relative px-4 pt-24 pb-12 sm:pt-28 sm:pb-16 lg:px-8 lg:pt-28 lg:pb-32 overflow-hidden bg-background">
             <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">

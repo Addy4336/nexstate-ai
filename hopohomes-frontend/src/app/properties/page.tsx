@@ -297,9 +297,9 @@ function PropertiesContent() {
                     </p>
 
                     {/* Clean Search Bar */}
-                    <div className="max-w-3xl mx-auto">
+                    {/* <div className="max-w-3xl mx-auto">
                         <div className="flex flex-col sm:flex-row gap-3 p-2 bg-card border border-border rounded-2xl shadow-sm">
-                            {/* Search Input */}
+                          
                             <div className="flex-1 relative">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                                 <input
@@ -311,7 +311,7 @@ function PropertiesContent() {
                                 />
                             </div>
 
-                            {/* Location Select */}
+                        
                             <div className="relative sm:w-48 border-t sm:border-t-0 sm:border-l border-border">
                                 <select
                                     value={selectedLocation}
@@ -326,24 +326,24 @@ function PropertiesContent() {
                                 <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                             </div>
 
-                            {/* Search Button */}
+                         
                             <button
                                 onClick={fetchProperties}
-                                className="px-8 py-3.5 bg-foreground text-background font-medium rounded-xl hover:opacity-90 transition-opacity"
+                                className="px-8 py-3.5 bg-primary text-background font-medium rounded-xl hover:opacity-90 transition-opacity"
                             >
                                 Search
                             </button>
                         </div>
 
-                        {/* Filter Toggle */}
-                        <button
+                        
+                       <button
                             onClick={() => setShowFilters(!showFilters)}
                             className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                         >
                             <SlidersHorizontal className="w-4 h-4" />
                             {showFilters ? 'Hide filters' : 'More filters'}
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </section>
 
@@ -436,11 +436,11 @@ function PropertiesContent() {
             <section className="py-12 px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Results Header */}
-                    <div className="flex justify-between items-center mb-8">
+                    {/* <div className="flex justify-between items-center mb-8">
                         <h2 className="text-2xl font-semibold text-foreground">
                             {loading ? 'Loading...' : `${properties.length} Properties`}
                         </h2>
-                    </div>
+                    </div> */}
 
                     {/* Loading */}
                     {loading && (

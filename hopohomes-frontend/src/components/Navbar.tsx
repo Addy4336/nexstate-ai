@@ -9,9 +9,9 @@ import { Globe, Menu, X } from 'lucide-react';
 // Define navigation items
 const navItems = [
     // { href: '/', label: 'AI Powered' },
-    { href: '/tenants', label: 'For Tenants' },
+    { href: '/', label: 'For Tenants' },
     { href: '/owner', label: 'For Owners' },
-    { href: '/properties', label: 'Properties' },
+    // { href: '/properties', label: 'Properties' },
     { href: '/about-us', label: 'About Us' },
     { href: '/contact', label: 'Contact Us' },
     { href: '/blog', label: 'Blog' },
