@@ -2,6 +2,7 @@
 
 import { ArrowRight, Facebook, Instagram, Linkedin } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function FooterSection() {
     return (
@@ -16,7 +17,14 @@ export default function FooterSection() {
                         {/* Brand & Newsletter (Col 5) */}
                         <div className="lg:col-span-5 flex flex-col gap-6 md:gap-10">
                             <div className="flex flex-col gap-4">
-                                <h2 className="text-2xl md:text-3xl font-bold font-sans tracking-tighter">HOPO HOMES.</h2>
+                                <div className="relative w-40 h-16 md:w-56 md:h-20">
+                                    <Image
+                                        src="/image/logo.webp"
+                                        alt="HOPO HOMES"
+                                        fill
+                                        className="object-contain object-left"
+                                    />
+                                </div>
                                 <p className="text-zinc-400 text-base md:text-lg leading-relaxed max-w-md font-light">
                                     The World's First Fully AI-Managed Rental Ecosystem. Experience the future of living with three dedicated AI Agents working 24/7.
                                 </p>

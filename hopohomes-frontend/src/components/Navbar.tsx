@@ -8,7 +8,7 @@ import { Globe, Menu, X } from 'lucide-react';
 
 // Define navigation items
 const navItems = [
-    { href: '/', label: 'AI Powered' },
+    // { href: '/', label: 'AI Powered' },
     { href: '/tenants', label: 'For Tenants' },
     { href: '/owner', label: 'For Owners' },
     { href: '/properties', label: 'Properties' },
