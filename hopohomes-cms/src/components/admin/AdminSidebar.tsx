@@ -16,6 +16,7 @@ import {
     Plug,
     Megaphone,
     Calculator,
+    KeyRound,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -43,6 +44,11 @@ const sidebarLinks: SidebarLink[] = [
         label: "Properties",
         href: "/admin/properties",
         icon: Building2,
+    },
+    {
+        label: "Rentals",
+        href: "/admin/rentals",
+        icon: KeyRound,
     },
     {
         label: "Leads",

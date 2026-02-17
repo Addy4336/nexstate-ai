@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X, Plus, Minus, Camera, Heart, Share2, Bookmark, Bed, Bath, Square, Car, Shield, MapPin, Clock, Flag, Star, Check, Calendar as CalendarIcon, ImageOff } from 'lucide-react';
 import Link from 'next/link';
 import { EnquiryDialog } from '@/components/enquiry-dialog';
+import { PaymentButton } from '@/components/payments/payment-button';
 import { format, addDays } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
@@ -23,6 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export interface TripData {
   title: string;
@@ -219,6 +229,12 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isPriceDetailsOpen, setIsPriceDetailsOpen] = useState(false);
   const [isPaymentTimelineOpen, setIsPaymentTimelineOpen] = useState(false);
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
 
   // Image zoom modal state
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
@@ -1471,22 +1487,43 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                       </span>
                     </div>
 
-                    {/* Reserve Button */}
-                    <Button
-                      onClick={() => {
-                        setBookingData({
-                          checkInDate: checkInDate?.toISOString().split('T')[0],
-                          checkOutDate: checkOutDate?.toISOString().split('T')[0],
-                          guests,
-                          cancellationPolicy: selectedCancellation,
-                          totalAmount: grandTotal,
-                        });
-                        setIsEnquiryOpen(true);
-                      }}
-                      className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      Check availability
-                    </Button>
+                    {/* Action Buttons */}
+                    <div className="space-y-3">
+                      {/* Book Now Button */}
+                      <Button
+                        onClick={() => {
+                          setBookingData({
+                            checkInDate: checkInDate?.toISOString().split('T')[0],
+                            checkOutDate: checkOutDate?.toISOString().split('T')[0],
+                            guests,
+                            cancellationPolicy: selectedCancellation,
+                            totalAmount: grandTotal,
+                          });
+                          setIsPaymentDialogOpen(true);
+                        }}
+                        className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        Book Now
+                      </Button>
+                      
+                      {/* Check Availability Button */}
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setBookingData({
+                            checkInDate: checkInDate?.toISOString().split('T')[0],
+                            checkOutDate: checkOutDate?.toISOString().split('T')[0],
+                            guests,
+                            cancellationPolicy: selectedCancellation,
+                            totalAmount: grandTotal,
+                          });
+                          setIsEnquiryOpen(true);
+                        }}
+                        className="w-full h-12 rounded-xl font-semibold text-base"
+                      >
+                        Check Availability
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
@@ -1682,22 +1719,41 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                     </span>
                   </div>
 
-                  <Button
-                    onClick={() => {
-                      setBookingData({
-                        checkInDate: checkInDate?.toISOString().split('T')[0],
-                        checkOutDate: checkOutDate?.toISOString().split('T')[0],
-                        guests,
-                        cancellationPolicy: selectedCancellation,
-                        totalAmount: selectedCancellation === 'refundable' ? Math.round(trip.pricing.from * 1.1) : trip.pricing.from,
-                      });
-                      setIsMobileDrawerOpen(false);
-                      setTimeout(() => setIsEnquiryOpen(true), 300);
-                    }}
-                    className="w-full h-12 text-base bg-foreground hover:bg-foreground/90 text-background rounded-full font-bold shadow-md"
-                  >
-                    Reserve
-                  </Button>
+                  <div className="flex flex-col gap-3">
+                    <Button
+                      onClick={() => {
+                        setBookingData({
+                          checkInDate: checkInDate?.toISOString().split('T')[0],
+                          checkOutDate: checkOutDate?.toISOString().split('T')[0],
+                          guests,
+                          cancellationPolicy: selectedCancellation,
+                          totalAmount: selectedCancellation === 'refundable' ? Math.round(trip.pricing.from * 1.1) : trip.pricing.from,
+                        });
+                        setIsMobileDrawerOpen(false);
+                        setTimeout(() => setIsPaymentDialogOpen(true), 300);
+                      }}
+                      className="w-full h-12 text-base bg-foreground hover:bg-foreground/90 text-background rounded-full font-bold shadow-md"
+                    >
+                      Book Now
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setBookingData({
+                          checkInDate: checkInDate?.toISOString().split('T')[0],
+                          checkOutDate: checkOutDate?.toISOString().split('T')[0],
+                          guests,
+                          cancellationPolicy: selectedCancellation,
+                          totalAmount: selectedCancellation === 'refundable' ? Math.round(trip.pricing.from * 1.1) : trip.pricing.from,
+                        });
+                        setIsMobileDrawerOpen(false);
+                        setTimeout(() => setIsEnquiryOpen(true), 300);
+                      }}
+                      variant="outline"
+                      className="w-full h-12 text-base rounded-full font-semibold border-2"
+                    >
+                      Check Availability
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1812,6 +1868,102 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
             </div>
           </div>
         )}
+
+        {/* Payment Details Dialog */}
+        <Dialog open={isPaymentDialogOpen} onOpenChange={setIsPaymentDialogOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Complete Your Booking</DialogTitle>
+              <DialogDescription>
+                Enter your details to proceed with the payment for your {nights}-night stay
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              {/* Booking Summary */}
+              <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                <h4 className="font-semibold text-sm">Booking Summary</h4>
+                <div className="text-sm space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Check-in:</span>
+                    <span className="font-medium">{checkInDate ? format(checkInDate, 'MMM dd, yyyy') : '-'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Check-out:</span>
+                    <span className="font-medium">{checkOutDate ? format(checkOutDate, 'MMM dd, yyyy') : '-'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Guests:</span>
+                    <span className="font-medium">{guests}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t">
+                    <span className="font-semibold">Total Amount:</span>
+                    <span className="font-bold text-primary">{trip.pricing.currency} {grandTotal.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Information Form */}
+              <div className="space-y-3">
+                <div>
+                  <Label htmlFor="name">Full Name *</Label>
+                  <Input
+                    id="name"
+                    value={customerInfo.name}
+                    onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                    placeholder="John Doe"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email">Email Address *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={customerInfo.email}
+                    onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
+                    placeholder="john.doe@example.com"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={customerInfo.phone}
+                    onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
+                    placeholder="+971 50 123 4567"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              {/* Payment Button */}
+              <div className="pt-4">
+                <PaymentButton
+                  propertyId={id}
+                  amount={grandTotal}
+                  customerName={customerInfo.name}
+                  customerEmail={customerInfo.email}
+                  customerPhone={customerInfo.phone}
+                  checkInDate={checkInDate?.toISOString().split('T')[0]}
+                  checkOutDate={checkOutDate?.toISOString().split('T')[0]}
+                  guests={guests}
+                  description={`Booking for ${trip.title}`}
+                  className="w-full"
+                  disabled={!customerInfo.name || !customerInfo.email}
+                >
+                  Proceed to Payment
+                </PaymentButton>
+                
+                <p className="text-xs text-muted-foreground text-center mt-3">
+                  You will be redirected to TotalPay secure checkout
+                </p>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Payment Timeline Dialog */}
         {isPaymentTimelineOpen && (

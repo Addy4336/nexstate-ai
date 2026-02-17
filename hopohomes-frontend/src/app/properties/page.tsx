@@ -525,13 +525,16 @@ function PropertiesContent() {
                                             {property.location}
                                         </p>
                                         
-                                        {/* Available From Date for Rented Properties */}
-                                        {property.status === 'rented' && property.current_rental_end && (() => {
-                                            const availableDate = getNextAvailableDate(property.current_rental_end, property.rental_periods);
-                                            return availableDate && (
+                                        {/* Available From Date for Currently Rented Properties */}
+                                        {property.is_currently_rented && property.current_tenant?.check_out_date && (() => {
+                                            const checkoutDate = new Date(property.current_tenant.check_out_date);
+                                            const tomorrow = new Date(checkoutDate);
+                                            tomorrow.setDate(tomorrow.getDate() + 1);
+                                            
+                                            return (
                                                 <div className="flex items-center gap-1.5 text-sm text-orange-600 bg-orange-50 dark:bg-orange-950/20 px-2.5 py-1.5 rounded-md">
                                                     <Calendar className="w-3.5 h-3.5" />
-                                                    <span>Available from {formatDate(availableDate)}</span>
+                                                    <span>Available from {formatDate(tomorrow)}</span>
                                                 </div>
                                             );
                                         })()}

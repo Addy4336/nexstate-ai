@@ -6,9 +6,9 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
     .post("/", async ({ body }) => {
         const { type, name, email, phone, message, propertyId, propertyTitle, propertyDetails } = body;
 
-        // Basic validation
-        if (!name || !email || !message) {
-            return { success: false, error: "Missing required fields" };
+        // Basic validation - only name and email are required
+        if (!name || !email) {
+            return { success: false, error: "Missing required fields: name and email are required" };
         }
 
         // Insert enquiry
@@ -19,7 +19,7 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
                 name,
                 email,
                 phone: phone || null,
-                message,
+                message: message || null,
                 property_id: propertyId || null,
                 property_title: propertyTitle || null,
                 property_details: propertyDetails || null,
@@ -84,7 +84,7 @@ export const enquiriesRoutes = new Elysia({ prefix: "/enquiries" })
             name: t.String(),
             email: t.String(),
             phone: t.Optional(t.String()),
-            message: t.String(),
+            message: t.Optional(t.String()),
             propertyId: t.Optional(t.String()),
             propertyTitle: t.Optional(t.String()),
             propertyDetails: t.Optional(t.Any()),
