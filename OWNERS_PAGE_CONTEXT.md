@@ -1,5 +1,5 @@
 # HOPO Homes Owners Page Content
-Retrieved from: https://hopohomes.com/owners
+Retrieved from: https://nexstate.ai/owners
 
 ## HOPO Homes for individual owners
 **Why partner with HOPO Homes?**
@@ -74,7 +74,7 @@ We are dedicated to maintaining honesty, clarity, and trust in every interaction
 **Hopo Holiday Homes LLC**
 Office no. MF-17 Shamsa King Mohammed Ibrahim Al Suwaidi - Deira Al Murar Dubai UAE
 Phone: +97145973415, 045635295, 045254155
-Email: hopohomes@gmail.com
+Email: nexstate@gmail.com
 
 **Social Links:**
 - Instagram

@@ -1,16 +1,16 @@
 {
-  "name": "hopohomes-monorepo",
+  "name": "nexstate-monorepo",
   "version": "0.1.0",
   "private": true,
   "packageManager": "bun@1.3.1",
   "workspaces": [
-    "hopohomes-cms",
-    "hopohomes-frontend"
+    "nexstate-cms",
+    "nexstate-frontend"
   ],
   "scripts": {
     "dev": "turbo dev",
-    "dev:cms": "turbo dev --filter=hopohomes-cms",
-    "dev:frontend": "turbo dev --filter=hopohomes-frontend",
+    "dev:cms": "turbo dev --filter=nexstate-cms",
+    "dev:frontend": "turbo dev --filter=nexstate-frontend",
     "build": "turbo build",
     "lint": "turbo lint",
     "type-check": "turbo type-check",

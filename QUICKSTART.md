@@ -44,7 +44,7 @@ bun run build
 ## Project Structure After Migration
 
 ```
-hopohomes_cms/
+nexstate_cms/
 ├── apps/
 │   ├── cms/              # Next.js CMS (port 3001)
 │   │   ├── src/

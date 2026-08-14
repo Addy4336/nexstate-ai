@@ -1,11 +1,11 @@
-# HopoHomes Turborepo Migration Guide
+# nexstate Turborepo Migration Guide
 
-This guide will help you complete the Turborepo migration for the HopoHomes CMS project.
+This guide will help you complete the Turborepo migration for the nexstate CMS project.
 
 ## 🏗️ Project Structure
 
 ```
-hopohomes_cms/
+nexstate_cms/
 ├── apps/
 │   ├── cms/           # Next.js CMS application (main app)
 │   └── frontend/      # Vite React frontend
@@ -68,9 +68,9 @@ Remove-Item -Path "apps/cms/src/frontend" -Recurse -Force -ErrorAction SilentlyC
 ```powershell
 # Create README for CMS
 @"
-# HopoHomes CMS
+# nexstate CMS
 
-Next.js-based Content Management System for HopoHomes.
+Next.js-based Content Management System for nexstate.
 
 ## Development
 
@@ -87,7 +87,7 @@ bun run build
 
 # Create README for Frontend
 @"
-# HopoHomes Frontend
+# nexstate Frontend
 
 Vite + React frontend application.
 
@@ -247,7 +247,7 @@ bun run dev
 ### Individual App package.json
 
 - Each app has its own dependencies
-- Scoped names: `@hopohomes/cms` and `@hopohomes/frontend`
+- Scoped names: `@nexstate/cms` and `@nexstate/frontend`
 - Independent scripts
 
 ## 📝 Environment Variables
@@ -285,7 +285,7 @@ Example: `packages/ui/package.json`
 
 ```json
 {
-  "name": "@hopohomes/ui",
+  "name": "@nexstate/ui",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",
@@ -297,7 +297,7 @@ Then import in apps:
 
 ```typescript
 // apps/cms/src/components/MyComponent.tsx
-import { Button } from "@hopohomes/ui";
+import { Button } from "@nexstate/ui";
 ```
 
 ## ⚠️ Important Notes

@@ -48,7 +48,7 @@ Create `.env.local` file (see `.env.example`):
 
 ```bash
 # Database
-DATABASE_URL=postgresql://username:password@localhost:5432/hopohomes_db
+DATABASE_URL=postgresql://username:password@localhost:5432/nexstate_db
 
 # Authentication
 BETTER_AUTH_URL=http://localhost:3001
@@ -60,8 +60,8 @@ BETTER_AUTH_SECRET=your-secret-key-here-change-in-production
 Run the migration scripts:
 
 ```bash
-psql -U username -d hopohomes_db -f supabase/tables/01_auth.sql
-psql -U username -d hopohomes_db -f supabase/tables/02_properties.sql
+psql -U username -d nexstate_db -f supabase/tables/01_auth.sql
+psql -U username -d nexstate_db -f supabase/tables/02_properties.sql
 ```
 
 ### 4. Start Development Server
@@ -77,7 +77,7 @@ Navigate to `http://localhost:3001`
 ### 5. Initial Admin Setup
 
 1. Go to `http://localhost:3001/admin/setup`
-2. Set password for `admin@hopohomes.com`
+2. Set password for `admin@nexstate.ai`
 3. Login at `http://localhost:3001/admin/login`
 
 ## 📚 Documentation
@@ -107,7 +107,7 @@ Navigate to `http://localhost:3001`
 ## 📁 Project Structure
 
 ```
-hopohomes_cms/
+nexstate_cms/
 ├── src/
 │   ├── app/                    # Next.js App Router
 │   │   ├── (user)/            # Public-facing pages

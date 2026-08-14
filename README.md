@@ -5,9 +5,9 @@ Turborepo monorepo containing HOPO Homes CMS (Next.js) and frontend (Vite React)
 ## 📁 Project Structure
 
 ```
-hopohomes_cms/
-├── hopohomes-cms/        # Next.js CMS (Backend + Admin) - Port 3001
-├── hopohomes-frontend/   # Vite React (User Frontend) - Port 3000
+nexstate_cms/
+├── nexstate-cms/        # Next.js CMS (Backend + Admin) - Port 3001
+├── nexstate-frontend/   # Vite React (User Frontend) - Port 3000
 ├── package.json          # Root workspace config
 └── turbo.json           # Turborepo configuration
 ```
@@ -33,12 +33,12 @@ bun run dev
 
 **CMS:**
 ```bash
-cd hopohomes-cms && bun run dev
+cd nexstate-cms && bun run dev
 ```
 
 **Frontend:**
 ```bash
-cd hopohomes-frontend && bun run dev
+cd nexstate-frontend && bun run dev
 ```
 
 ## 🏗️ Build
@@ -48,20 +48,20 @@ cd hopohomes-frontend && bun run dev
 bun run build
 
 # Build individual
-cd hopohomes-cms && bun run build
-cd hopohomes-frontend && bun run build
+cd nexstate-cms && bun run build
+cd nexstate-frontend && bun run build
 ```
 
 ## 🔧 Tech Stack
 
-### CMS (hopohomes-cms)
+### CMS (nexstate-cms)
 - Next.js 16 + App Router
 - Supabase (PostgreSQL)
 - Better Auth
 - Tailwind CSS + shadcn/ui
 - Zoho Creator & Google Drive integrations
 
-### Frontend (hopohomes-frontend)
+### Frontend (nexstate-frontend)
 - Vite + React 18
 - React Router
 - React Query
@@ -69,7 +69,7 @@ cd hopohomes-frontend && bun run build
 
 ## 📝 Environment Variables
 
-Create `.env.local` in `hopohomes-cms/`:
+Create `.env.local` in `nexstate-cms/`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
@@ -81,8 +81,8 @@ BETTER_AUTH_URL=http://localhost:3001
 
 ## 🚢 Deployment
 
-- **CMS**: Deploy to Vercel (point to `hopohomes-cms/`)
-- **Frontend**: Deploy to Vercel/Netlify (point to `hopohomes-frontend/`)
+- **CMS**: Deploy to Vercel (point to `nexstate-cms/`)
+- **Frontend**: Deploy to Vercel/Netlify (point to `nexstate-frontend/`)
 
 ## 📄 License
 

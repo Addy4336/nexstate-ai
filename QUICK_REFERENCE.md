@@ -74,7 +74,7 @@ if (user) {
 
 ## Default Credentials
 
-**Email:** `admin@hopohomes.com`  
+**Email:** `admin@nexstate.ai`  
 **Password:** Set via `/admin/setup`
 
 ## Environment Variables

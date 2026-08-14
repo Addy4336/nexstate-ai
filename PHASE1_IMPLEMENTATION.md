@@ -145,7 +145,7 @@ Create `.env.local` file (use `.env.example` as template):
 
 ```bash
 # Required
-DATABASE_URL=postgresql://username:password@localhost:5432/hopohomes_db
+DATABASE_URL=postgresql://username:password@localhost:5432/nexstate_db
 BETTER_AUTH_URL=http://localhost:3001
 BETTER_AUTH_SECRET=your-secret-key-here-change-in-production
 
@@ -160,8 +160,8 @@ Ensure your PostgreSQL database is running and the schema is migrated:
 
 ```bash
 # Run migration scripts
-psql -U username -d hopohomes_db -f supabase/tables/01_auth.sql
-psql -U username -d hopohomes_db -f supabase/tables/02_properties.sql
+psql -U username -d nexstate_db -f supabase/tables/01_auth.sql
+psql -U username -d nexstate_db -f supabase/tables/02_properties.sql
 ```
 
 ### 3. **Initial Admin Setup**
@@ -176,8 +176,8 @@ bun run dev
 http://localhost:3001/admin/setup
 ```
 
-**Step 3:** Set password for `admin@hopohomes.com`
-- Default email: `admin@hopohomes.com` (seeded in database)
+**Step 3:** Set password for `admin@nexstate.ai`
+- Default email: `admin@nexstate.ai` (seeded in database)
 - Create a strong password (min 8 characters)
 
 **Step 4:** Login at `/admin/login`

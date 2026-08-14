@@ -4,14 +4,14 @@
 
 Both applications have been containerized and are ready to deploy:
 
-- **hopohomes-frontend** - Public-facing website (Port: 3000)
-- **hopohomes-cms** - Admin CMS panel (Port: 3001)
+- **nexstate-frontend** - Public-facing website (Port: 3000)
+- **nexstate-cms** - Admin CMS panel (Port: 3001)
 
 ## 📦 Image Details
 
 ```bash
-hopohomes-frontend:latest   ~517MB
-hopohomes-cms:latest        ~572MB
+nexstate-frontend:latest   ~517MB
+nexstate-cms:latest        ~572MB
 ```
 
 ## 🚀 Quick Start
@@ -21,20 +21,20 @@ hopohomes-cms:latest        ~572MB
 **Frontend:**
 ```bash
 docker run -d \
-  --name hopohomes-frontend \
+  --name nexstate-frontend \
   -p 3000:3000 \
   -e NODE_ENV=production \
-  hopohomes-frontend:latest
+  nexstate-frontend:latest
 ```
 
 **CMS (with environment variables from .env file):**
 ```bash
 docker run -d \
-  --name hopohomes-cms \
+  --name nexstate-cms \
   -p 3001:3001 \
-  --env-file ./hopohomes-cms/.env \
+  --env-file ./nexstate-cms/.env \
   -e NODE_ENV=production \
-  hopohomes-cms:latest
+  nexstate-cms:latest
 ```
 
 **Access applications:**
@@ -45,19 +45,19 @@ docker run -d \
 
 ```bash
 # Stop frontend
-docker stop hopohomes-frontend
-docker rm hopohomes-frontend
+docker stop nexstate-frontend
+docker rm nexstate-frontend
 
 # Stop CMS
-docker stop hopohomes-cms
-docker rm hopohomes-cms
+docker stop nexstate-cms
+docker rm nexstate-cms
 ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-Make sure you have `.env` file in the `hopohomes-cms` directory with required configurations:
+Make sure you have `.env` file in the `nexstate-cms` directory with required configurations:
 - Database connection strings
 - API keys
 - Authentication secrets
@@ -81,8 +81,8 @@ docker ps
 docker-compose logs -f
 
 # Specific service
-docker logs -f hopohomes-frontend
-docker logs -f hopohomes-cms
+docker logs -f nexstate-frontend
+docker logs -f nexstate-cms
 ```
 
 ### Health Checks
@@ -107,8 +107,8 @@ docker-compose build cms
 docker-compose build
 
 # Or build manually
-docker build -t hopohomes-frontend:latest ./hopohomes-frontend
-docker build -t hopohomes-cms:latest ./hopohomes-cms
+docker build -t nexstate-frontend:latest ./nexstate-frontend
+docker build -t nexstate-cms:latest ./nexstate-cms
 ```
 
 ## 🧹 Cleanup
@@ -118,8 +118,8 @@ docker build -t hopohomes-cms:latest ./hopohomes-cms
 docker-compose down
 
 # Remove images
-docker rmi hopohomes-frontend:latest
-docker rmi hopohomes-cms:latest
+docker rmi nexstate-frontend:latest
+docker rmi nexstate-cms:latest
 
 # Clean up all unused Docker resources
 docker system prune -a
@@ -173,13 +173,13 @@ ports:
 ### Container Won't Start
 ```bash
 # Check logs
-docker logs hopohomes-frontend
+docker logs nexstate-frontend
 
 # Inspect container
-docker inspect hopohomes-frontend
+docker inspect nexstate-frontend
 
 # Check environment variables
-docker exec hopohomes-frontend env
+docker exec nexstate-frontend env
 ```
 
 ### Out of Memory

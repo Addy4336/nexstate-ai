@@ -1,4 +1,4 @@
-# HopoHomes Turborepo Migration Script
+# nexstate Turborepo Migration Script
 # Run this script from the project root
 
 Write-Host "🚀 Starting Turborepo Migration..." -ForegroundColor Green
@@ -60,9 +60,9 @@ Write-Host ""
 Write-Host "📝 Step 5: Creating README files..." -ForegroundColor Cyan
 
 $cmsReadme = @"
-# HopoHomes CMS
+# nexstate CMS
 
-Next.js-based Content Management System for HopoHomes.
+Next.js-based Content Management System for nexstate.
 
 ## Development
 
@@ -83,7 +83,7 @@ Runs on port 3001
 $cmsReadme | Out-File -FilePath "apps/cms/README.md" -Encoding utf8 -Force
 
 $frontendReadme = @"
-# HopoHomes Frontend
+# nexstate Frontend
 
 Vite + React frontend application.
 

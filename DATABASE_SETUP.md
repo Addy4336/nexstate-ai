@@ -21,7 +21,7 @@ Create a file named `.env.local` in the project root:
 
 ```bash
 # Database Configuration
-DATABASE_URL=postgresql://postgres:your_password@localhost:5432/hopohomes_db
+DATABASE_URL=postgresql://postgres:your_password@localhost:5432/nexstate_db
 
 # Authentication
 BETTER_AUTH_URL=http://localhost:3001
@@ -40,10 +40,10 @@ NODE_ENV=development
 psql -U postgres
 
 -- Create database
-CREATE DATABASE hopohomes_db;
+CREATE DATABASE nexstate_db;
 
 -- Connect to the new database
-\c hopohomes_db
+\c nexstate_db
 
 -- Exit
 \q
@@ -53,8 +53,8 @@ CREATE DATABASE hopohomes_db;
 
 ```bash
 # Run the migration files
-psql -U postgres -d hopohomes_db -f supabase/tables/01_auth.sql
-psql -U postgres -d hopohomes_db -f supabase/tables/02_properties.sql
+psql -U postgres -d nexstate_db -f supabase/tables/01_auth.sql
+psql -U postgres -d nexstate_db -f supabase/tables/02_properties.sql
 ```
 
 ### 5. Verify Connection
@@ -62,7 +62,7 @@ psql -U postgres -d hopohomes_db -f supabase/tables/02_properties.sql
 Test your connection string:
 
 ```bash
-psql "postgresql://postgres:your_password@localhost:5432/hopohomes_db"
+psql "postgresql://postgres:your_password@localhost:5432/nexstate_db"
 ```
 
 If successful, you should see the PostgreSQL prompt.
@@ -86,8 +86,8 @@ bun run dev
 ### Issue: "role does not exist"
 **Solution:** Use the default `postgres` user or create a new role:
 ```sql
-CREATE USER hopohomes WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE hopohomes_db TO hopohomes;
+CREATE USER nexstate WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE nexstate_db TO nexstate;
 ```
 
 ### Issue: Port already in use
@@ -102,14 +102,14 @@ If you prefer Docker:
 
 ```bash
 # Run PostgreSQL in Docker
-docker run --name hopohomes-postgres \
+docker run --name nexstate-postgres \
   -e POSTGRES_PASSWORD=yourpassword \
-  -e POSTGRES_DB=hopohomes_db \
+  -e POSTGRES_DB=nexstate_db \
   -p 5432:5432 \
   -d postgres:15
 
 # Then use this connection string:
-# DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/hopohomes_db
+# DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/nexstate_db
 ```
 
 ## Test Your Setup
@@ -123,7 +123,7 @@ docker run --name hopohomes-postgres \
 
 Check the console logs for specific error messages and ensure:
 - ✅ PostgreSQL is running
-- ✅ Database `hopohomes_db` exists
+- ✅ Database `nexstate_db` exists
 - ✅ Tables are created (run migrations)
 - ✅ `.env.local` file exists with correct DATABASE_URL
 - ✅ No typos in connection string
