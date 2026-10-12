@@ -2,7 +2,6 @@
 
 import { requireStaff } from "@/lib/auth-utils";
 
-import { requireStaff } from "@/lib/auth-utils";
 
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";

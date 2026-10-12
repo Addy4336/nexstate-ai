@@ -183,7 +183,7 @@ export async function syncPropertiesToZoho() {
             return { success: false, error: "Zoho Creator not connected" };
         }
 
-        const configResult = await getZohoConfig(adminId);
+        const configResult = await getZohoConfig();
         if (!configResult.success || !configResult.data) {
             return { success: false, error: "Zoho configuration not found" };
         }
