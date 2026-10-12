@@ -1,5 +1,6 @@
 'use client';
 
+import { brand } from "@nexstate/brand";
 import Image from 'next/image';
 import { ArrowUpRight, Check } from 'lucide-react';
 import Link from 'next/link';
@@ -20,10 +21,10 @@ export default function AboutSection() {
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-8">
                     <div className="space-y-4 md:space-y-6 max-w-3xl">
                         <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs md:text-sm font-medium">
-                            Why Choose Hopo?
+                            Why Choose {brand.name}?
                         </span>
                         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-medium text-foreground leading-[1.1]">
-                            Why Hopo Homes is<br />
+                            Why {brand.name} is<br />
                             Your Best Choice
                         </h2>
                     </div>
@@ -49,10 +50,10 @@ export default function AboutSection() {
                         <div className="space-y-4">
                             <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Trustable & Easy</h3>
                             <p className="text-muted-foreground leading-relaxed max-w-md text-base sm:text-lg">
-                                At Hopo Homes, our property management approach is simple. We are dedicated to maintaining honesty, clarity, and trust in every interaction while delivering a seamless and stress-free experience for property owners.
+                                At {brand.name}, our property management approach is simple. We are dedicated to maintaining honesty, clarity, and trust in every interaction while delivering a seamless and stress-free experience for property owners.
                             </p>
                             <p className="text-muted-foreground leading-relaxed max-w-md text-base sm:text-lg">
-                                With Hopo Homes, your property is positioned to achieve optimal performance, no matter the season or market conditions.
+                                With {brand.name}, your property is positioned to achieve optimal performance, no matter the season or market conditions.
                             </p>
                         </div>
 

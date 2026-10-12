@@ -1,8 +1,9 @@
+import { brand } from "@nexstate/brand";
 import { OwnerROICalculator } from "@/components/calculators/OwnerROICalculator";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "ROI Calculator for Property Owners | HOPO Homes",
+    title: `ROI Calculator for Property Owners | ${brand.name}`,
     description: "Calculate your rental property returns based on rent, occupancy, expenses, and financing. Free investment analysis tool.",
 };
 

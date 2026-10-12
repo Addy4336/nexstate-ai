@@ -1,4 +1,4 @@
-# HOPO Homes CMS - Admin Dashboard
+# NexState CMS - Admin Dashboard
 
 Modern, secure, and feature-rich property management system built with Next.js 15, TypeScript, and PostgreSQL.
 

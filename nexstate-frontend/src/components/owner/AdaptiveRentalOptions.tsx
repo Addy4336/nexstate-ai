@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
@@ -97,7 +98,7 @@ export default function AdaptiveRentalOptions() {
                     transition={{ delay: 0.4 }}
                     className="text-center text-muted-foreground text-lg md:text-xl max-w-4xl mx-auto leading-relaxed"
                 >
-                    With Hopo Homes, your property is positioned to achieve optimal performance, no matter the season or market conditions.
+                    With {brand.name}, your property is positioned to achieve optimal performance, no matter the season or market conditions.
                 </motion.p>
 
             </div>

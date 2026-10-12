@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import React from 'react';
 import Image from 'next/image';
 
@@ -36,7 +37,7 @@ const Vision = () => {
                                         Powered by technology, driven by trust.
                                     </h4>
                                     <p className="text-muted-foreground text-xl leading-relaxed max-w-2xl font-sans">
-                                        Whether you’re a young professional looking for a stress-free place to live, or a homeowner looking to maximise returns without daily involvement, Hopo Homes is built for you.
+                                        Whether you’re a young professional looking for a stress-free place to live, or a homeowner looking to maximise returns without daily involvement, {brand.name} is built for you.
                                     </p>
                                 </div>
                             </div>

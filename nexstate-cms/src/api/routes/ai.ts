@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { Elysia, t } from "elysia";
 import { supabaseAdmin } from "../../lib/db";
 import { rateLimit, requireStaffGuard } from "../guards";
@@ -240,7 +241,7 @@ Key Highlights:
 • Premium Amenities: Includes ${amenitiesList}.
 • High Rental Yield & AI Managed Operations.`;
 
-                seoKeywords = [propertyType || "Apartment", location, `${bedrooms || 2} BHK`, "Luxury Living", "NexState AI Featured"];
+                seoKeywords = [propertyType || "Apartment", location, `${bedrooms || 2} BHK`, "Luxury Living", `${brand.name} Featured`];
             }
 
             return {
@@ -300,18 +301,18 @@ Key Highlights:
             // 3. Tool Call: Yield / ROI Calculator
             if (messageLower.includes("yield") || messageLower.includes("roi") || messageLower.includes("calculator") || messageLower.includes("return")) {
                 return {
-                    response: "NexState AI provides instant real estate investment calculation! An average luxury apartment in prime Dubai location yields 7.5% - 9.2% net annual rental return.",
+                    response: `${brand.name} provides instant real estate investment calculation! An average luxury apartment in a prime ${brand.market.city} location yields 7.5% - 9.2% net annual rental return.`,
                     toolUsed: "calculateMortgageOrYield",
                     action: "SHOW_CALCULATOR",
                 };
             }
 
             // 4. Default Agent NLU Response via Gemini or Fallback
-            const agentPrompt = `You are NexState AI, a smart real estate assistant. Answer this query helpfully and concisely: "${message}"`;
+            const agentPrompt = `You are ${brand.name}, a smart real estate assistant. Answer this query helpfully and concisely: "${message}"`;
             const geminiRes = await callGeminiAPI(agentPrompt);
 
             return {
-                response: geminiRes || "Welcome to NexState AI! I can help you search properties, calculate rental yield ROI, or book a tour.",
+                response: geminiRes || `Welcome to ${brand.name}! I can help you search properties, calculate rental yield ROI, or book a tour.`,
                 toolUsed: "conversationalAgent",
             };
         },

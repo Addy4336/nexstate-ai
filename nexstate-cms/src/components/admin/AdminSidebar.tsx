@@ -1,7 +1,8 @@
 "use client";
 
+import BrandLogo from "@/components/BrandLogo";
+import { brand } from "@nexstate/brand";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
@@ -22,7 +23,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signOut, useSession } from "@/lib/auth-client";
 import { Badge } from "@/components/ui/badge";
-import logoImg from "@/assets/images/logo.webp";
+
 
 type UserRole = "admin" | "manager" | "editor";
 
@@ -137,20 +138,7 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
                     {/* Logo */}
                     <div className="flex items-center gap-3 p-4 pl-16 lg:pl-4 border-b border-sidebar-border">
                         <Link href="/admin/dashboard" className="flex items-center gap-2">
-                            <div className={cn(
-                                "relative h-8 flex-shrink-0 transition-all duration-300",
-                                isCollapsed ? "w-9" : "w-20 lg:w-24"
-                            )}>
-                                <Image
-                                    src={logoImg}
-                                    alt="HOPO Homes"
-                                    fill
-                                    className={cn(
-                                        "object-left transition-all duration-300",
-                                        isCollapsed ? "object-cover" : "object-contain"
-                                    )}
-                                />
-                            </div>
+                            <BrandLogo compact={isCollapsed} />
                             {!isCollapsed && (
                                 <div className="flex items-center gap-1.5 text-base lg:text-lg font-bold whitespace-nowrap">
                                     <span className="text-primary">Admin</span>

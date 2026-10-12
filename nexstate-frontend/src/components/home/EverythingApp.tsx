@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import React from 'react';
 import { Bot, Zap, Clock, TrendingUp, BarChart3, Eye, Brain, Sparkles, Settings, Wrench, Users } from 'lucide-react';
 
@@ -11,7 +12,7 @@ export default function EverythingApp() {
                 <div className="text-center mb-16 max-w-3xl mx-auto">
                     {/* Badge */}
                     <div className="inline-flex items-center px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-sm font-medium text-primary mb-6">
-                        The HOPO Difference
+                        The {brand.name} Difference
                     </div>
                     <h2 className="text-4xl md:text-5xl font-bold font-serif text-foreground leading-tight mb-6">
                         Not Just a Rental, It's a <span className="text-primary">Smart Ecosystem</span>

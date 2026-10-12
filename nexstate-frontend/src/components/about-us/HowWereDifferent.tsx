@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import React from 'react';
 import { CheckCircle2, Building2, Layers, Heart } from 'lucide-react';
 
@@ -18,7 +19,7 @@ const HowWereDifferent = () => {
                             We focus on outcomes, not complexity.
                         </h2>
                         <p className="text-muted-foreground text-[16px] md:text-[17px] leading-[1.6] mb-8 max-w-[500px]">
-                            Unlike traditional rentals or fragmented co-living setups, Hopo Homes brings everything under one platform.
+                            Unlike traditional rentals or fragmented co-living setups, {brand.name} brings everything under one platform.
                         </p>
 
                         <div className="space-y-4 mb-10">

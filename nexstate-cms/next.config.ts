@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  // Shared workspace package ships TypeScript source
+  transpilePackages: ['@nexstate/brand'],
 
 
   // Enable standalone output for Docker

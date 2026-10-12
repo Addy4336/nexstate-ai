@@ -1,5 +1,6 @@
 "use client";
 
+import { brand, telHref } from "@nexstate/brand";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 
@@ -17,7 +18,7 @@ const footerLinks = {
     { label: "Partner With Us", href: "#" },
   ],
   "Company": [
-    { label: "About NexState AI", href: "#" },
+    { label: `About ${brand.name}`, href: "#" },
     { label: "Blog", href: "#" },
     { label: "Careers", href: "#" },
     { label: "Contact Us", href: "#" },
@@ -25,11 +26,11 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-];
+  { icon: Facebook, href: brand.social.facebook, label: "Facebook" },
+  { icon: Instagram, href: brand.social.instagram, label: "Instagram" },
+  { icon: Linkedin, href: brand.social.linkedin, label: "LinkedIn" },
+  { icon: Twitter, href: brand.social.x, label: "X" },
+].filter((s) => s.href);
 
 export function Footer() {
   return (
@@ -40,26 +41,32 @@ export function Footer() {
           <div className="lg:col-span-2">
             <a href="#" className="flex items-center gap-2 mb-6">
               <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
-                <span className="text-accent-foreground font-bold text-xl">N</span>
+                <span className="text-accent-foreground font-bold text-xl">{brand.name.charAt(0)}</span>
               </div>
-              <span className="text-xl font-bold">NexState<span className="text-secondary">.AI</span></span>
+              <span className="text-xl font-bold">{brand.wordmark.primary}<span className="text-secondary">{brand.wordmark.accent}</span></span>
             </a>
             <p className="text-primary-foreground/70 mb-6 max-w-sm">
-              Adaptive AI-powered managed rental homes & smart CRM. Fully furnished, ready-to-move-in apartments, villas, and premium spaces.
+              {brand.tagline}. {brand.description}
             </p>
             <div className="space-y-3">
-              <a href="#" className="flex items-center gap-3 text-sm text-primary-foreground/70 hover:text-accent transition-colors">
-                <MapPin className="w-4 h-4 text-accent" />
-                Dubai Marina, Dubai, UAE
-              </a>
-              <a href="tel:+97145009000" className="flex items-center gap-3 text-sm text-primary-foreground/70 hover:text-accent transition-colors">
-                <Phone className="w-4 h-4 text-accent" />
-                +971 4 500 9000
-              </a>
-              <a href="mailto:contact@NexState.ai" className="flex items-center gap-3 text-sm text-primary-foreground/70 hover:text-accent transition-colors">
-                <Mail className="w-4 h-4 text-accent" />
-                contact@NexState.ai
-              </a>
+              {brand.contact.address && (
+                <p className="flex items-center gap-3 text-sm text-primary-foreground/70">
+                  <MapPin className="w-4 h-4 text-accent" />
+                  {brand.contact.address}
+                </p>
+              )}
+              {brand.contact.phone && (
+                <a href={telHref() ?? undefined} className="flex items-center gap-3 text-sm text-primary-foreground/70 hover:text-accent transition-colors">
+                  <Phone className="w-4 h-4 text-accent" />
+                  {brand.contact.phone}
+                </a>
+              )}
+              {brand.contact.email && (
+                <a href={`mailto:${brand.contact.email}`} className="flex items-center gap-3 text-sm text-primary-foreground/70 hover:text-accent transition-colors">
+                  <Mail className="w-4 h-4 text-accent" />
+                  {brand.contact.email}
+                </a>
+              )}
             </div>
           </div>
 
@@ -86,7 +93,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-primary-foreground/60">
-            © {new Date().getFullYear()} NexState AI. All rights reserved.
+            © {new Date().getFullYear()} {brand.legalName}. All rights reserved.
           </p>
 
           {/* Social Links */}

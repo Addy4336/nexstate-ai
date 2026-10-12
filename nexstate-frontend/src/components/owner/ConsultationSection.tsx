@@ -1,5 +1,6 @@
 'use client';
 
+import { brand } from "@nexstate/brand";
 import { useState } from 'react';
 import Image from 'next/image';
 import { ArrowRight, Bed, Home, MapPin, CheckCircle2, Shield, Clock, Sparkles, Loader2, Mail } from 'lucide-react';
@@ -34,7 +35,7 @@ const cityOptions = [
 ];
 
 const benefits = [
-    { icon: Shield, text: 'RERA Licensed' },
+    ...(brand.licenseBadge ? [{ icon: Shield, text: brand.licenseBadge }] : []),
     { icon: Clock, text: 'Response in 24hrs' },
     { icon: CheckCircle2, text: 'Free Valuation' },
 ];
@@ -179,12 +180,14 @@ export default function ConsultationSection() {
 
                         {/* Stats */}
                         <div className="flex justify-center lg:justify-start gap-8 sm:gap-12 pt-4">
+                            {brand.claims.assetsManaged && (
+                                <div>
+                                    <div className="text-3xl sm:text-4xl font-bold text-white">{brand.claims.assetsManaged}</div>
+                                    <div className="text-white/60 text-xs sm:text-sm mt-1">Assets Managed</div>
+                                </div>
+                            )}
                             <div>
-                                <div className="text-3xl sm:text-4xl font-bold text-white">AED 2.5B+</div>
-                                <div className="text-white/60 text-xs sm:text-sm mt-1">Assets Managed</div>
-                            </div>
-                            <div>
-                                <div className="text-3xl sm:text-4xl font-bold text-white">98%</div>
+                                <div className="text-3xl sm:text-4xl font-bold text-white">{brand.claims.occupancy}</div>
                                 <div className="text-white/60 text-xs sm:text-sm mt-1">Occupancy Rate</div>
                             </div>
                         </div>

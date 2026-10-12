@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { supabaseAdmin } from "@/lib/db";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +10,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata = {
-    title: "Rentals & Tenants - HOPO Homes Admin",
+    title: `Rentals & Tenants - ${brand.name} Admin`,
     description: "Manage property rentals and tenant information",
 };
 

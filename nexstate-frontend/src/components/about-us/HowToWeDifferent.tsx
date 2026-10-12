@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { Zap, LayoutGrid, Briefcase, Heart, BrainCircuit, BarChart3 } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -26,7 +27,7 @@ export default function HowToWeDifferent() {
                         How We’re Different
                     </h2>
                     <p className="text-lg text-muted max-w-2xl mx-auto opacity-80">
-                        Unlike traditional rentals or fragmented co-living setups, Hopo Homes brings everything under one platform.
+                        Unlike traditional rentals or fragmented co-living setups, {brand.name} brings everything under one platform.
                     </p>
                 </div>
 
@@ -108,7 +109,7 @@ export default function HowToWeDifferent() {
                         <div className="relative w-full h-full">
                             <Image
                                 src="/images/DYNAMIC_PRICES_8K.webp"
-                                alt="Hopo Homes Operations"
+                                alt={`${brand.name} Operations`}
                                 fill
                                 unoptimized
                                 className="object-cover rounded-4xl drop-shadow-2xl z-10 animate-pulse-slow"

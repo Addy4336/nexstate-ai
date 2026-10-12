@@ -1,4 +1,4 @@
-# HOPO Homes API Documentation
+# NexState API Documentation
 
 This document describes all the API endpoints available for the frontend to consume. All endpoints are prefixed with `/api`.
 

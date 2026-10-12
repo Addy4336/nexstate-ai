@@ -1,5 +1,6 @@
 'use client';
 
+import { brand } from "@nexstate/brand";
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
@@ -127,47 +128,51 @@ export default function ContactDetails() {
                 {/* Info Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
                     {/* Phone */}
-                    <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
-                            <Phone className="w-6 h-6" />
+                    {brand.contact.phone && (
+                        <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
+                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
+                                <Phone className="w-6 h-6" />
+                            </div>
+                            <h4 className="text-foreground font-semibold text-lg mb-3">Phone Support</h4>
+                            <div className="text-muted-foreground text-sm space-y-1">
+                                <p>{brand.contact.phone}</p>
+                            </div>
                         </div>
-                        <h4 className="text-foreground font-semibold text-lg mb-3">Phone Support</h4>
-                        <div className="text-muted-foreground text-sm space-y-1">
-                            <p>+971 4 451 1555</p>
-                            <p>(24/7 AI Support Hotline)</p>
-                        </div>
-                    </div>
+                    )}
 
                     {/* Email */}
-                    <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
-                            <Mail className="w-6 h-6" />
+                    {brand.contact.email && (
+                        <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
+                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
+                                <Mail className="w-6 h-6" />
+                            </div>
+                            <h4 className="text-foreground font-semibold text-lg mb-3">Email Us</h4>
+                            <div className="text-muted-foreground text-sm space-y-1">
+                                <p>{brand.contact.email}</p>
+                                <p>We reply within 24 hours.</p>
+                            </div>
                         </div>
-                        <h4 className="text-foreground font-semibold text-lg mb-3">Email Us</h4>
-                        <div className="text-muted-foreground text-sm space-y-1">
-                            <p>info@nexstate.ai</p>
-                            <p>We reply within 24 hours.</p>
-                        </div>
-                    </div>
+                    )}
 
                     {/* Address/Visit HQ */}
-                    <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
-                            <MapPin className="w-6 h-6" />
+                    {brand.contact.address && (
+                        <div className="flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
+                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-[#23527C] mb-6 group-hover:scale-110 transition-transform">
+                                <MapPin className="w-6 h-6" />
+                            </div>
+                            <h4 className="text-foreground font-semibold text-lg mb-3">Visit HQ</h4>
+                            <div className="text-muted-foreground text-sm space-y-1">
+                                <p>{brand.contact.address}</p>
+                            </div>
                         </div>
-                        <h4 className="text-foreground font-semibold text-lg mb-3">Visit HQ</h4>
-                        <div className="text-muted-foreground text-sm space-y-1">
-                            <p>In5 Tech, Dubai Internet City</p>
-                            <p>Dubai, UAE</p>
-                        </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Bottom Form & Map Section */}
                 <div className="flex flex-col lg:flex-row shadow-2xl shadow-black/5 rounded-3xl overflow-hidden border border-border/50">
 
                     {/* Left Form */}
-                    <div className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 bg-card relative">
+                    <div className={`w-full ${brand.contact.mapEmbedUrl ? "lg:w-1/2" : "lg:w-full"} p-8 md:p-12 lg:p-16 bg-card relative`}>
                         <h3 className="text-3xl font-bold text-foreground mb-2">Send a Message</h3>
                         <p className="text-muted-foreground mb-10">For specific inquiries about property management or partnerships.</p>
 
@@ -283,18 +288,20 @@ export default function ContactDetails() {
                     </div>
 
                     {/* Right Map */}
-                    <div className="w-full lg:w-1/2 min-h-[400px] lg:min-h-full bg-muted relative">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3612.8220583880156!2d55.162585474623015!3d25.107884135313796!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f6b1495a55be1%3A0x5b8e89f8023b5766!2sin5%20Tech!5e0!3m2!1sen!2sin!4v1769512056689!5m2!1sen!2sin"
-                            width="100%"
-                            height="100%"
-                            style={{ border: 0 }}
-                            allowFullScreen={false}
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                            className="absolute inset-0 w-full h-full  contrast-[0.9] opacity-90 hover:grayscale-0 transition-all duration-700"
-                        />
-                    </div>
+                    {brand.contact.mapEmbedUrl && (
+                        <div className="w-full lg:w-1/2 min-h-[400px] lg:min-h-full bg-muted relative">
+                            <iframe
+                                src={brand.contact.mapEmbedUrl}
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen={false}
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                className="absolute inset-0 w-full h-full  contrast-[0.9] opacity-90 hover:grayscale-0 transition-all duration-700"
+                            />
+                        </div>
+                    )}
                 </div>
 
             </div>

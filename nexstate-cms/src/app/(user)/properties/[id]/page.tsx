@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { getPropertyById } from "@/lib/properties";
 import { getImageUrl } from "@/lib/utils";
 import { notFound } from "next/navigation";
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: PropertyPageProps) {
     if (!property) return { title: "Property Not Found" };
 
     return {
-        title: `${property.title} | HOPO Homes`,
+        title: `${property.title} | ${brand.name}`,
         description: property.description?.substring(0, 160),
     };
 }
@@ -203,10 +204,10 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                             {/* Agent Info (Mock) */}
                             <div className="p-4 bg-muted/30 rounded-xl flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-full bg-accent text-accent-foreground flex items-center justify-center font-bold text-lg">
-                                    HO
+                                    {brand.name.slice(0, 2).toUpperCase()}
                                 </div>
                                 <div>
-                                    <p className="font-semibold text-sm">HOPO Homes Team</p>
+                                    <p className="font-semibold text-sm">{brand.name} Team</p>
                                     <p className="text-xs text-muted-foreground">Property Management</p>
                                 </div>
                             </div>

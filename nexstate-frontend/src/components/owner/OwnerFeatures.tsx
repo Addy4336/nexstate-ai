@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { motion } from "framer-motion";
 import {
     CircleDollarSign,
@@ -18,7 +19,7 @@ import Image from "next/image";
 const features = [
     {
         title: "High Rental Returns",
-        description: "We with our unique co-living concept can provide up to 30% more on rental yield.",
+        description: `We with our unique co-living concept can provide up to ${brand.claims.yieldUplift} more on rental yield.`,
         icon: CircleDollarSign,
     },
     {
@@ -38,7 +39,7 @@ const features = [
     },
     {
         title: "Long Term Contracts",
-        description: "HOPO Homes has up to 5 years contracts for lease so no more hassle for finding new tenants every year.",
+        description: `${brand.name} has up to ${brand.claims.maxLeaseYears} years contracts for lease so no more hassle for finding new tenants every year.`,
         icon: FileText,
     },
     {
@@ -99,7 +100,7 @@ export default function OwnerFeatures() {
                             Partner Benefits
                         </span>
                         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
-                            HOPO Homes for <br className="hidden md:block" />
+                            {brand.name} for <br className="hidden md:block" />
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">Individual Owners</span>
                         </h2>
                     </motion.div>

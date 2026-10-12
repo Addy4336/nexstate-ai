@@ -1,8 +1,8 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
-import logoImg from "@/assets/images/logo.webp";
+
 
 function LoginForm() {
     const router = useRouter();
@@ -62,14 +62,14 @@ function LoginForm() {
             <Link href="/" className="flex items-center gap-2 mb-8">
                 <div className="flex items-center gap-2 text-2xl font-bold whitespace-nowrap">
                     <span className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-                    <span className="text-primary">NexState</span>
-                    <span className="text-foreground">AI Admin</span>
+                    <span className="text-primary">{brand.name}</span>
+                    <span className="text-foreground">Admin</span>
                 </div>
             </Link>
 
             <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back</h1>
             <p className="text-muted-foreground mb-8">
-                Sign in to your NexState AI admin portal
+                Sign in to your {brand.name} admin portal
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -80,7 +80,7 @@ function LoginForm() {
                         <Input
                             id="email"
                             type="email"
-                            placeholder="admin@NexState.ai"
+                            placeholder="admin@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="pl-10"
@@ -174,10 +174,10 @@ export default function LoginPage() {
                     >
                         <div className="text-3xl font-bold text-foreground mb-6 flex items-center justify-center gap-2">
                             <span className="w-4 h-4 rounded-full bg-primary animate-pulse" />
-                            NexState AI
+                            {brand.name}
                         </div>
                         <h2 className="text-3xl font-bold text-foreground mb-4">
-                            NexState AI Admin Portal
+                            {brand.name} Admin Portal
                         </h2>
                         <p className="text-muted-foreground text-lg leading-relaxed">
                             Manage properties, leads, and AI intelligent recommendations with our unified admin dashboard.

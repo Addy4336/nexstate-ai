@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { Calculator, Wallet, ArrowRight, TrendingUp, Home, PiggyBank } from "luc
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Property Tools | HOPO Homes",
+    title: `Property Tools | ${brand.name}`,
     description: "Free property investment tools - ROI Calculator for owners and Cost Calculator for tenants.",
 };
 

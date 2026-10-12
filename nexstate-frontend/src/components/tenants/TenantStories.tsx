@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { useState } from 'react';
 import Image from 'next/image';
 import { User, Briefcase, Heart, Quote, ArrowRight, Wallet, CheckCircle2 } from 'lucide-react';
@@ -21,7 +22,7 @@ const PERSONAS = [
             "Place to relax & concentrate",
             "Networking opportunities"
         ],
-        whyHopo: [
+        whyUs: [
             "Fully furnished, ready-to-shift homes",
             "Saves money to invest in business ideas",
             "Networking with like-minded flatmates"
@@ -42,7 +43,7 @@ const PERSONAS = [
             "Affordable living & less deposit",
             "Safe environment (Only-girls homes)"
         ],
-        whyHopo: [
+        whyUs: [
             "Secured & safe (Only-girls options)",
             "All-inclusive bills (No calculations)",
             "Value-added services (No hassle)"
@@ -63,7 +64,7 @@ const PERSONAS = [
             "Networking for jobs",
             "Confidence boost via community"
         ],
-        whyHopo: [
+        whyUs: [
             "Boosts confidence with co-living",
             "Peace of mind with all-in-one services",
             "Contacts for new opportunities"
@@ -84,7 +85,7 @@ const PERSONAS = [
             "Secure money & save",
             "Monotonous routine breaker"
         ],
-        whyHopo: [
+        whyUs: [
             "Affordable living options",
             "People to communicate with",
             "Relaxed, all-inclusive packages"
@@ -105,7 +106,7 @@ const PERSONAS = [
             "Study & work space",
             "Food solutions & friends"
         ],
-        whyHopo: [
+        whyUs: [
             "Room for 2 with study setup",
             "All-inclusive student friendly package",
             "Community of classmates & friends"
@@ -128,7 +129,7 @@ export default function TenantStories() {
                         Designed for <span className="italic text-primary">Every</span> Journey
                     </h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
-                        Whether you're starting a new job, building a business, or studying for your future, NexState AI provides the perfect foundation for your success.
+                        Whether you're starting a new job, building a business, or studying for your future, {brand.name} provides the perfect foundation for your success.
                     </p>
                 </div>
 
@@ -243,10 +244,10 @@ export default function TenantStories() {
                                     {/* Solutions */}
                                     <div>
                                         <h4 className="flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-wider text-primary mb-3 md:mb-4">
-                                            <Heart className="w-3.5 h-3.5 md:w-4 md:h-4" /> Why NexState AI?
+                                            <Heart className="w-3.5 h-3.5 md:w-4 md:h-4" /> Why {brand.name}?
                                         </h4>
                                         <ul className="space-y-2 md:space-y-3">
-                                            {activePersona.whyHopo.map((solution, idx) => (
+                                            {activePersona.whyUs.map((solution, idx) => (
                                                 <li key={idx} className="flex items-start gap-3 text-sm md:text-base text-foreground font-medium leading-relaxed">
                                                     <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-primary shrink-0 mt-0.5" />
                                                     {solution}

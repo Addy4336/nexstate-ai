@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Sparkles, Home, Calculator, HelpCircle, Building2, MapPin, Calendar } from "lucide-react";
@@ -9,7 +10,7 @@ const quickActions = [
   { icon: Home, label: "Find properties", message: "Find a 2 bedroom apartment in Dubai Marina under 15000 AED" },
   { icon: Calculator, label: "Calculate ROI", message: "What is the expected rental yield ROI for a luxury apartment?" },
   { icon: Calendar, label: "Book a tour", message: "I want to schedule a property tour for tomorrow" },
-  { icon: HelpCircle, label: "How it works", message: "How does NexState AI work?" },
+  { icon: HelpCircle, label: "How it works", message: `How does ${brand.name} work?` },
 ];
 
 interface ChatMessage {
@@ -31,7 +32,7 @@ export function AIAssistant() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      content: "Hi! I'm NexState's AI Agent. Powered by Gemini & Vector Intelligence, I can search listings, calculate rental yields, or schedule property tours. How can I help you today?"
+      content: `Hi! I'm ${brand.name}'s AI Agent. Powered by Gemini & Vector Intelligence, I can search listings, calculate rental yields, or schedule property tours. How can I help you today?`
     }
   ]);
   const [input, setInput] = useState("");
@@ -53,7 +54,7 @@ export function AIAssistant() {
           ...prev,
           {
             role: "assistant",
-            content: data.response || "Here are the results found by NexState AI:",
+            content: data.response || `Here are the results found by ${brand.name}:`,
             toolUsed: data.toolUsed,
             properties: data.properties || [],
           },
@@ -66,7 +67,7 @@ export function AIAssistant() {
         ...prev,
         {
           role: "assistant",
-          content: "Thank you for your message! I've logged your request in our NexState AI database. Feel free to browse our full listings catalog or submit an enquiry.",
+          content: "Thank you for your message! I've logged your request. Feel free to browse our full listings catalog or submit an enquiry.",
         },
       ]);
     } finally {
@@ -114,7 +115,7 @@ export function AIAssistant() {
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm">NexState AI Agent</h3>
+                  <h3 className="font-semibold text-sm">{brand.name} AI Agent</h3>
                   <p className="text-xs opacity-80">Natural Language & Tool-Calling Copilot</p>
                 </div>
               </div>
@@ -181,7 +182,7 @@ export function AIAssistant() {
               {loading && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Sparkles className="w-4 h-4 animate-spin text-primary" />
-                  NexState AI Agent is running tool routines...
+                  {brand.name} AI Agent is running tool routines...
                 </div>
               )}
             </div>
@@ -213,7 +214,7 @@ export function AIAssistant() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  placeholder="Ask NexState AI to search, calculate, or book..."
+                  placeholder={`Ask ${brand.name} to search, calculate, or book...`}
                   className="flex-1 px-4 py-2 rounded-xl bg-secondary text-foreground text-sm placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary/50"
                 />
                 <Button

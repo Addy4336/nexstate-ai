@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { Elysia } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { propertiesRoutes } from "./routes/properties";
@@ -20,9 +21,9 @@ export const api = new Elysia({ prefix: "/api" })
         path: "/docs",
         documentation: {
             info: {
-                title: "NexState AI Platform API",
+                title: `${brand.name} Platform API`,
                 version: "2.0.0",
-                description: "API for NexState AI Real Estate Management Platform",
+                description: `API for the ${brand.name} real estate management platform`,
             },
             tags: [
                 { name: "Properties", description: "Property listing endpoints" },
@@ -41,7 +42,7 @@ export const api = new Elysia({ prefix: "/api" })
     .get("/health", () => ({
         status: "healthy",
         timestamp: new Date().toISOString(),
-        service: "NexState-api",
+        service: `${brand.name.toLowerCase()}-api`,
     }), {
         detail: {
             tags: ["System"],

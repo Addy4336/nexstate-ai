@@ -1,6 +1,6 @@
+import { brand } from "@nexstate/brand";
 import Hero from "@/components/tenants/Hero";
 import UserToggle from "@/components/tenants/UserToggle";
-import HopoSelect from "@/components/tenants/HopoSelect";
 import PropertyShowcase from "@/components/tenants/PropertyShowcase";
 import MapFeatures from "@/components/tenants/MapFeatures";
 import PremierHouses from "@/components/tenants/PremierHouses";
@@ -19,14 +19,11 @@ export default function HomeTenants() {
       {/* <Navbar /> */}
       <Hero />
 
-      {/* HOPO Select Segment */}
-      {/* <HopoSelect /> */}
-
-      {/* HOPO Standard Segment */}
+      {/* Standard tier segment */}
       {/* <div className="py-12 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-8">
           <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wider mb-2">
-            HOPO STANDARD
+            {brand.tiers.standard.toUpperCase()}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">
             Private Rooms & Co-living

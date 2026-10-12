@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
@@ -12,18 +13,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "HOPO Homes - Premium Furnished Rentals in Dubai",
-    template: "%s | HOPO Homes",
+    default: `${brand.name} - ${brand.tagline}`,
+    template: `%s | ${brand.name}`,
   },
-  description:
-    "Find your perfect fully-furnished apartment, villa, or co-living space in Dubai. HOPO Homes offers ready-to-move-in properties with flexible leases and AI-powered property matching.",
-  keywords: [
-    "Dubai rentals",
-    "furnished apartments Dubai",
-    "co-living Dubai",
-    "short-term rentals UAE",
-    "property management Dubai",
-  ],
+  description: brand.description,
+  metadataBase: new URL(brand.siteUrl),
 };
 
 export default function RootLayout({

@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -8,14 +9,13 @@ export function proxy(request: NextRequest) {
     if (pathname.startsWith("/api")) {
         const origin = request.headers.get("origin") || "";
 
-        // Define allowed origins
+        // Allowed origins: the brand's public site plus deployment env vars.
+        // Localhost origins are trusted in development only.
         const allowedOrigins = [
-            "https://NexState.ai",
-            "https://admin.NexState.ai",
-            "http://localhost:3000", // Frontend Dev
-            "http://localhost:3001", // CMS Dev
+            brand.siteUrl,
             process.env.NEXT_PUBLIC_API_URL,
-            process.env.NEXT_PUBLIC_CMS_URL
+            process.env.NEXT_PUBLIC_CMS_URL,
+            ...(process.env.NODE_ENV !== "production" ? ["http://localhost:3000", "http://localhost:3001"] : []),
         ].filter(Boolean).map(url => url?.toLowerCase().replace(/\/$/, ""));
 
         // Check if the origin is allowed (normalized)

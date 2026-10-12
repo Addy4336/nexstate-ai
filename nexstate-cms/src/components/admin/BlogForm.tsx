@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { useState, useMemo } from "react";
 import { sanitizeBlogHtml } from "@/lib/sanitize";
 import { ImageUpload } from "./ImageUpload";
@@ -146,7 +147,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
                                 <Label htmlFor="slug">URL Slug</Label>
                                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-input focus-within:ring-2 focus-within:ring-inset focus-within:ring-ring overflow-hidden">
                                     <span className="flex select-none items-center pl-3 pr-1 bg-muted/30 text-muted-foreground text-sm whitespace-nowrap border-r">
-                                        nexstate.ai/blog/
+                                        {new URL(brand.siteUrl).host}/blog/
                                     </span>
                                     <input
                                         type="text"

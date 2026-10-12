@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Calculator, TrendingUp, DollarSign, Percent, Building } from "lucide-react";
@@ -120,7 +121,7 @@ export function ROICalculator() {
                 <div className="flex justify-between mb-3">
                   <label className="text-sm font-medium flex items-center gap-2">
                     <Percent className="w-4 h-4 text-accent" />
-                    HOPO Service Fee
+                    {brand.name} Service Fee
                   </label>
                   <span className="text-sm font-bold text-accent">{serviceFee}%</span>
                 </div>

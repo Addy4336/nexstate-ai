@@ -1,5 +1,5 @@
 # ================================
-# HOPO Homes Frontend - Dockerfile
+# NexState Frontend - Dockerfile
 # Multi-stage build for Next.js with Bun
 # ================================
 

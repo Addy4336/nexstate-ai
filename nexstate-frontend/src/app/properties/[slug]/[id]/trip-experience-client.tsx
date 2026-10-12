@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -1268,7 +1269,7 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                   question: "How can I get the listed room for rent?",
                   answer: (
                     <div className="text-muted-foreground space-y-3">
-                      <p>HOPO is glad that you are interested in joining one of their homes</p>
+                      <p>{brand.name} is glad that you are interested in joining one of our homes</p>
                       <p>The first step is to check out all the details of the listing and hit the Book Now button to reserve a room immediately by providing all your details in provided form.</p>
                       <p>After arranging details about your stay (location, room type preference, etc.) we will ask you to send us the required documents such as passport, visa & emirates id as part of our normal identity verification procedure.</p>
                     </div>
@@ -1291,13 +1292,13 @@ export default function TripExperienceClient({ trip, slug, id, rentalData }: Tri
                 {
                   question: "How can I pay my monthly rents?",
                   answer: (
-                    <p className="text-muted-foreground">Rent should be paid online to HOPO via the app / website or tenant can also do direct bank transfer or cash deposit via the cash deposit machine.</p>
+                    <p className="text-muted-foreground">Rent should be paid online to {brand.name} via the app / website or tenant can also do direct bank transfer or cash deposit via the cash deposit machine.</p>
                   )
                 },
                 {
                   question: "Whom should I contact if there are any issues in this house?",
                   answer: (
-                    <p className="text-muted-foreground">A request can be raised via the HOPO Homes app dashboard under the raise maintenance request section. The request is normally resolved within 24 to 72 hours of report.</p>
+                    <p className="text-muted-foreground">A request can be raised via the {brand.name} app dashboard under the raise maintenance request section. The request is normally resolved within {brand.claims.maintenanceSla} of report.</p>
                   )
                 },
               ].map((faq, index) => (

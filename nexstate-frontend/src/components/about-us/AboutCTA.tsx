@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Building, Handshake } from 'lucide-react';
@@ -17,7 +18,7 @@ const AboutCTA = () => {
                             Built for Today’s Renters & Owners
                         </h2>
                         <p className="text-muted-foreground text-[16px] md:text-[18px] leading-[1.7] mb-12">
-                            Whether you’re a young professional looking for a stress-free place to live, or a homeowner looking to maximize returns without daily involvement, Hopo Homes is built for you.
+                            Whether you’re a young professional looking for a stress-free place to live, or a homeowner looking to maximize returns without daily involvement, {brand.name} is built for you.
                         </p>
 
                         <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mb-12 opacity-50"></div>

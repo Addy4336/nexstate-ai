@@ -1,5 +1,6 @@
 'use client';
 
+import { brand } from "@nexstate/brand";
 import Image from 'next/image';
 import { ArrowUpRight, Play, MapPin, TrendingUp } from 'lucide-react';
 
@@ -8,7 +9,7 @@ const featuredProperties = [
         title: "Short & Mid-Term Focus",
         location: "Peak Season Optimization",
         price: "High Yield",
-        yield: "Up to 30%",
+        yield: `Up to ${brand.claims.yieldUplift}`,
         beds: "Daily",
         baths: "Monthly",
     },
@@ -68,7 +69,7 @@ export default function GrowthSection() {
                             Performance
                         </span>
                         <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                            With Hopo Homes, your property is positioned to achieve optimal performance, no matter the season or market conditions.
+                            With {brand.name}, your property is positioned to achieve optimal performance, no matter the season or market conditions.
                         </p>
                     </div>
 
@@ -164,7 +165,7 @@ export default function GrowthSection() {
                         <div className="space-y-3 md:space-y-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-primary"></div>
-                                <span className="text-foreground font-medium text-sm md:text-base">98% Occupancy Rate</span>
+                                <span className="text-foreground font-medium text-sm md:text-base">{brand.claims.occupancy} Occupancy Rate</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-primary"></div>

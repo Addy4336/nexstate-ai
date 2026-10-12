@@ -1,3 +1,4 @@
+import { brand, telHref } from "@nexstate/brand";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-    title: "Owner Portal | HOPO Homes",
+    title: `Owner Portal | ${brand.name}`,
     description: "Property owner dashboard - manage your listings and track performance",
 };
 
@@ -60,7 +61,7 @@ export default function OwnerPortalPage() {
                         Owner Portal
                     </h1>
                     <p className="text-xl text-muted-foreground mb-8">
-                        Maximize your property investment with HOPO Homes' professional management services.
+                        Maximize your property investment with {brand.name}'s professional management services.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Link href="/list-property">
@@ -98,7 +99,7 @@ export default function OwnerPortalPage() {
                 {/* Benefits Section */}
                 <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
                     <div>
-                        <h2 className="text-3xl font-bold mb-6">Why Partner With HOPO Homes?</h2>
+                        <h2 className="text-3xl font-bold mb-6">Why Partner With {brand.name}?</h2>
                         <div className="space-y-4">
                             {benefits.map((benefit) => (
                                 <div key={benefit} className="flex items-start gap-3">
@@ -157,14 +158,18 @@ export default function OwnerPortalPage() {
                                 </Button>
                             </Link>
                             <div className="flex items-center gap-6 text-sm">
-                                <a href="tel:+971501234567" className="flex items-center gap-2 hover:text-accent transition-colors">
-                                    <Phone className="w-4 h-4" />
-                                    +971 50 123 4567
-                                </a>
-                                <a href="mailto:owners@nexstate.ai" className="flex items-center gap-2 hover:text-accent transition-colors">
-                                    <Mail className="w-4 h-4" />
-                                    owners@nexstate.ai
-                                </a>
+                                {brand.contact.phone && (
+                                    <a href={telHref() ?? undefined} className="flex items-center gap-2 hover:text-accent transition-colors">
+                                        <Phone className="w-4 h-4" />
+                                        {brand.contact.phone}
+                                    </a>
+                                )}
+                                {brand.contact.ownersEmail && (
+                                    <a href={`mailto:${brand.contact.ownersEmail}`} className="flex items-center gap-2 hover:text-accent transition-colors">
+                                        <Mail className="w-4 h-4" />
+                                        {brand.contact.ownersEmail}
+                                    </a>
+                                )}
                             </div>
                         </div>
                     </CardContent>

@@ -1,5 +1,6 @@
 'use client';
 
+import { brand } from "@nexstate/brand";
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,7 +17,7 @@ const steps = [
         id: "02",
         category: "Agreement",
         title: <>Signing <br /> Agreement</>,
-        description: "Sign contract for long term and let HOPO Homes take over the responsibility for your property.",
+        description: `Sign contract for long term and let ${brand.name} take over the responsibility for your property.`,
         image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=800&auto=format&fit=crop"
     },
     {
@@ -40,7 +41,7 @@ export default function ProcessSection() {
                             3 Simple Steps
                         </span>
                         <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground leading-tight">
-                            How HOPO Homes works?
+                            How {brand.name} works?
                         </h2>
                     </div>
 

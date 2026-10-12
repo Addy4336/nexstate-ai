@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import Image from "next/image";
 import { sanitizeBlogHtml } from "@/lib/sanitize";
 import { marked } from 'marked';
@@ -192,14 +193,14 @@ export async function generateMetadata({ params }: BlogPageProps) {
 
     if (!blog) {
         return {
-            title: 'Blog Not Found | NexState AI',
+            title: 'Blog Not Found',
             description: 'The requested blog post could not be found.',
         };
     }
 
     return {
-        title: `${blog.title} | NexState AI`,
-        description: blog.excerpt || `Read ${blog.title} on NexState AI blog.`,
+        title: blog.title,
+        description: blog.excerpt || `Read ${blog.title} on the ${brand.name} blog.`,
     };
 }
 
@@ -264,7 +265,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                                         <User className="w-5 h-5 text-primary" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="font-medium text-foreground">NexState AI Team</span>
+                                        <span className="font-medium text-foreground">{brand.name} Team</span>
                                         <span className="text-xs">Author</span>
                                     </div>
                                 </div>

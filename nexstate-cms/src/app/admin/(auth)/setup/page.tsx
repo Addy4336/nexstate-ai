@@ -115,7 +115,7 @@ export default function SetupPage() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="admin@NexState.ai"
+                                placeholder="admin@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required

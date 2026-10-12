@@ -1,6 +1,6 @@
-# HOPO Homes CMS - Turborepo Monorepo
+# NexState CMS - Turborepo Monorepo
 
-Turborepo monorepo containing HOPO Homes CMS (Next.js) and frontend (Vite React).
+Turborepo monorepo containing NexState CMS (Next.js) and frontend (Vite React).
 
 ## 📁 Project Structure
 
@@ -86,4 +86,4 @@ BETTER_AUTH_URL=http://localhost:3001
 
 ## 📄 License
 
-Proprietary - HOPO Homes
+Proprietary - NexState
