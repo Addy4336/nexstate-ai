@@ -1,5 +1,7 @@
 "use server";
 
+import { requireAdmin } from "@/lib/auth-utils";
+
 import { supabaseAdmin } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -7,6 +9,7 @@ import { redirect } from "next/navigation";
 import { sendUserInviteEmail, generateSecurePassword } from "@/lib/email";
 
 export async function inviteUser(formData: FormData) {
+    await requireAdmin();
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const role = formData.get("role") as string || "editor";
@@ -111,6 +114,7 @@ export async function inviteUser(formData: FormData) {
 export const createUser = inviteUser;
 
 export async function updateUser(id: string, formData: FormData) {
+    await requireAdmin();
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const role = formData.get("role") as string;
@@ -160,6 +164,7 @@ export async function updateUser(id: string, formData: FormData) {
 }
 
 export async function deleteUser(id: string) {
+    await requireAdmin();
     try {
         const { error } = await supabaseAdmin
             .from("user")
@@ -178,6 +183,7 @@ export async function deleteUser(id: string) {
 }
 
 export async function resetUserPassword(id: string, formData: FormData) {
+    await requireAdmin();
     const newPassword = formData.get("password") as string;
 
     if (!newPassword || newPassword.length < 8) {

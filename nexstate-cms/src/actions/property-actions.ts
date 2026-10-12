@@ -1,5 +1,7 @@
 "use server";
 
+import { requireStaff, requireManager } from "@/lib/auth-utils";
+
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -9,6 +11,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
 export async function createProperty(formData: FormData) {
+    await requireStaff();
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const price = parseFloat(formData.get("price") as string);
@@ -88,7 +91,7 @@ export async function createProperty(formData: FormData) {
         
         if (session?.user?.id) {
             const adminId = session.user.id;
-            const configResult = await getZohoConfig(adminId);
+            const configResult = await getZohoConfig();
             
             if (configResult.success && configResult.data && configResult.data.auto_sync) {
                 const config = configResult.data;
@@ -134,6 +137,7 @@ export async function createProperty(formData: FormData) {
 }
 
 export async function updateProperty(id: string, formData: FormData) {
+    await requireStaff();
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const price = parseFloat(formData.get("price") as string);
@@ -211,6 +215,7 @@ export async function updateProperty(id: string, formData: FormData) {
 }
 
 export async function deleteProperty(id: string) {
+    await requireManager();
     try {
         const { error } = await supabaseAdmin
             .from("property")
@@ -230,6 +235,7 @@ export async function deleteProperty(id: string) {
 }
 
 export async function archiveProperty(id: string) {
+    await requireStaff();
     try {
         const { error } = await supabaseAdmin
             .from("property")

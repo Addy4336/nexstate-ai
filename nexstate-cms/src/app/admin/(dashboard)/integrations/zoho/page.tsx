@@ -24,7 +24,7 @@ export default async function ZohoSetupPage() {
 
     let config = null;
     if (isConnected) {
-        const result = await getZohoConfig(adminId);
+        const result = await getZohoConfig();
         if (result.success) {
             config = result.data;
         }

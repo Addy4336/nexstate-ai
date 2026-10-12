@@ -1,5 +1,7 @@
 "use server";
 
+import { requireStaff, requireManager } from "@/lib/auth-utils";
+
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
@@ -47,6 +49,7 @@ export async function submitEnquiry(formData: FormData) {
 }
 
 export async function updateEnquiryStatus(id: string, status: string) {
+    await requireStaff();
     const validStatuses = ['new', 'contacted', 'in_progress', 'converted', 'closed'];
     if (!validStatuses.includes(status)) {
         return { success: false, error: "Invalid status" };
@@ -75,6 +78,7 @@ export async function updateEnquiryStatus(id: string, status: string) {
 }
 
 export async function assignEnquiry(id: string, userId: string | null) {
+    await requireStaff();
     try {
         const { error } = await supabaseAdmin
             .from("enquiry")
@@ -98,6 +102,7 @@ export async function assignEnquiry(id: string, userId: string | null) {
 }
 
 export async function deleteEnquiry(id: string) {
+    await requireManager();
     try {
         const { error } = await supabaseAdmin
             .from("enquiry")

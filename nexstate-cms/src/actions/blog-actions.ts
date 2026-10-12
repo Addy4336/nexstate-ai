@@ -1,5 +1,7 @@
 "use server";
 
+import { requireStaff, requireManager } from "@/lib/auth-utils";
+
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
@@ -14,6 +16,7 @@ function generateSlug(title: string): string {
 }
 
 export async function createBlogPost(formData: FormData) {
+    await requireStaff();
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
     const excerpt = formData.get("excerpt") as string;
@@ -81,6 +84,7 @@ export async function createBlogPost(formData: FormData) {
 }
 
 export async function updateBlogPost(id: string, formData: FormData) {
+    await requireStaff();
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
     const excerpt = formData.get("excerpt") as string;
@@ -165,6 +169,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
 }
 
 export async function deleteBlogPost(id: string) {
+    await requireManager();
     try {
         const { error } = await supabaseAdmin
             .from("blog")

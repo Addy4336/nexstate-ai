@@ -126,7 +126,7 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
 
         setLoadingApps(true);
         try {
-            const result = await getZohoApplications(adminId);
+            const result = await getZohoApplications();
             if (result.success && 'applications' in result && result.applications) {
                 setApplications(result.applications);
                 // If we have an initial app, move to step 2
@@ -152,8 +152,8 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
         setLoadingForms(true);
         try {
             const [formsResult, reportsResult] = await Promise.all([
-                getZohoForms(ownerName, appLinkName, adminId),
-                getZohoReports(ownerName, appLinkName, adminId)
+                getZohoForms(ownerName, appLinkName),
+                getZohoReports(ownerName, appLinkName)
             ]);
 
             if (formsResult.success && 'forms' in formsResult && formsResult.forms) {
@@ -184,7 +184,7 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
 
         setLoadingFields(true);
         try {
-            const result = await getZohoFormFields(ownerName, appLinkName, formLinkName, adminId);
+            const result = await getZohoFormFields(ownerName, appLinkName, formLinkName);
             if (result.success && 'fields' in result && result.fields) {
                 setFormFields(result.fields as ZohoField[]);
                 console.log("📋 Zoho Form Fields Available:");
@@ -245,7 +245,7 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
                 report_name: config.report_name,
                 field_mapping: config.field_mapping,
                 auto_sync: config.auto_sync,
-            }, adminId);
+            });
 
             if (result.success) {
                 toast.success("Configuration saved successfully");
@@ -268,7 +268,7 @@ export function ZohoSetupForm({ initialConfig, isConnected }: ZohoSetupFormProps
 
         setSyncing(true);
         try {
-            const result = await syncPropertiesToZoho(adminId);
+            const result = await syncPropertiesToZoho();
 
             if (result.success) {
                 toast.success(`Synced ${result.count || 0} properties to Zoho Creator`);

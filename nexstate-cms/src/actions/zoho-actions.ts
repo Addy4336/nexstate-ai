@@ -1,5 +1,7 @@
 "use server";
 
+import { requireStaff } from "@/lib/auth-utils";
+
 import { getZohoCreatorService } from "@/lib/zoho-crm";
 import { supabaseAdmin } from "@/lib/db";
 
@@ -15,7 +17,8 @@ interface ZohoConfigData {
 /**
  * Get all Zoho Creator applications
  */
-export async function getZohoApplications(adminId: string) {
+export async function getZohoApplications() {
+    const adminId = (await requireStaff()).user.id;
     try {
         const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
@@ -33,7 +36,8 @@ export async function getZohoApplications(adminId: string) {
 /**
  * Get forms for a specific Zoho Creator application
  */
-export async function getZohoForms(ownerName: string, appLinkName: string, adminId: string) {
+export async function getZohoForms(ownerName: string, appLinkName: string) {
+    const adminId = (await requireStaff()).user.id;
     try {
         const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
@@ -51,7 +55,8 @@ export async function getZohoForms(ownerName: string, appLinkName: string, admin
 /**
  * Get fields for a specific Zoho Creator form
  */
-export async function getZohoFormFields(ownerName: string, appLinkName: string, formLinkName: string, adminId: string) {
+export async function getZohoFormFields(ownerName: string, appLinkName: string, formLinkName: string) {
+    const adminId = (await requireStaff()).user.id;
     try {
         const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
@@ -69,7 +74,8 @@ export async function getZohoFormFields(ownerName: string, appLinkName: string, 
 /**
  * Get reports for a specific Zoho Creator application
  */
-export async function getZohoReports(ownerName: string, appLinkName: string, adminId: string) {
+export async function getZohoReports(ownerName: string, appLinkName: string) {
+    const adminId = (await requireStaff()).user.id;
     try {
         const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
@@ -87,7 +93,8 @@ export async function getZohoReports(ownerName: string, appLinkName: string, adm
 /**
  * Get Zoho Creator configuration from database for a specific admin
  */
-export async function getZohoConfig(adminId: string) {
+export async function getZohoConfig() {
+    const adminId = (await requireStaff()).user.id;
     try {
         const { data, error } = await supabaseAdmin
             .from("zoho_config")
@@ -111,7 +118,8 @@ export async function getZohoConfig(adminId: string) {
 /**
  * Save Zoho Creator configuration to database for a specific admin
  */
-export async function saveZohoConfig(config: ZohoConfigData, adminId: string) {
+export async function saveZohoConfig(config: ZohoConfigData) {
+    const adminId = (await requireStaff()).user.id;
     try {
         const { data: existing } = await supabaseAdmin
             .from("zoho_config")
@@ -166,7 +174,8 @@ export async function saveZohoConfig(config: ZohoConfigData, adminId: string) {
 /**
  * Sync properties from CMS to Zoho Creator
  */
-export async function syncPropertiesToZoho(adminId: string) {
+export async function syncPropertiesToZoho() {
+    const adminId = (await requireStaff()).user.id;
     try {
         // Get Zoho service and config
         const zoho = await getZohoCreatorService(adminId);
@@ -291,13 +300,13 @@ export async function getZohoCreatorRecords(
     ownerName: string,
     appName: string,
     reportName: string,
-    adminId: string,
     options?: {
         criteria?: string;
         limit?: number;
         startIndex?: number;
     }
 ) {
+    const adminId = (await requireStaff()).user.id;
     try {
         const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
@@ -315,13 +324,11 @@ export async function getZohoCreatorRecords(
 /**
  * Add a new record to a Zoho Creator form
  */
-export async function addZohoCreatorRecord(
-    ownerName: string,
+export async function addZohoCreatorRecord(ownerName: string,
     appName: string,
     formName: string,
-    data: Record<string, any>,
-    adminId: string
-) {
+    data: Record<string, any>) {
+    const adminId = (await requireStaff()).user.id;
     try {
         const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
@@ -339,14 +346,12 @@ export async function addZohoCreatorRecord(
 /**
  * Update an existing record in Zoho Creator
  */
-export async function updateZohoCreatorRecord(
-    ownerName: string,
+export async function updateZohoCreatorRecord(ownerName: string,
     appName: string,
     reportName: string,
     recordId: string,
-    data: Record<string, any>,
-    adminId: string
-) {
+    data: Record<string, any>) {
+    const adminId = (await requireStaff()).user.id;
     try {
         const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {
@@ -364,13 +369,11 @@ export async function updateZohoCreatorRecord(
 /**
  * Delete a record from Zoho Creator
  */
-export async function deleteZohoCreatorRecord(
-    ownerName: string,
+export async function deleteZohoCreatorRecord(ownerName: string,
     appName: string,
     reportName: string,
-    recordId: string,
-    adminId: string
-) {
+    recordId: string) {
+    const adminId = (await requireStaff()).user.id;
     try {
         const zoho = await getZohoCreatorService(adminId);
         if (!zoho) {

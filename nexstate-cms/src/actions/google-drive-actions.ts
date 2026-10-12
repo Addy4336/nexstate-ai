@@ -1,10 +1,13 @@
 "use server";
 
+import { requireStaff } from "@/lib/auth-utils";
+
 import { getDriveClient } from "@/lib/google-drive";
 import { Readable } from "stream";
 
 // Helper to find or create a folder
 export async function getOrCreateFolder(folderName: string, parentId: string = 'root') {
+    await requireStaff();
     try {
         const drive = await getDriveClient();
 
@@ -52,6 +55,7 @@ export async function getOrCreateFolder(folderName: string, parentId: string = '
 }
 
 export async function uploadImageToDriveAction(formData: FormData) {
+    await requireStaff();
     try {
         const file = formData.get("file") as File;
         const folderName = formData.get("folderName") as string || "Properties";
@@ -132,6 +136,7 @@ export async function uploadImageToDriveAction(formData: FormData) {
 }
 
 export async function uploadVideoToDriveAction(formData: FormData) {
+    await requireStaff();
     try {
         const file = formData.get("file") as File;
         const folderName = formData.get("folderName") as string || "Properties";

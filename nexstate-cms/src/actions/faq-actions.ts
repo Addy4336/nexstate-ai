@@ -1,5 +1,7 @@
 "use server";
 
+import { requireStaff, requireManager } from "@/lib/auth-utils";
+
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
@@ -66,6 +68,7 @@ export async function getFaqById(id: string) {
 }
 
 export async function createFaq(formData: FormData) {
+    await requireStaff();
     const question = formData.get("question") as string;
     const answer = formData.get("answer") as string;
     const category = formData.get("category") as string || "general";
@@ -101,6 +104,7 @@ export async function createFaq(formData: FormData) {
 }
 
 export async function updateFaq(id: string, formData: FormData) {
+    await requireStaff();
     const question = formData.get("question") as string;
     const answer = formData.get("answer") as string;
     const category = formData.get("category") as string || "general";
@@ -138,6 +142,7 @@ export async function updateFaq(id: string, formData: FormData) {
 }
 
 export async function deleteFaq(id: string) {
+    await requireManager();
     try {
         const { error } = await supabaseAdmin
             .from("faq")
@@ -158,6 +163,7 @@ export async function deleteFaq(id: string) {
 }
 
 export async function toggleFaqActive(id: string, isActive: boolean) {
+    await requireStaff();
     try {
         const { error } = await supabaseAdmin
             .from("faq")
@@ -181,6 +187,7 @@ export async function toggleFaqActive(id: string, isActive: boolean) {
 }
 
 export async function reorderFaqs(faqIds: string[]) {
+    await requireStaff();
     try {
         // Update sort_order for each FAQ based on its position in the array
         for (let i = 0; i < faqIds.length; i++) {
