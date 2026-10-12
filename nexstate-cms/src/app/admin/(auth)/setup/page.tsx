@@ -94,6 +94,11 @@ export default function SetupPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
+                            <Label htmlFor="token">Setup Token (if configured)</Label>
+                            <Input id="token" type="password" value={token} onChange={(e) => setToken(e.target.value)} />
+                        </div>
+
+                        <div className="space-y-2">
                             <Label htmlFor="name">Full Name</Label>
                             <Input
                                 id="name"
