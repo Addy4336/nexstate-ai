@@ -23,7 +23,6 @@ export async function createBlogPost(formData: FormData) {
     const excerpt = formData.get("excerpt") as string;
     const category = formData.get("category") as string || "general";
     const status = formData.get("status") as string || "draft";
-    const drive_folder_id = formData.get("folderId") as string;
     const content_format = formData.get("content_format") as string || "html";
     const content = content_format === "markdown" ? rawContent : sanitizeBlogHtml(rawContent);
 
@@ -68,7 +67,6 @@ export async function createBlogPost(formData: FormData) {
                 category,
                 status,
                 published_at,
-                drive_folder_id,
                 content_format,
             });
 
@@ -92,7 +90,6 @@ export async function updateBlogPost(id: string, formData: FormData) {
     const excerpt = formData.get("excerpt") as string;
     const category = formData.get("category") as string || "general";
     const status = formData.get("status") as string || "draft";
-    const drive_folder_id = formData.get("folderId") as string;
     const content_format = formData.get("content_format") as string || "html";
     const content = content_format === "markdown" ? rawContent : sanitizeBlogHtml(rawContent);
 
@@ -147,10 +144,6 @@ export async function updateBlogPost(id: string, formData: FormData) {
             content_format,
         };
 
-        // Only update drive_folder_id if provided
-        if (drive_folder_id) {
-            updateData.drive_folder_id = drive_folder_id;
-        }
 
         const { error } = await supabaseAdmin
             .from("blog")

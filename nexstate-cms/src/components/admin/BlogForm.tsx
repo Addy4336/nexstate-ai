@@ -42,7 +42,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
     const [title, setTitle] = useState(initialData?.title || "");
     const [slug, setSlug] = useState(initialData?.slug || "");
     const [content, setContent] = useState(initialData?.content || "");
-    const [folderId, setFolderId] = useState(initialData?.drive_folder_id || "");
+
     const [editorMode, setEditorMode] = useState<"richtext" | "markdown">(
         initialData?.content_format === "markdown" ? "markdown" : "richtext"
     );
@@ -89,7 +89,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
     const handleSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
         formData.set("images", images.join(","));
-        formData.set("folderId", folderId);
+
         formData.set("slug", slug);
         formData.set("content", content);
         formData.set("content_format", editorMode === "markdown" ? "markdown" : "html");
@@ -299,7 +299,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
                         <div className="space-y-2">
                             <ImageUpload
                                 onImagesChange={setImages}
-                                onFolderIdChange={setFolderId}
+        
                                 defaultImages={initialData?.images}
                                 folderName={title ? `blog-${title}` : "blog-images"}
                                 layoutMode="stack"

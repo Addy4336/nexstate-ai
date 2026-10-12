@@ -6,18 +6,16 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { uploadImageToDriveAction } from "@/actions/google-drive-actions";
+import { uploadMedia } from "@/lib/upload-client";
 
 interface ImageUploadProps {
     onImagesChange: (urls: string[]) => void;
-    onFolderIdChange?: (folderId: string) => void;
     defaultImages?: string[];
     folderName?: string; // Optional folder name (e.g. Property Title)
 }
 
 export function ImageUpload({
     onImagesChange,
-    onFolderIdChange,
     defaultImages = [],
     folderName = "properties",
     layoutMode = "grid"
@@ -33,39 +31,7 @@ export function ImageUpload({
             const files = Array.from(e.target.files);
             const newUploadedUrls: string[] = [];
 
-            const cleanFolderName = folderName
-                .toLowerCase()
-                .replace(/[^a-z0-9-_\s]/g, "-")
-                .replace(/-+/g, "-")
-                .trim() || "properties";
-
-            // Upload each file to Google Drive
-            const uploadPromises = files.map(async (file) => {
-                const formData = new FormData();
-                formData.append("file", file);
-                formData.append("folderName", cleanFolderName);
-
-                const result = await uploadImageToDriveAction(formData);
-
-                if (!result.success || !result.url) {
-                    throw new Error(`Failed to upload ${file.name}: ${result.error}`);
-                }
-
-                // Log all available URLs for debugging
-                console.log('Upload successful:', { 
-                    fileName: file.name, 
-                    url: result.url, 
-                    fileId: result.fileId,
-                    webViewLink: result.webViewLink
-                });
-
-                if (result.parentId && onFolderIdChange) {
-                    onFolderIdChange(result.parentId);
-                }
-
-                // Use the proxy URL (already set in result.url)
-                return result.url;
-            });
+            const uploadPromises = files.map((file) => uploadMedia(file, "image", folderName));
 
             const results = await Promise.all(uploadPromises);
             newUploadedUrls.push(...results);
@@ -84,7 +50,7 @@ export function ImageUpload({
 
             setImages(updatedImages);
             onImagesChange(updatedImages);
-            toast.success("Images uploaded to Google Drive successfully!");
+            toast.success("Images uploaded");
 
         } catch (error: any) {
             console.error(error);
@@ -108,7 +74,7 @@ export function ImageUpload({
             {/* Left Column: Cover Image */}
             <div className="flex flex-col gap-3">
                 <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                    Cover Image (Google Drive)
+                    Cover Image
                 </Label>
 
                 <div className={`group relative w-full rounded-2xl overflow-hidden border border-border bg-muted/20 hover:bg-muted/30 transition-all duration-300 ${layoutMode === 'stack' ? 'aspect-video' : 'aspect-video md:aspect-[4/3]'}`}>
@@ -116,7 +82,7 @@ export function ImageUpload({
                         <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
                             <input
                                 type="file"
-                                accept="image/*"
+                                accept="image/jpeg,image/png,image/webp,image/avif"
                                 onChange={(e) => handleUpload(e, true)}
                                 disabled={uploading}
                                 className="absolute inset-0 opacity-0 cursor-pointer z-10"
@@ -124,7 +90,7 @@ export function ImageUpload({
                             {uploading ? (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm z-20">
                                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                                    <p className="text-xs text-muted-foreground mt-2">Uploading to Google Drive...</p>
+                                    <p className="text-xs text-muted-foreground mt-2">Uploading...</p>
                                 </div>
                             ) : (
                                 <>
@@ -133,10 +99,7 @@ export function ImageUpload({
                                     </div>
                                     <p className="font-semibold text-sm text-foreground">Upload Cover</p>
                                     <p className="text-xs text-muted-foreground mt-1 px-4">
-                                        Support for JPEG, PNG, WEBP
-                                    </p>
-                                    <p className="text-xs text-primary mt-2 font-medium">
-                                        Stored in Google Drive
+                                        JPEG, PNG, WEBP or AVIF (max 10MB)
                                     </p>
                                 </>
                             )}
@@ -151,7 +114,7 @@ export function ImageUpload({
                                 unoptimized
                                 onError={(e) => {
                                     console.error('Failed to load cover image:', coverImage);
-                                    toast.error('Failed to load cover image from Google Drive');
+                                    toast.error('Failed to load cover image');
                                 }}
                             />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
@@ -175,14 +138,14 @@ export function ImageUpload({
             {/* Right Column: Gallery Images */}
             <div className="flex flex-col gap-3">
                 <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    Gallery (Google Drive)
+                    Gallery
                 </Label>
 
                 <div className="grid grid-cols-3 gap-3">
                     <div className="aspect-square relative rounded-xl border border-dashed border-muted-foreground/30 bg-muted/10 hover:bg-muted/20 transition-all flex flex-col items-center justify-center cursor-pointer group hover:border-primary/50">
                         <input
                             type="file"
-                            accept="image/*"
+                            accept="image/jpeg,image/png,image/webp,image/avif"
                             multiple
                             onChange={(e) => handleUpload(e, false)}
                             disabled={uploading}
