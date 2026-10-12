@@ -1,16 +1,32 @@
 import { Elysia, t } from "elysia";
+import { redactTenantData, getApiSession, requireStaffGuard } from "../guards";
 import { supabaseAdmin } from "@/lib/db";
-import { areDatesAvailable, calculateRentalCost, validateMinimumStay, enrichPropertiesWithTenantInfo } from "@/lib/rental-utils";
+import { areDatesAvailable, calculateRentalCost, validateMinimumStay } from "@/lib/rental-utils";
+import { PUBLIC_PROPERTY_SELECT, toPublicProperty, toPublicProperties } from "@/lib/public-property";
+
+// "/:id" must not expose drafts/archived/sold listings to anonymous clients
+const PUBLIC_STATUSES = ["available", "rented"];
+
+// PostgREST .or() takes a comma/paren-delimited expression; strip the delimiters from user input
+const sanitizeFilterTerm = (s: string) => s.replace(/[,()*%\\]/g, " ").trim();
 import { RentalPeriod } from "@/types/property";
 
 export const propertiesRoutes = new Elysia({ prefix: "/properties" })
+    // Never expose tenant/booking data to non-staff clients
+    .onAfterHandle(async ({ request, response }) => {
+        if (!response || typeof response !== "object" || !/rental_periods|current_tenant/.test(JSON.stringify(response))) return;
+        const session = await getApiSession(request);
+        const role = session?.user?.role as string | undefined;
+        if (role && ["admin", "manager", "editor"].includes(role)) return;
+        return redactTenantData(response);
+    })
     // Get all properties (public) - shows all with rental status
     .get("/", async ({ query }) => {
         const { limit, featured } = query;
         
         let queryBuilder = supabaseAdmin
             .from("property")
-            .select("*")
+            .select(PUBLIC_PROPERTY_SELECT)
             .in("status", ["available", "rented"]);
         
         if (featured === "true") {
@@ -31,10 +47,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        // Enrich properties with current tenant information
-        const enrichedProperties = await enrichPropertiesWithTenantInfo(data || []);
-        
-        return { success: true, data: enrichedProperties };
+        return { success: true, data: toPublicProperties(data) };
     }, {
         query: t.Object({
             limit: t.Optional(t.String()),
@@ -53,7 +66,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         const { data, error } = await supabaseAdmin
             .from("property")
-            .select("*")
+            .select(PUBLIC_PROPERTY_SELECT)
             .in("status", ["available", "rented"])
             .eq("featured", true)
             .order("created_at", { ascending: false })
@@ -64,46 +77,24 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        console.log("Featured properties found:", data?.length);
-        if (data && data.length > 0) {
-            console.log("Sample property images:", JSON.stringify({
-                images: data[0].images,
-                cover_image: data[0].cover_image,
-                title: data[0].title
-            }));
-        }
-        
-        // If no featured properties, try fetching all available
+        // If no featured properties, fall back to the latest public listings
         if (!data || data.length === 0) {
-            console.log("No featured properties, fetching all available...");
-            const { data: availableData, error: availError } = await supabaseAdmin
+            const { data: fallbackData, error: fallbackError } = await supabaseAdmin
                 .from("property")
-                .select("*")
-                .in("status", ["available", "rented"])
+                .select(PUBLIC_PROPERTY_SELECT)
+                .in("status", PUBLIC_STATUSES)
                 .order("created_at", { ascending: false })
                 .limit(limit);
-            
-            if (availError) {
-                console.error("Error fetching available properties:", availError);
-                return { success: false, error: availError.message, data: [] };
+
+            if (fallbackError) {
+                console.error("Error fetching available properties:", fallbackError);
+                return { success: false, error: fallbackError.message, data: [] };
             }
-            
-            // Enrich with tenant info
-            const enrichedProperties = await enrichPropertiesWithTenantInfo(availableData || []);
-            console.log("Available properties found after enrichment:", enrichedProperties.length);
-            if (enrichedProperties.length > 0) {
-                console.log("Sample available property images:", JSON.stringify({
-                    images: enrichedProperties[0].images,
-                    cover_image: enrichedProperties[0].cover_image,
-                    title: enrichedProperties[0].title
-                }));
-            }
-            return { success: true, data: enrichedProperties };
+
+            return { success: true, data: toPublicProperties(fallbackData) };
         }
-        
-        // Enrich properties with tenant information
-        const enrichedProperties = await enrichPropertiesWithTenantInfo(data);
-        return { success: true, data: enrichedProperties };
+
+        return { success: true, data: toPublicProperties(data) };
     }, {
         query: t.Object({
             limit: t.Optional(t.String()),
@@ -121,15 +112,16 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         let queryBuilder = supabaseAdmin
             .from("property")
-            .select("*")
+            .select(PUBLIC_PROPERTY_SELECT)
             .in("status", ["available", "rented"]);
         
-        if (q) {
+        const term = q ? sanitizeFilterTerm(q) : "";
+        if (term) {
             queryBuilder = queryBuilder.or(
-                `title.ilike.%${q}%,description.ilike.%${q}%,location.ilike.%${q}%`
+                `title.ilike.%${term}%,description.ilike.%${term}%,location.ilike.%${term}%`
             );
         }
-        
+
         if (location) {
             queryBuilder = queryBuilder.ilike("location", `%${location}%`);
         }
@@ -156,10 +148,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        // Enrich properties with tenant information
-        const enrichedProperties = await enrichPropertiesWithTenantInfo(data || []);
-        
-        return { success: true, data: enrichedProperties };
+        return { success: true, data: toPublicProperties(data) };
     }, {
         query: t.Object({
             q: t.Optional(t.String()),
@@ -176,21 +165,23 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
     })
     
     // Get single property by ID
-    .get("/:id", async ({ params }) => {
-        const { data, error } = await supabaseAdmin
+    .get("/:id", async ({ params, request }) => {
+        const session = await getApiSession(request);
+        const isStaff = ["admin", "manager", "editor"].includes(session?.user?.role as string);
+
+        let builder = supabaseAdmin
             .from("property")
-            .select("*")
-            .eq("id", params.id)
-            .single();
-        
-        if (error) {
+            .select(PUBLIC_PROPERTY_SELECT)
+            .eq("id", params.id);
+        if (!isStaff) builder = builder.in("status", PUBLIC_STATUSES);
+
+        const { data, error } = await builder.single();
+
+        if (error || !data) {
             return { success: false, error: "Property not found", data: null };
         }
-        
-        // Enrich with tenant information
-        const enrichedProperties = await enrichPropertiesWithTenantInfo([data]);
-        
-        return { success: true, data: enrichedProperties[0] };
+
+        return { success: true, data: toPublicProperty(data) };
     }, {
         params: t.Object({
             id: t.String(),
@@ -235,7 +226,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         let query = supabaseAdmin
             .from("property")
-            .select("*")
+            .select(PUBLIC_PROPERTY_SELECT)
             .in("status", ["available", "rented"]);
         
         // Location filter
@@ -306,10 +297,8 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             };
         }
         
-        // Enrich properties with tenant information
-        const enrichedProperties = await enrichPropertiesWithTenantInfo(data || []);
-        
-        // Apply pagination after enrichment
+        const enrichedProperties = toPublicProperties(data);
+
         const total = enrichedProperties.length;
         const offset = (page - 1) * pageSize;
         const paginatedProperties = enrichedProperties.slice(offset, offset + pageSize);
@@ -368,7 +357,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         const { data, error } = await supabaseAdmin
             .from("property")
-            .select("*")
+            .select(PUBLIC_PROPERTY_SELECT)
             .neq("id", params.id)
             .ilike("location", `%${property.location}%`)
             .gte("price", minPrice)
@@ -380,7 +369,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        return { success: true, data: data || [] };
+        return { success: true, data: toPublicProperties(data) };
     }, {
         params: t.Object({
             id: t.String(),
@@ -415,7 +404,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         const { data, error } = await supabaseAdmin
             .from("property")
-            .select("*")
+            .select(PUBLIC_PROPERTY_SELECT)
             .neq("id", params.id)
             .gte("price", minPrice)
             .lte("price", maxPrice)
@@ -427,7 +416,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        return { success: true, data: data || [] };
+        return { success: true, data: toPublicProperties(data) };
     }, {
         params: t.Object({
             id: t.String(),
@@ -462,7 +451,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         const { data, error } = await supabaseAdmin
             .from("property")
-            .select("*")
+            .select(PUBLIC_PROPERTY_SELECT)
             .neq("id", params.id)
             .gte("price", minPrice)
             .lte("price", maxPrice)
@@ -474,7 +463,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        return { success: true, data: data || [] };
+        return { success: true, data: toPublicProperties(data) };
     }, {
         params: t.Object({
             id: t.String(),
@@ -496,7 +485,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         let queryBuilder = supabaseAdmin
             .from("property")
-            .select("*")
+            .select(PUBLIC_PROPERTY_SELECT)
             .ilike("location", `%${params.location}%`)
             .eq("status", "available")
             .order("featured", { ascending: false })
@@ -513,7 +502,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             return { success: false, error: error.message, data: [] };
         }
         
-        return { success: true, data: data || [] };
+        return { success: true, data: toPublicProperties(data) };
     }, {
         params: t.Object({
             location: t.String(),
@@ -614,7 +603,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
         
         const { data: property, error } = await supabaseAdmin
             .from("property")
-            .select("*")
+            .select("price, current_rental_end, rental_periods")
             .eq("id", params.id)
             .single();
         
@@ -760,6 +749,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             message: "Booking confirmed successfully!",
         };
     }, {
+        beforeHandle: requireStaffGuard,
         params: t.Object({
             id: t.String(),
         }),
@@ -806,6 +796,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             },
         };
     }, {
+        beforeHandle: requireStaffGuard,
         params: t.Object({
             id: t.String(),
         }),
@@ -841,6 +832,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         detail: {
             tags: ["Properties"],
             summary: "Update rental statuses",

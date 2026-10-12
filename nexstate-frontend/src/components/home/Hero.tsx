@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -27,7 +28,7 @@ export default function HomeHero() {
                     </h1>
 
                     <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-10 leading-relaxed max-w-lg">
-                        Experience the future of living with HOPO Homes. Three dedicated AI Agents working 24/7 to handle Sales, Maintenance, and Management instantly.
+                        Experience the future of living with {brand.name}. Three dedicated AI Agents working 24/7 to handle Sales, Maintenance, and Management instantly.
                     </p>
 
                     {/* CTA Buttons */}

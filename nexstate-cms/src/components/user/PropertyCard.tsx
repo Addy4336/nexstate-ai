@@ -3,13 +3,13 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Heart, MapPin, BedDouble, Bath, Maximize } from "lucide-react";
-import { Property } from "@/types/property";
-import { getDriveImageUrl } from "@/lib/utils";
+import type { PublicProperty } from "@/lib/public-property";
+import { getImageUrl } from "@/lib/utils";
 import { useState } from "react";
 import { FavoriteButton } from "./FavoriteButton";
 
 interface PropertyCardProps {
-    property: Property;
+    property: PublicProperty;
     layout?: "grid" | "list";
 }
 
@@ -17,14 +17,14 @@ export function PropertyCard({ property, layout = "grid" }: PropertyCardProps) {
     const [imgError, setImgError] = useState(false);
     const PLACEHOLDER_IMAGE = "https://placehold.co/600x400/1a1a2e/ffffff?text=No+Image";
 
-    const getPropertyImage = (property: Property) => {
+    const getPropertyImage = (property: PublicProperty) => {
         if (imgError) return PLACEHOLDER_IMAGE;
 
         if (property.images && property.images.length > 0 && property.images[0]) {
-            return getDriveImageUrl(property.images[0]);
+            return getImageUrl(property.images[0]);
         }
         if (property.cover_image && property.cover_image.length > 0 && property.cover_image[0]) {
-            return getDriveImageUrl(property.cover_image[0]);
+            return getImageUrl(property.cover_image[0]);
         }
         return PLACEHOLDER_IMAGE;
     };

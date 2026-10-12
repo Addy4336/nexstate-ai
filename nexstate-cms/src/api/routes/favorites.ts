@@ -1,10 +1,15 @@
 import { Elysia, t } from "elysia";
 import { supabaseAdmin } from "@/lib/db";
+import { getApiSession, requireSessionGuard } from "../guards";
+import { PUBLIC_PROPERTY_SELECT, toPublicProperty } from "@/lib/public-property";
 
 export const favoritesRoutes = new Elysia({ prefix: "/favorites" })
+    // All favorites endpoints act on the signed-in user only
+    .onBeforeHandle(requireSessionGuard)
     // Toggle favorite (add/remove)
-    .post("/toggle", async ({ body }) => {
-        const { propertyId, userId } = body;
+    .post("/toggle", async ({ body, request }) => {
+        const { propertyId } = body;
+        const userId = (await getApiSession(request))!.user.id;
         
         if (!propertyId || !userId) {
             return { success: false, error: "Missing required fields" };
@@ -38,7 +43,7 @@ export const favoritesRoutes = new Elysia({ prefix: "/favorites" })
     }, {
         body: t.Object({
             propertyId: t.String(),
-            userId: t.String(),
+            userId: t.Optional(t.String()),
         }),
         detail: {
             tags: ["Favorites"],
@@ -48,21 +53,24 @@ export const favoritesRoutes = new Elysia({ prefix: "/favorites" })
     })
     
     // Get user's favorites
-    .get("/user/:userId", async ({ params }) => {
+    .get("/user/:userId", async ({ params, request }) => {
+        const userId = (await getApiSession(request))!.user.id;
         const { data, error } = await supabaseAdmin
             .from("favorite")
-            .select(`
-                *,
-                property(*)
-            `)
-            .eq("user_id", params.userId)
+            .select(`created_at, property:property_id (${PUBLIC_PROPERTY_SELECT})`)
+            .eq("user_id", userId)
             .order("created_at", { ascending: false });
         
         if (error) {
             return { success: false, error: error.message, data: [] };
         }
         
-        return { success: true, data: data || [] };
+        // Public property shape only; hide listings that are no longer public
+        const favorites = (data || [])
+            .filter((row: any) => row.property && ["available", "rented"].includes(row.property.status))
+            .map((row: any) => ({ created_at: row.created_at, property: toPublicProperty(row.property) }));
+
+        return { success: true, data: favorites };
     }, {
         params: t.Object({
             userId: t.String(),
@@ -75,11 +83,12 @@ export const favoritesRoutes = new Elysia({ prefix: "/favorites" })
     })
     
     // Get user's favorite property IDs (lightweight)
-    .get("/user/:userId/ids", async ({ params }) => {
+    .get("/user/:userId/ids", async ({ params, request }) => {
+        const userId = (await getApiSession(request))!.user.id;
         const { data, error } = await supabaseAdmin
             .from("favorite")
             .select("property_id")
-            .eq("user_id", params.userId);
+            .eq("user_id", userId);
         
         if (error) {
             return { success: false, error: error.message, data: [] };
@@ -99,11 +108,12 @@ export const favoritesRoutes = new Elysia({ prefix: "/favorites" })
     })
     
     // Check if property is favorited
-    .get("/check/:propertyId/:userId", async ({ params }) => {
+    .get("/check/:propertyId/:userId", async ({ params, request }) => {
+        const userId = (await getApiSession(request))!.user.id;
         const { data } = await supabaseAdmin
             .from("favorite")
             .select("id")
-            .eq("user_id", params.userId)
+            .eq("user_id", userId)
             .eq("property_id", params.propertyId)
             .single();
         

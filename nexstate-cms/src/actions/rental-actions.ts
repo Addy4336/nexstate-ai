@@ -1,5 +1,8 @@
 "use server";
 
+import { requireStaff } from "@/lib/auth-utils";
+
+
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { RentalPeriod } from "@/types/property";
@@ -82,6 +85,7 @@ export async function checkPropertyAvailability(
  * Create a new booking for a property
  */
 export async function createBooking(propertyId: string, bookingData: BookingData) {
+    await requireStaff();
   try {
     // First, check availability again
     const availabilityCheck = await checkPropertyAvailability(
@@ -221,6 +225,7 @@ export async function getPropertyBookings(propertyId: string) {
  * Cancel a booking
  */
 export async function cancelBooking(propertyId: string, bookingDate: string) {
+    await requireStaff();
   try {
     const { data: property, error: fetchError } = await supabaseAdmin
       .from("property")
@@ -282,6 +287,7 @@ export async function cancelBooking(propertyId: string, bookingDate: string) {
  * This should be called periodically (e.g., daily cron job)
  */
 export async function updatePropertyRentalStatuses() {
+    await requireStaff();
   try {
     const today = new Date().toISOString().split("T")[0];
 

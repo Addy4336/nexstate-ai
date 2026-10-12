@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -73,10 +74,10 @@ const LocationSection = () => {
                         Featured Areas
                     </span>
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-foreground">
-                        HOPO Homes <span className="italic text-primary">Exclusive</span> Locations
+                        {brand.name} <span className="italic text-primary">Exclusive</span> Locations
                     </h2>
                     <p className="text-muted-foreground text-lg md:text-xl max-w-2xl font-light leading-relaxed">
-                        Discover Dubai&apos;s most prestigious neighborhoods with HOPO Homes&apos; luxury property collections.
+                        Discover {brand.market.city}&apos;s most prestigious neighborhoods with {brand.name}&apos;s luxury property collections.
                     </p>
                 </div>
 

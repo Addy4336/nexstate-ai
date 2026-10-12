@@ -5,7 +5,7 @@ import ContactCTA from "@/components/contact/ContactCTA";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Contact Us | nexstate",
+    title: "Contact Us",
     description: "Get in touch with us to find out more about our services.",
 };
 

@@ -1,30 +1,71 @@
 "use server";
 
+import { timingSafeEqual } from "crypto";
 import { supabaseAdmin } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
 /**
- * Set initial password for admin user or create new admin
- * Uses Better Auth's internal password context for proper hash format
+ * True while no admin user has a credential (password) account yet.
+ * A seeded admin row without a password still counts as "not set up".
+ */
+async function isSetupOpen(): Promise<boolean> {
+  const { data: admins, error } = await supabaseAdmin
+    .from("user")
+    .select("id")
+    .eq("role", "admin");
+  if (error) throw new Error("Unable to verify setup state");
+  if (!admins || admins.length === 0) return true;
+
+  const { data: accounts, error: accError } = await supabaseAdmin
+    .from("account")
+    .select("user_id")
+    .eq("provider_id", "credential")
+    .in("user_id", admins.map((a: { id: string }) => a.id));
+  if (accError) throw new Error("Unable to verify setup state");
+  return !accounts || accounts.length === 0;
+}
+
+function tokenMatches(provided: string | undefined): boolean {
+  const expected = process.env.ADMIN_SETUP_TOKEN;
+  if (!expected) return true; // token not configured: state check only
+  if (!provided) return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
+/**
+ * Set the initial admin password (first-run only).
+ * Allowed only while no admin has a password; never touches an existing
+ * credential. If ADMIN_SETUP_TOKEN is set, it must be supplied.
  */
 export async function setInitialAdminPassword(formData: {
   email: string;
   password: string;
   name?: string;
+  token?: string;
 }) {
   try {
-    // Check if user exists
-    const { data: existingUser, error: userError } = await supabaseAdmin
+    if (!tokenMatches(formData.token)) {
+      return { error: "Setup is not available" };
+    }
+    if (!(await isSetupOpen())) {
+      return { error: "Setup is not available" };
+    }
+    if (!formData.email || !formData.password || formData.password.length < 8) {
+      return { error: "Valid email and a password of at least 8 characters are required" };
+    }
+
+    const { data: existingUser } = await supabaseAdmin
       .from("user")
-      .select("id, role, name")
+      .select("id, role")
       .eq("email", formData.email)
-      .single();
+      .maybeSingle();
 
     let userId: string;
     let isNewUser = false;
 
-    if (!existingUser || userError) {
-      // Create new admin user
+    if (!existingUser) {
       const { data: newUser, error: createError } = await supabaseAdmin
         .from("user")
         .insert({
@@ -40,38 +81,21 @@ export async function setInitialAdminPassword(formData: {
 
       if (createError || !newUser) {
         console.error("Error creating user:", createError);
-        return { error: createError?.message || "Failed to create admin account" };
+        return { error: "Failed to create admin account" };
       }
-
       userId = newUser.id;
       isNewUser = true;
     } else {
-      userId = existingUser.id;
-
-      // Check if password already exists
-      const { data: existingAccount } = await supabaseAdmin
-        .from("account")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("provider_id", "credential")
-        .single();
-
-      if (existingAccount) {
-        // Delete existing credential to allow re-setup
-        await supabaseAdmin
-          .from("account")
-          .delete()
-          .eq("user_id", userId)
-          .eq("provider_id", "credential");
+      // Only the pre-seeded admin (no password yet) may be claimed
+      if (existingUser.role !== "admin") {
+        return { error: "Setup is not available" };
       }
+      userId = existingUser.id;
     }
 
-    // Use Better Auth's internal password hashing via the auth context
-    // Better Auth uses scrypt internally, so we access it through the password context
     const ctx = await auth.$context;
     const hashedPassword = await ctx.password.hash(formData.password);
 
-    // Insert account with properly hashed password
     const { error: accountError } = await supabaseAdmin
       .from("account")
       .insert({
@@ -85,20 +109,15 @@ export async function setInitialAdminPassword(formData: {
 
     if (accountError) {
       console.error("Error creating account:", accountError);
-      // Provide more specific error messages
-      if (accountError.code === "23505") {
-        return { error: "An account with this email already exists" };
-      }
-      return { error: accountError.message || "Failed to create admin account" };
+      return { error: "Failed to create admin account" };
     }
 
     return {
       success: true,
-      message: isNewUser ? "Admin account created successfully" : "Password set successfully"
+      message: isNewUser ? "Admin account created successfully" : "Password set successfully",
     };
   } catch (error: any) {
     console.error("Error setting admin password:", error);
-    return { error: error.message || "Failed to create admin account" };
+    return { error: "Failed to create admin account" };
   }
 }
-

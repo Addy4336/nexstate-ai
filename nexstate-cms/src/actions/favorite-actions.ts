@@ -3,25 +3,37 @@
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { getSession } from "@/lib/auth-utils";
+import { PUBLIC_PROPERTY_SELECT, toPublicProperty, type PublicProperty } from "@/lib/public-property";
 
-// Get or create a guest user ID from cookies
-async function getGuestUserId(): Promise<string> {
+const GUEST_COOKIE = "guest_user_id";
+
+/** Signed-in user id, else the guest cookie id. With create=true a missing guest id is minted and stored. */
+async function resolveUserId(create = false): Promise<string | null> {
+    const session = await getSession();
+    if (session?.user?.id) return session.user.id;
+
     const cookieStore = await cookies();
-    let guestId = cookieStore.get("guest_user_id")?.value;
-    
-    if (!guestId) {
-        guestId = `guest_${crypto.randomUUID()}`;
-        // Note: In server actions, we can't directly set cookies
-        // The client component will need to handle this
-    }
-    
+    const existing = cookieStore.get(GUEST_COOKIE)?.value;
+    if (existing && /^guest_[0-9a-f-]{36}$/.test(existing)) return existing;
+    if (!create) return null;
+
+    const guestId = `guest_${crypto.randomUUID()}`;
+    cookieStore.set(GUEST_COOKIE, guestId, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 365,
+    });
     return guestId;
 }
 
-export async function toggleFavorite(propertyId: string, userId?: string) {
-    // Use provided userId or generate guest ID
-    const effectiveUserId = userId || await getGuestUserId();
-    
+export async function toggleFavorite(propertyId: string, _userId?: string) {
+    // Identity comes from the session (or guest cookie), never from the caller
+    const effectiveUserId = await resolveUserId(true);
+    if (!effectiveUserId) return { success: false, error: "Failed to update favorite" };
+
     try {
         // Check if already favorited
         const { data: existing } = await supabaseAdmin
@@ -58,31 +70,37 @@ export async function toggleFavorite(propertyId: string, userId?: string) {
     }
 }
 
-export async function getFavorites(userId: string) {
+export async function getFavorites(_userId?: string): Promise<PublicProperty[]> {
     try {
+        const userId = await resolveUserId();
+        if (!userId) return [];
+
         const { data, error } = await supabaseAdmin
             .from("favorite")
-            .select(`
-                *,
-                property(*)
-            `)
+            .select(`created_at, property:property_id (${PUBLIC_PROPERTY_SELECT})`)
             .eq("user_id", userId)
             .order("created_at", { ascending: false });
-        
+
         if (error) {
             console.error("Error getting favorites:", error);
             return [];
         }
-        
-        return data || [];
+
+        // Only listings that are still public; strip booking/tenant/Drive fields
+        return (data || [])
+            .map((row: any) => row.property)
+            .filter((p: any) => p && ["available", "rented"].includes(p.status))
+            .map(toPublicProperty);
     } catch (error: any) {
         console.error("Error getting favorites:", error);
         return [];
     }
 }
 
-export async function getFavoritePropertyIds(userId: string): Promise<string[]> {
+export async function getFavoritePropertyIds(_userId?: string): Promise<string[]> {
     try {
+        const userId = await resolveUserId();
+        if (!userId) return [];
         const { data, error } = await supabaseAdmin
             .from("favorite")
             .select("property_id")
@@ -100,8 +118,10 @@ export async function getFavoritePropertyIds(userId: string): Promise<string[]> 
     }
 }
 
-export async function isFavorited(propertyId: string, userId: string): Promise<boolean> {
+export async function isFavorited(propertyId: string, _userId?: string): Promise<boolean> {
     try {
+        const userId = await resolveUserId();
+        if (!userId) return false;
         const { data } = await supabaseAdmin
             .from("favorite")
             .select("id")

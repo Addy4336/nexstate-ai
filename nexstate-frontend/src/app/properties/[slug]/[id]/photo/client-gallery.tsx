@@ -1,4 +1,5 @@
 "use client"
+import { brand } from "@nexstate/brand";
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -27,7 +28,7 @@ export function ClientPhotoGallery({ propertyName, slug, id, galleryPhotos, cate
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
-                    <h1 className="text-lg font-semibold text-center">Hopo Homes - {propertyName}</h1>
+                    <h1 className="text-lg font-semibold text-center">{brand.name} - {propertyName}</h1>
                 </div>
 
                 <div className="flex gap-3 overflow-x-auto pb-2 mb-8 scrollbar-hide">

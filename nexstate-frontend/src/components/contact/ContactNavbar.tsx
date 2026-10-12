@@ -1,5 +1,6 @@
 'use client';
 
+import BrandLogo from "@/components/BrandLogo";
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -40,15 +41,7 @@ export default function ContactNavbar() {
                 {/* Logo Section */}
                 <div className="shrink-0 flex items-center">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="relative h-10 w-28 md:w-36">
-                            <Image
-                                src="/image/logo.webp"
-                                alt="Logo"
-                                fill
-                                className="object-contain object-left"
-                                priority
-                            />
-                        </div>
+                        <BrandLogo />
                     </Link>
                 </div>
 

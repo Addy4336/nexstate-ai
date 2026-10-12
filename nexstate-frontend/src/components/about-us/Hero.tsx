@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import React from 'react';
 import Image from 'next/image';
 
@@ -25,10 +26,10 @@ const Hero = () => {
                     {/* Description Paragraph */}
                     <div className="md:self-center max-w-[650px] md:pt-8">
                         <p className="text-muted-foreground text-[15px] md:text-[16px] leading-[1.7] mb-4">
-                            Hopo Homes is a tech-enabled co-living and rental management platform designed for modern urban living. We make it easier for tenants to find well-managed homes and for property owners to unlock better returns — without the usual stress of renting.
+                            {brand.name} is a tech-enabled co-living and rental management platform designed for modern urban living. We make it easier for tenants to find well-managed homes and for property owners to unlock better returns — without the usual stress of renting.
                         </p>
                         <p className="text-muted-foreground text-[15px] md:text-[16px] leading-[1.7]">
-                            At Hopo, we believe renting should be simple, transparent, and hassle-free.
+                            At {brand.name}, we believe renting should be simple, transparent, and hassle-free.
                         </p>
                     </div>
                 </div>

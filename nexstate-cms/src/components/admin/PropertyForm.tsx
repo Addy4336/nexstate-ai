@@ -31,7 +31,7 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
     const [videoUrl, setVideoUrl] = useState<string | null>(initialData?.property_video || null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [title, setTitle] = useState(initialData?.title || "");
-    const [folderId, setFolderId] = useState(initialData?.drive_folder_id || "");
+    const [selectedAmenities, setSelectedAmenities] = useState<string[]>(initialData?.amenities || []);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
     const [descriptionText, setDescriptionText] = useState(initialData?.description || "");
     const [locationText, setLocationText] = useState(initialData?.location || "");
@@ -78,7 +78,6 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
     const handleSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
         formData.set("images", images.join(","));
-        formData.set("folderId", folderId);
         
         // Add video URL to form data
         if (videoUrl) {
@@ -122,7 +121,7 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <p className="text-xs text-muted-foreground">
-                        This title will be used to create a folder in Google Drive for your images.
+                        Also used to group this property's uploaded media.
                     </p>
                 </div>
 
@@ -267,7 +266,6 @@ export function PropertyForm({ initialData }: PropertyFormProps) {
                 <div className="space-y-2 md:col-span-2">
                     <ImageUpload
                         onImagesChange={setImages}
-                        onFolderIdChange={setFolderId}
                         defaultImages={initialData?.images}
                         folderName={title}
                     />

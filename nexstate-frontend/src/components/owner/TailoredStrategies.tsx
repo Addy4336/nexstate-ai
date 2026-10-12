@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -28,7 +29,7 @@ export default function TailoredStrategies() {
                             </h2>
 
                             <div className="bg-primary text-primary-foreground p-3 inline-block font-medium text-lg md:text-xl mb-6 shadow-md rounded-lg">
-                                At Hopo Homes, we understand that every property is unique.
+                                At {brand.name}, we understand that every property is unique.
                             </div>
 
                             <p className="text-lg text-muted-foreground leading-relaxed">

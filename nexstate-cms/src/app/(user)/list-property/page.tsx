@@ -1,8 +1,9 @@
+import { brand } from "@nexstate/brand";
 import { EnquiryForm } from "@/components/user/EnquiryForm";
 import { Check } from "lucide-react";
 
 export const metadata = {
-    title: "List Your Property | HOPO Homes",
+    title: `List Your Property | ${brand.name}`,
     description: "Partner with Dubai's premier property management company.",
 };
 
@@ -28,7 +29,7 @@ export default function ListPropertyPage() {
                                 Unlock Your Property's Potential
                             </h1>
                             <p className="text-xl text-muted-foreground">
-                                Partner with HOPO Homes for hassle-free property management and superior returns.
+                                Partner with {brand.name} for hassle-free property management and superior returns.
                             </p>
                         </div>
 

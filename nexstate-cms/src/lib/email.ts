@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -23,16 +24,16 @@ export async function sendUserInviteEmail({
 
     try {
         const { data, error } = await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL || 'NexState AI <noreply@NexState.ai>',
+            from: process.env.RESEND_FROM_EMAIL || `${brand.name} <noreply@${new URL(brand.siteUrl).hostname}>`,
             to: [to],
-            subject: `Welcome to NexState AI CMS - Your Account Details`,
+            subject: `Welcome to the ${brand.name} CMS - Your Account Details`,
             html: `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to NexState AI CMS</title>
+    <title>Welcome to the ${brand.name} CMS</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc;">
     <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -43,7 +44,7 @@ export async function sendUserInviteEmail({
                     <tr>
                         <td style="background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); padding: 32px 40px; text-align: center;">
                             <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
-                                NexState<span style="color: #0f172a;">.AI</span>
+                                ${brand.wordmark.primary}<span style="color: #0f172a;">${brand.wordmark.accent}</span>
                             </h1>
                             <p style="margin: 8px 0 0; color: #ffffff; font-size: 14px; opacity: 0.9;">
                                 Content Management System & Real Estate AI
@@ -58,7 +59,7 @@ export async function sendUserInviteEmail({
                                 Welcome, ${name}! 🎉
                             </h2>
                             <p style="margin: 0 0 24px; color: #64748b; font-size: 16px; line-height: 1.6;">
-                                You've been invited to join the NexState AI CMS as a <strong style="color: #0284c7;">${roleLabel}</strong>. 
+                                You've been invited to join the  CMS as a <strong style="color: #0284c7;">${roleLabel}</strong>. 
                                 Below are your login credentials to access the admin dashboard.
                             </p>
                             
@@ -105,10 +106,10 @@ export async function sendUserInviteEmail({
                     <tr>
                         <td style="background-color: #0f172a; padding: 24px 40px; text-align: center;">
                             <p style="margin: 0 0 8px; color: #94a3b8; font-size: 14px;">
-                                © ${new Date().getFullYear()} NexState AI. All rights reserved.
+                                © ${new Date().getFullYear()} ${brand.legalName}. All rights reserved.
                             </p>
                             <p style="margin: 0; color: #64748b; font-size: 12px;">
-                                This email was sent because you were invited to NexState AI CMS.
+                                This email was sent because you were invited to the ${brand.name} CMS.
                             </p>
                         </td>
                     </tr>

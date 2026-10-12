@@ -1,5 +1,4 @@
-import { RentalPeriod, Property, CurrentTenant } from "@/types/property";
-import { supabaseAdmin } from "@/lib/db";
+import { RentalPeriod } from "@/types/property";
 
 /**
  * Check if a property is currently rented
@@ -12,78 +11,6 @@ export function isCurrentlyRented(
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return endDate >= today;
-}
-
-/**
- * Enrich properties with current tenant information if they are rented
- * This adds is_currently_rented and current_tenant fields to each property
- */
-export async function enrichPropertiesWithTenantInfo<T extends Property>(
-  properties: T[]
-): Promise<T[]> {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  // Get all property IDs that might be rented
-  const rentedPropertyIds = properties
-    .filter(p => p.current_rental_end)
-    .map(p => p.id);
-
-  if (rentedPropertyIds.length === 0) {
-    // No rented properties, just mark all as available
-    return properties.map(p => ({
-      ...p,
-      is_currently_rented: false,
-      current_tenant: null,
-    }));
-  }
-
-  // Fetch active payments for these properties
-  const { data: payments } = await supabaseAdmin
-    .from("payments")
-    .select("property_id, user_name, user_email, user_phone, check_in_date, check_out_date, guests, amount")
-    .in("property_id", rentedPropertyIds)
-    .eq("status", "success")
-    .gte("check_out_date", today.toISOString().split('T')[0])
-    .order("created_at", { ascending: false });
-
-  // Create a map of property_id to tenant info
-  const tenantInfoMap = new Map<string, CurrentTenant>();
-  
-  if (payments) {
-    for (const payment of payments) {
-      if (!tenantInfoMap.has(payment.property_id)) {
-        // Only store the most recent payment (already ordered by created_at desc)
-        const checkOutDate = new Date(payment.check_out_date);
-        checkOutDate.setHours(0, 0, 0, 0);
-        
-        // Only include if rental is currently active
-        if (checkOutDate >= today) {
-          tenantInfoMap.set(payment.property_id, {
-            name: payment.user_name,
-            email: payment.user_email,
-            phone: payment.user_phone,
-            check_in_date: payment.check_in_date,
-            check_out_date: payment.check_out_date,
-            guests: payment.guests,
-            amount_paid: Number(payment.amount),
-          });
-        }
-      }
-    }
-  }
-
-  // Enrich properties with tenant information
-  return properties.map(property => {
-    const isRented = isCurrentlyRented(property.current_rental_end);
-    const tenantInfo = tenantInfoMap.get(property.id);
-
-    return {
-      ...property,
-      is_currently_rented: isRented && !!tenantInfo,
-      current_tenant: isRented && tenantInfo ? tenantInfo : null,
-    };
-  });
 }
 
 /**

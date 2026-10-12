@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { Wrench, MessageSquare, TrendingUp, BarChart3, Repeat, BrainCircuit } from "lucide-react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -61,7 +62,7 @@ export default function AILayer() {
                         <span>Powered by Intelligence</span>
                     </div>
                     <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-background">
-                        The AI core of Hopo Homes
+                        The AI core of {brand.name}
                     </h2>
                     <p className="text-lg text-muted max-w-2xl mx-auto opacity-80">
                         Maximizing returns and experience through our proprietary deep-learning engine.

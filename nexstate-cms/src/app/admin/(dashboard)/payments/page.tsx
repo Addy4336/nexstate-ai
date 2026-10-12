@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { supabaseAdmin } from "@/lib/db";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -5,7 +6,7 @@ import { formatCurrency, getPaymentStatusInfo } from "@/lib/totalpay";
 import { DollarSign, TrendingUp, Clock, XCircle, CheckCircle } from "lucide-react";
 
 export const metadata = {
-    title: "Payments - HOPO Homes Admin",
+    title: `Payments - ${brand.name} Admin`,
     description: "Manage payment transactions",
 };
 

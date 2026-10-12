@@ -6,30 +6,15 @@ import { PropertyCard } from "@/components/user/PropertyCard";
 import { Heart, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import type { Property } from "@/types/property";
-
-function getGuestUserId(): string {
-    if (typeof window === "undefined") return "";
-    
-    let guestId = localStorage.getItem("guest_user_id");
-    if (!guestId) {
-        guestId = `guest_${crypto.randomUUID()}`;
-        localStorage.setItem("guest_user_id", guestId);
-    }
-    return guestId;
-}
+import type { PublicProperty } from "@/lib/public-property";
 
 export default function FavoritesPage() {
-    const [favorites, setFavorites] = useState<Property[]>([]);
+    const [favorites, setFavorites] = useState<PublicProperty[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const loadFavorites = async () => {
-            const userId = getGuestUserId();
-            if (userId) {
-                const data = await getFavorites(userId);
-                setFavorites(data);
-            }
+            setFavorites(await getFavorites());
             setIsLoading(false);
         };
         loadFavorites();

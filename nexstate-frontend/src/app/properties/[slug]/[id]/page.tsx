@@ -297,9 +297,10 @@ export default async function PropertyDetailsPage({ params }: TripExperiencePage
   // Pass rental data to client component
   const rentalData = propertyData ? {
     status: propertyData.status || 'available',
-    currentRentalEnd: propertyData.current_rental_end || null,
-    currentRentalStart: propertyData.current_rental_start || null,
-    rentalPeriods: propertyData.rental_periods || [],
+    currentRentalEnd: propertyData.rented_until || null,
+    currentRentalStart: null,
+    // Public API exposes booked date ranges only (no tenant details)
+    rentalPeriods: propertyData.booked_ranges || [],
   } : null;
 
   return <TripExperienceClient trip={property} slug={slug} id={id} rentalData={rentalData} />;

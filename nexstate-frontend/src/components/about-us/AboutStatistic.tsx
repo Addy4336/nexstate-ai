@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import React from 'react';
 import Image from 'next/image';
 
@@ -22,7 +23,7 @@ const AboutStatistics = () => {
 
                     {/* Description */}
                     <p className="text-muted-foreground text-[15px] md:text-[17px] leading-[1.7] max-w-[800px]">
-                        At HOPO Homes, we believe the future of renting is instant. Traditional real estate is slow, but our fully AI-integrated ecosystem moves at the speed of life.<br /><br />
+                        At {brand.name}, we believe the future of renting is instant. Traditional real estate is slow, but our fully AI-integrated ecosystem moves at the speed of life.<br /><br />
                         For Residents: We offer 24/7 instant support for everything from booking a home to fixing a leaky tap.<br />
                         For Owners: We provide live, data-driven ROI tracking and automated management that never sleeps.<br />
                         Our Promise: Zero delays. 100% transparency.

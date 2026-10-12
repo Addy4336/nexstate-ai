@@ -127,7 +127,7 @@ CREATE POLICY "Service role full access to payment_sessions" ON payment_sessions
 COMMENT ON TABLE payments IS 'Stores all payment transactions from TotalPay gateway';
 COMMENT ON TABLE payment_sessions IS 'Temporary session data for TotalPay checkout redirects';
 
-COMMENT ON COLUMN payments.order_number IS 'Unique order identifier (HOPO-timestamp-random)';
+COMMENT ON COLUMN payments.order_number IS 'Unique order identifier (NS-timestamp-random)';
 COMMENT ON COLUMN payments.status IS 'Payment status: pending, success, failed, cancelled, refunded';
 COMMENT ON COLUMN payments.totalpay_response IS 'Full JSON response from TotalPay webhook';
 COMMENT ON COLUMN payment_sessions.expires_at IS 'Session expiry time (typically 30 minutes from creation)';

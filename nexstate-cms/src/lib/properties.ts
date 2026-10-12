@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/lib/db";
 import { Property } from "@/types/property";
-import { enrichPropertiesWithTenantInfo } from "@/lib/rental-utils";
+import { PUBLIC_PROPERTY_SELECT, toPublicProperty, toPublicProperties, type PublicProperty } from "@/lib/public-property";
 
 /**
  * Fetches all properties from the database
@@ -23,10 +23,10 @@ export async function getAllProperties(): Promise<Property[]> {
  * Fetches featured properties that are available
  * Used for the homepage featured section
  */
-export async function getFeaturedProperties(limit: number = 6): Promise<Property[]> {
+export async function getFeaturedProperties(limit: number = 6): Promise<PublicProperty[]> {
     const { data, error } = await supabaseAdmin
         .from("property")
-        .select("*")
+        .select(PUBLIC_PROPERTY_SELECT)
         .in("status", ["available", "rented"])
         .eq("featured", true)
         .order("created_at", { ascending: false })
@@ -37,18 +37,16 @@ export async function getFeaturedProperties(limit: number = 6): Promise<Property
         return [];
     }
 
-    // Enrich properties with tenant information
-    const enrichedProperties = await enrichPropertiesWithTenantInfo(data as Property[] || []);
-    return enrichedProperties;
+    return toPublicProperties(data);
 }
 
 /**
  * Fetches available properties (for public listing)
  */
-export async function getAvailableProperties(limit?: number): Promise<Property[]> {
+export async function getAvailableProperties(limit?: number): Promise<PublicProperty[]> {
     let query = supabaseAdmin
         .from("property")
-        .select("*")
+        .select(PUBLIC_PROPERTY_SELECT)
         .in("status", ["available", "rented"])
         .order("featured", { ascending: false })
         .order("created_at", { ascending: false });
@@ -64,19 +62,18 @@ export async function getAvailableProperties(limit?: number): Promise<Property[]
         return [];
     }
 
-    // Enrich properties with tenant information
-    const enrichedProperties = await enrichPropertiesWithTenantInfo(data as Property[] || []);
-    return enrichedProperties;
+    return toPublicProperties(data);
 }
 
 /**
  * Fetches a single property by ID
  */
-export async function getPropertyById(id: string): Promise<Property | null> {
+export async function getPropertyById(id: string): Promise<PublicProperty | null> {
     const { data, error } = await supabaseAdmin
         .from("property")
-        .select("*")
+        .select(PUBLIC_PROPERTY_SELECT)
         .eq("id", id)
+        .in("status", ["available", "rented"])
         .single();
 
     if (error) {
@@ -84,7 +81,7 @@ export async function getPropertyById(id: string): Promise<Property | null> {
         return null;
     }
 
-    return data as Property;
+    return toPublicProperty(data);
 }
 
 /**
@@ -96,15 +93,16 @@ export async function getFilteredProperties(searchParams: {
     minPrice?: number;
     maxPrice?: number;
     bedrooms?: number;
-}): Promise<Property[]> {
+}): Promise<PublicProperty[]> {
     let queryBuilder = supabaseAdmin
         .from("property")
-        .select("*")
+        .select(PUBLIC_PROPERTY_SELECT)
         .in("status", ["available", "rented"]);
 
-    if (searchParams.query) {
+    const term = searchParams.query?.replace(/[,()*%\\]/g, " ").trim();
+    if (term) {
         queryBuilder = queryBuilder.or(
-            `title.ilike.%${searchParams.query}%,description.ilike.%${searchParams.query}%,location.ilike.%${searchParams.query}%`
+            `title.ilike.%${term}%,description.ilike.%${term}%,location.ilike.%${term}%`
         );
     }
 
@@ -135,7 +133,5 @@ export async function getFilteredProperties(searchParams: {
         return [];
     }
 
-    // Enrich properties with tenant information
-    const enrichedProperties = await enrichPropertiesWithTenantInfo(data as Property[] || []);
-    return enrichedProperties;
+    return toPublicProperties(data);
 }

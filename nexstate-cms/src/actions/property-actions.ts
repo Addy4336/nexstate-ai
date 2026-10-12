@@ -1,14 +1,13 @@
 "use server";
 
+import { requireStaff, requireManager } from "@/lib/auth-utils";
+
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getZohoConfig } from "./zoho-actions";
-import { getZohoCreatorService } from "@/lib/zoho-crm";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 
 export async function createProperty(formData: FormData) {
+    await requireStaff();
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const price = parseFloat(formData.get("price") as string);
@@ -18,7 +17,6 @@ export async function createProperty(formData: FormData) {
     const area_sqft = parseInt(formData.get("area_sqft") as string) || 0;
     const status = formData.get("status") as string || "available";
     const featured = formData.get("featured") === "on";
-    const drive_folder_id = formData.get("folderId") as string;
 
     // Extract Fee Fields
     const vat = parseFloat(formData.get("vat") as string) || 5;
@@ -57,7 +55,6 @@ export async function createProperty(formData: FormData) {
                 images,
                 featured,
                 cover_image,
-                drive_folder_id,
                 property_video,
                 amenities,
                 vat,
@@ -80,60 +77,13 @@ export async function createProperty(formData: FormData) {
         return { error: error.message };
     }
 
-    // Sync to Zoho Creator if enabled
-    try {
-        const session = await auth.api.getSession({
-            headers: await headers()
-        });
-        
-        if (session?.user?.id) {
-            const adminId = session.user.id;
-            const configResult = await getZohoConfig(adminId);
-            
-            if (configResult.success && configResult.data && configResult.data.auto_sync) {
-                const config = configResult.data;
-                const zoho = await getZohoCreatorService(adminId);
-
-                if (zoho) {
-                    const zohoData: Record<string, any> = {};
-                    const mapping = config.field_mapping || {};
-
-                    const propertyData = {
-                        title, description, price, location,
-                        bedrooms, bathrooms, area_sqft, status,
-                        featured, amenities: amenities.join(", "),
-                        cover_image: cover_image.length > 0 ? cover_image[0] : "",
-                        images: images.length > 0 ? images[0] : "",
-                        property_video: property_video || "",
-                    };
-
-                    for (const [localField, zohoField] of Object.entries(mapping)) {
-                        if (zohoField && propertyData[localField as keyof typeof propertyData] !== undefined) {
-                            const value = propertyData[localField as keyof typeof propertyData];
-                            // Only add non-empty values
-                            if (value !== "" && value !== null && value !== undefined) {
-                                zohoData[zohoField as string] = value;
-                            }
-                        }
-                    }
-
-                    if (Object.keys(zohoData).length > 0) {
-                        await zoho.addRecord(config.owner_name, config.app_name, config.form_name, zohoData);
-                    }
-                }
-            }
-        }
-    } catch (error) {
-        console.error("Failed to sync with Zoho:", error);
-        // Don't fail the request if sync fails
-    }
-
     revalidatePath("/admin/properties");
     revalidatePath("/"); // Revalidate homepage to show updated properties
     return { success: true };
 }
 
 export async function updateProperty(id: string, formData: FormData) {
+    await requireStaff();
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const price = parseFloat(formData.get("price") as string);
@@ -143,7 +93,6 @@ export async function updateProperty(id: string, formData: FormData) {
     const area_sqft = parseInt(formData.get("area_sqft") as string) || 0;
     const status = formData.get("status") as string || "available";
     const featured = formData.get("featured") === "on";
-    const drive_folder_id = formData.get("folderId") as string;
 
     // Extract Fee Fields
     const vat = parseFloat(formData.get("vat") as string) || 5;
@@ -185,11 +134,6 @@ export async function updateProperty(id: string, formData: FormData) {
             updated_at: new Date().toISOString(),
         };
 
-        // Only update drive_folder_id if provided
-        if (drive_folder_id) {
-            updateData.drive_folder_id = drive_folder_id;
-        }
-
         const { error } = await supabaseAdmin
             .from("property")
             .update(updateData)
@@ -211,6 +155,7 @@ export async function updateProperty(id: string, formData: FormData) {
 }
 
 export async function deleteProperty(id: string) {
+    await requireManager();
     try {
         const { error } = await supabaseAdmin
             .from("property")
@@ -230,6 +175,7 @@ export async function deleteProperty(id: string) {
 }
 
 export async function archiveProperty(id: string) {
+    await requireStaff();
     try {
         const { error } = await supabaseAdmin
             .from("property")

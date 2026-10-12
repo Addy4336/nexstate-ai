@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -43,9 +44,9 @@ export function Header() {
                         {/* Logo */}
                         <Link href="/" className="flex items-center gap-2">
                             <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
-                                <span className="text-accent-foreground font-bold text-xl">H</span>
+                                <span className="text-accent-foreground font-bold text-xl">{brand.name.charAt(0)}</span>
                             </div>
-                            <span className="text-xl font-bold text-foreground">HOPO<span className="text-secondary">Homes</span></span>
+                            <span className="text-xl font-bold text-foreground">{brand.wordmark.primary}<span className="text-secondary">{brand.wordmark.accent}</span></span>
                         </Link>
 
                         {/* Desktop Navigation */}

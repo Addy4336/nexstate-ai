@@ -4,7 +4,7 @@ import BlogLists from "@/components/blog/BlogLists";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Blog | nexstate",
+    title: "Blog",
     description: "Explore the latest stories and updates from nexstate.",
 };
 

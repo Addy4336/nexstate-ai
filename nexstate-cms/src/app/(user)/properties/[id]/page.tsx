@@ -1,5 +1,6 @@
+import { brand } from "@nexstate/brand";
 import { getPropertyById } from "@/lib/properties";
-import { getDriveImageUrl } from "@/lib/utils";
+import { getImageUrl } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: PropertyPageProps) {
     if (!property) return { title: "Property Not Found" };
 
     return {
-        title: `${property.title} | HOPO Homes`,
+        title: `${property.title} | ${brand.name}`,
         description: property.description?.substring(0, 160),
     };
 }
@@ -71,7 +72,7 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                         <div className="relative aspect-video rounded-2xl overflow-hidden shadow-sm bg-muted">
                             {property.images && property.images.length > 0 ? (
                                 <img
-                                    src={getDriveImageUrl(property.images[0])}
+                                    src={getImageUrl(property.images[0])}
                                     alt={property.title}
                                     className="w-full h-full object-cover"
                                 />
@@ -97,7 +98,7 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                                 {property.images.slice(1, 5).map((img, i) => (
                                     <div key={i} className="relative aspect-[4/3] rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity">
                                         <img
-                                            src={getDriveImageUrl(img)}
+                                            src={getImageUrl(img)}
                                             alt={`${property.title} ${i + 2}`}
                                             className="w-full h-full object-cover"
                                         />
@@ -203,10 +204,10 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                             {/* Agent Info (Mock) */}
                             <div className="p-4 bg-muted/30 rounded-xl flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-full bg-accent text-accent-foreground flex items-center justify-center font-bold text-lg">
-                                    HO
+                                    {brand.name.slice(0, 2).toUpperCase()}
                                 </div>
                                 <div>
-                                    <p className="font-semibold text-sm">HOPO Homes Team</p>
+                                    <p className="font-semibold text-sm">{brand.name} Team</p>
                                     <p className="text-xs text-muted-foreground">Property Management</p>
                                 </div>
                             </div>

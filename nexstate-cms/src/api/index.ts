@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { Elysia } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { propertiesRoutes } from "./routes/properties";
@@ -7,6 +8,7 @@ import { blogsRoutes } from "./routes/blogs";
 import { faqsRoutes } from "./routes/faqs";
 import { storageRoutes } from "./routes/storage";
 import { aiRoutes } from "./routes/ai";
+import { paymentsRoutes } from "./routes/payments";
 import { initializeCronJobs } from "../lib/cron-jobs";
 
 // Initialize cron jobs when the API starts
@@ -19,9 +21,9 @@ export const api = new Elysia({ prefix: "/api" })
         path: "/docs",
         documentation: {
             info: {
-                title: "NexState AI Platform API",
+                title: `${brand.name} Platform API`,
                 version: "2.0.0",
-                description: "API for NexState AI Real Estate Management Platform",
+                description: `API for the ${brand.name} real estate management platform`,
             },
             tags: [
                 { name: "Properties", description: "Property listing endpoints" },
@@ -31,6 +33,7 @@ export const api = new Elysia({ prefix: "/api" })
                 { name: "Blogs", description: "Blog content endpoints" },
                 { name: "FAQs", description: "FAQ content endpoints" },
                 { name: "Storage", description: "Image storage endpoints" },
+                { name: "Payments", description: "Payment sessions and webhooks" },
             ],
         },
     }))
@@ -39,7 +42,7 @@ export const api = new Elysia({ prefix: "/api" })
     .get("/health", () => ({
         status: "healthy",
         timestamp: new Date().toISOString(),
-        service: "NexState-api",
+        service: `${brand.name.toLowerCase()}-api`,
     }), {
         detail: {
             tags: ["System"],
@@ -55,7 +58,8 @@ export const api = new Elysia({ prefix: "/api" })
     .use(favoritesRoutes)
     .use(blogsRoutes)
     .use(faqsRoutes)
-    .use(storageRoutes);
+    .use(storageRoutes)
+    .use(paymentsRoutes);
 
 // Export the type for Eden Treaty client
 export type Api = typeof api;

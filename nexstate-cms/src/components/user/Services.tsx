@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { motion } from "framer-motion";
 import { Home, Key, Calculator, Users, Building, TrendingUp, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -105,7 +106,7 @@ export function Services() {
               Maximize Your Property's Potential
             </h2>
             <p className="text-muted-foreground mb-8">
-              Let HOPO manage your property with our AI-driven platform. Higher occupancy, better returns, zero hassle.
+              Let {brand.name} manage your property with our AI-driven platform. Higher occupancy, better returns, zero hassle.
             </p>
 
             <div className="space-y-6 mb-8">

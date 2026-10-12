@@ -1,3 +1,4 @@
+import { brand } from "@nexstate/brand";
 import { Suspense } from 'react';
 import { getFilteredProperties } from "@/lib/properties";
 import { PropertySearch } from "@/components/user/PropertySearch";
@@ -5,7 +6,7 @@ import { PropertyCard } from "@/components/user/PropertyCard";
 import { Loader2 } from "lucide-react";
 
 export const metadata = {
-    title: "Available Properties | HOPO Homes",
+    title: `Available Properties | ${brand.name}`,
     description: "Browse our curated selection of furnished homes in Dubai.",
 };
 

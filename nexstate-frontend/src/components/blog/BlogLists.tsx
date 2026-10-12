@@ -14,8 +14,6 @@ interface Blog {
     created_at: string;
 }
 
-import { convertGoogleDriveUrl } from '@/lib/image-utils';
-
 // Get blog cover image
 function getBlogImage(blog: Blog): string | null {
     let url = blog.cover_image;
@@ -34,7 +32,7 @@ function getBlogImage(blog: Blog): string | null {
         url = `${cleanBaseUrl}${url}`;
     }
 
-    return convertGoogleDriveUrl(url);
+    return url;
 }
 
 interface ListCategory {

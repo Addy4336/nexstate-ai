@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Play, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -53,7 +54,7 @@ export default function PropertyShowcase() {
                             images: images,
                             middleCard: {
                                 title: p.title || "Untitled Property",
-                                description: p.description || "Experience detailed luxury living with HOPO Homes.",
+                                description: p.description || `Experience detailed luxury living with ${brand.name}.`,
                                 footerText: `Located in ${p.location || "Dubai"}`
                             },
                             rightCard: {
@@ -115,13 +116,13 @@ export default function PropertyShowcase() {
     };
 
     return (
-        <section id="hopo-standard" className="py-20 lg:py-28 bg-background px-6 lg:px-8">
+        <section id="standard-tier" className="py-20 lg:py-28 bg-background px-6 lg:px-8">
             <div className="max-w-350 mx-auto">
 
                 {/* Header - Keeps Original Layout but updates Title */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 gap-6 lg:gap-8">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-foreground max-w-3xl leading-[1.1]">
-                        HOPO <span className="text-primary italic">Standard.</span> <br />
+                        {brand.name} <span className="text-primary italic">{brand.tiers.standard}.</span> <br />
                         The Essentials Collection.
                     </h2>
                     <div className="flex items-center gap-3 sm:gap-4">

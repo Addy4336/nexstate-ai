@@ -44,7 +44,7 @@ export interface Property {
   images: string[] | null;
   cover_image: string[] | null;
   drive_folder_id: string | null;
-  property_video: string | null; // Google Drive video URL (embed link)
+  property_video: string | null; // Public URL of the uploaded video (Supabase Storage)
   featured: boolean;
   amenities: string[] | null;
   created_at: Date;

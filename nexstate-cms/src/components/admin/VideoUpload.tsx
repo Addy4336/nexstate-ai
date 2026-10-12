@@ -4,7 +4,7 @@ import { useState } from "react";
 import { X, Upload, Loader2, Video, Play } from "lucide-react";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
-import { uploadVideoToDriveAction } from "@/actions/google-drive-actions";
+import { uploadMedia } from "@/lib/upload-client";
 
 interface VideoUploadProps {
     onVideoChange: (url: string | null) => void;
@@ -26,10 +26,10 @@ export function VideoUpload({
 
             const file = e.target.files[0];
             
-            // Check file size (limit to 500MB for videos on Google Drive)
-            const maxSize = 500 * 1024 * 1024; // 500MB
+            // Check file size (Supabase free plan caps objects at 50MB)
+            const maxSize = 50 * 1024 * 1024; // 50MB
             if (file.size > maxSize) {
-                toast.error("Video file size must be less than 500MB");
+                toast.error("Video file size must be less than 50MB");
                 return;
             }
 
@@ -41,29 +41,10 @@ export function VideoUpload({
 
             setUploading(true);
 
-            const cleanFolderName = folderName
-                .toLowerCase()
-                .replace(/[^a-z0-9-_\s]/g, "-")
-                .replace(/-+/g, "-")
-                .trim() || "properties";
-
-            // Upload via Google Drive action
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("folderName", cleanFolderName);
-
-            const result = await uploadVideoToDriveAction(formData);
-
-            if (!result.success || !result.url) {
-                throw new Error(`Failed to upload video: ${result.error}`);
-            }
-
-            console.log('Video upload successful:', { url: result.url, fileId: result.fileId });
-
-            // Use the URL directly (already set to embedUrl in the action)
-            setVideoUrl(result.url);
-            onVideoChange(result.url);
-            toast.success("Video uploaded to Google Drive successfully!");
+            const url = await uploadMedia(file, "video", folderName);
+            setVideoUrl(url);
+            onVideoChange(url);
+            toast.success("Video uploaded");
 
         } catch (error: any) {
             console.error(error);
@@ -83,7 +64,7 @@ export function VideoUpload({
         <div className="flex flex-col gap-3">
             <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
                 <Video className="w-4 h-4" />
-                Property Video (Google Drive)
+                Property Video
             </Label>
 
             <div className="group relative w-full rounded-2xl overflow-hidden border border-border bg-muted/20 hover:bg-muted/30 transition-all duration-300 aspect-video">
@@ -91,7 +72,7 @@ export function VideoUpload({
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
                         <input
                             type="file"
-                            accept="video/mp4,video/webm,video/ogg,video/quicktime"
+                            accept="video/mp4,video/webm,video/quicktime"
                             onChange={handleUpload}
                             disabled={uploading}
                             className="absolute inset-0 opacity-0 cursor-pointer z-10"
@@ -99,7 +80,7 @@ export function VideoUpload({
                         {uploading ? (
                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm z-20">
                                 <Loader2 className="w-8 h-8 animate-spin text-primary mb-2" />
-                                <p className="text-sm text-muted-foreground">Uploading to Google Drive...</p>
+                                <p className="text-sm text-muted-foreground">Uploading...</p>
                                 <p className="text-xs text-muted-foreground mt-1">This may take a while for large files</p>
                             </div>
                         ) : (
@@ -109,30 +90,17 @@ export function VideoUpload({
                                 </div>
                                 <p className="font-semibold text-sm text-foreground">Upload Property Video</p>
                                 <p className="text-xs text-muted-foreground mt-2 px-4">
-                                    Support for MP4, WebM, MOV, OGG (Max 500MB)
+                                    MP4, WebM or MOV (max 50MB)
                                 </p>
                                 <p className="text-xs text-muted-foreground/70 mt-1">
                                     Click to browse or drag and drop
-                                </p>
-                                <p className="text-xs text-primary mt-2 font-medium">
-                                    Stored in Google Drive
                                 </p>
                             </>
                         )}
                     </div>
                 ) : (
                     <div className="absolute inset-0 w-full h-full">
-                        <iframe
-                            src={videoUrl}
-                            className="w-full h-full"
-                            allow="autoplay"
-                            title="Property Video Preview"
-                            onLoad={() => console.log('Video iframe loaded:', videoUrl)}
-                            onError={(e) => {
-                                console.error('Video iframe error:', videoUrl, e);
-                                toast.error('Failed to load video preview. File may need time to process.');
-                            }}
-                        />
+                        <video src={videoUrl} controls preload="metadata" className="w-full h-full bg-black" />
                         <div className="absolute top-3 right-3 z-20">
                             <button
                                 type="button"
@@ -145,14 +113,14 @@ export function VideoUpload({
                         </div>
                         <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg border border-white/10">
                             <Play className="w-3 h-3 fill-white" />
-                            GOOGLE DRIVE VIDEO
+                            VIDEO
                         </div>
                     </div>
                 )}
             </div>
 
             <p className="text-xs text-muted-foreground">
-                Upload a video showcasing the property (optional). The video will be stored in Google Drive and embedded for playback.
+                Upload a video showcasing the property (optional). Shown on the property page.
             </p>
         </div>
     );

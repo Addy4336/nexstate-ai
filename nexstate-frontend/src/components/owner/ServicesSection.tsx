@@ -1,5 +1,6 @@
 'use client';
 
+import { brand } from "@nexstate/brand";
 import Image from 'next/image';
 import { ArrowDown, ArrowUpRight, Home, Key, Wallet, Shield, Zap, TrendingUp, Sparkles, Clock } from 'lucide-react';
 import Link from 'next/link';
@@ -37,7 +38,7 @@ export default function ServicesSection() {
                                 Why Partner With Us?
                             </span>
                             <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium leading-tight text-foreground">
-                                HOPO Homes for <br />
+                                {brand.name} for <br />
                                 Individual Owners
                             </h2>
                         </div>
@@ -154,7 +155,7 @@ export default function ServicesSection() {
                             <div className="px-2 pb-2">
                                 <h3 className="text-lg md:text-xl font-medium text-card-foreground mb-1">Maximized <br /> Financial Returns</h3>
                                 <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">
-                                    Enjoy up to 30% higher rental yields, on-time rent payments, and stable long-term contracts (up to 5 years).
+                                    Enjoy up to {brand.claims.yieldUplift} higher rental yields, on-time rent payments, and stable long-term contracts (up to {brand.claims.maxLeaseYears} years).
                                 </p>
                             </div>
                         </div>

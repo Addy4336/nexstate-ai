@@ -1,5 +1,5 @@
 # ================================
-# HOPO Homes CMS - Dockerfile
+# NexState CMS - Dockerfile
 # Multi-stage build for Next.js with Bun
 # ================================
 

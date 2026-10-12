@@ -19,6 +19,7 @@ export default function SetupPage() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
+    const [token, setToken] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -47,7 +48,7 @@ export default function SetupPage() {
 
         try {
             // Set the password (will create user if doesn't exist)
-            const result = await setInitialAdminPassword({ email, password, name });
+            const result = await setInitialAdminPassword({ email, password, name, token });
 
             if (result.error) {
                 toast.error(result.error);
@@ -93,6 +94,11 @@ export default function SetupPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
+                            <Label htmlFor="token">Setup Token (if configured)</Label>
+                            <Input id="token" type="password" value={token} onChange={(e) => setToken(e.target.value)} />
+                        </div>
+
+                        <div className="space-y-2">
                             <Label htmlFor="name">Full Name</Label>
                             <Input
                                 id="name"
@@ -109,7 +115,7 @@ export default function SetupPage() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="admin@NexState.ai"
+                                placeholder="admin@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required

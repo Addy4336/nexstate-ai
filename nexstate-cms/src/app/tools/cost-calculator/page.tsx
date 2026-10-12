@@ -1,8 +1,9 @@
+import { brand } from "@nexstate/brand";
 import { TenantCostCalculator } from "@/components/calculators/TenantCostCalculator";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Rental Cost Calculator for Tenants | HOPO Homes",
+    title: `Rental Cost Calculator for Tenants | ${brand.name}`,
     description: "Compare total rental costs across different stay durations. Calculate your complete cost breakdown including rent, utilities, and fees.",
 };
 

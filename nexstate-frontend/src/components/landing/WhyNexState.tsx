@@ -1,5 +1,6 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { Bot, Armchair, Clock, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -8,7 +9,7 @@ const features = [
     {
         icon: <Bot className="w-8 h-8 text-primary-foreground" />,
         title: "Fully managed, ready-to-move-in AI smart homes",
-        description: "NexState AI manages everything from dynamic yield optimization to predictive maintenance, ensuring owners get maximum returns and residents enjoy seamless, intelligent stays.",
+        description: `${brand.name} manages everything from dynamic yield optimization to predictive maintenance, ensuring owners get maximum returns and residents enjoy seamless, intelligent stays.`,
         className: "md:col-span-4 bg-primary text-primary-foreground border-none",
         iconBg: "bg-primary-foreground/20",
         lightText: true
@@ -62,7 +63,7 @@ export default function WhyNexState() {
                         viewport={{ once: true }}
                         className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl mb-6"
                     >
-                        Why NexState AI?
+                        Why {brand.name}?
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}

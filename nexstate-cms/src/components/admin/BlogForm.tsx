@@ -1,6 +1,8 @@
 "use client";
 
+import { brand } from "@nexstate/brand";
 import { useState, useMemo } from "react";
+import { sanitizeBlogHtml } from "@/lib/sanitize";
 import { ImageUpload } from "./ImageUpload";
 import { RichTextEditor } from "./RichTextEditor";
 import { Button } from "@/components/ui/button";
@@ -41,7 +43,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
     const [title, setTitle] = useState(initialData?.title || "");
     const [slug, setSlug] = useState(initialData?.slug || "");
     const [content, setContent] = useState(initialData?.content || "");
-    const [folderId, setFolderId] = useState(initialData?.drive_folder_id || "");
+
     const [editorMode, setEditorMode] = useState<"richtext" | "markdown">(
         initialData?.content_format === "markdown" ? "markdown" : "richtext"
     );
@@ -88,7 +90,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
     const handleSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
         formData.set("images", images.join(","));
-        formData.set("folderId", folderId);
+
         formData.set("slug", slug);
         formData.set("content", content);
         formData.set("content_format", editorMode === "markdown" ? "markdown" : "html");
@@ -145,7 +147,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
                                 <Label htmlFor="slug">URL Slug</Label>
                                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-input focus-within:ring-2 focus-within:ring-inset focus-within:ring-ring overflow-hidden">
                                     <span className="flex select-none items-center pl-3 pr-1 bg-muted/30 text-muted-foreground text-sm whitespace-nowrap border-r">
-                                        nexstate.ai/blog/
+                                        {new URL(brand.siteUrl).host}/blog/
                                     </span>
                                     <input
                                         type="text"
@@ -220,7 +222,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
                                         <div className="min-h-[400px] border rounded-md p-6 bg-muted/30">
                                             <div 
                                                 className="prose prose-sm max-w-none"
-                                                dangerouslySetInnerHTML={{ __html: previewHtml }}
+                                                dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(previewHtml) }}
                                                 style={{
                                                     fontSize: '16px',
                                                     lineHeight: '1.75',
@@ -298,7 +300,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
                         <div className="space-y-2">
                             <ImageUpload
                                 onImagesChange={setImages}
-                                onFolderIdChange={setFolderId}
+        
                                 defaultImages={initialData?.images}
                                 folderName={title ? `blog-${title}` : "blog-images"}
                                 layoutMode="stack"
