@@ -7,6 +7,7 @@ import { blogsRoutes } from "./routes/blogs";
 import { faqsRoutes } from "./routes/faqs";
 import { storageRoutes } from "./routes/storage";
 import { aiRoutes } from "./routes/ai";
+import { paymentsRoutes } from "./routes/payments";
 import { initializeCronJobs } from "../lib/cron-jobs";
 
 // Initialize cron jobs when the API starts
@@ -31,6 +32,7 @@ export const api = new Elysia({ prefix: "/api" })
                 { name: "Blogs", description: "Blog content endpoints" },
                 { name: "FAQs", description: "FAQ content endpoints" },
                 { name: "Storage", description: "Image storage endpoints" },
+                { name: "Payments", description: "Payment sessions and webhooks" },
             ],
         },
     }))
@@ -55,7 +57,8 @@ export const api = new Elysia({ prefix: "/api" })
     .use(favoritesRoutes)
     .use(blogsRoutes)
     .use(faqsRoutes)
-    .use(storageRoutes);
+    .use(storageRoutes)
+    .use(paymentsRoutes);
 
 // Export the type for Eden Treaty client
 export type Api = typeof api;

@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "crypto";
+import { randomBytes, timingSafeEqual } from "crypto";
 /**
  * TotalPay Checkout Integration
  * 
@@ -71,7 +71,7 @@ export interface CheckoutCallbackData {
  */
 export function generateOrderNumber(): string {
   const timestamp = Date.now();
-  const random = Math.floor(Math.random() * 1000);
+  const random = randomBytes(8).toString("hex"); // unguessable: order number gates the public status lookup
   return `HOPO-${timestamp}-${random}`;
 }
 

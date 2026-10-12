@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import { requireStaffGuard } from "../guards";
+import { areDatesAvailable, calculateRentalCost } from "@/lib/rental-utils";
 import { supabaseAdmin } from "@/lib/db";
 import { 
     createTotalPaySession, 
@@ -21,7 +22,6 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
         try {
             const { 
                 propertyId, 
-                amount, 
                 customerEmail, 
                 customerName, 
                 customerPhone,
@@ -33,19 +33,47 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             } = body;
 
             // Validate input
-            if (!amount || !customerEmail || !customerName) {
+            if (!propertyId || !checkInDate || !checkOutDate || !customerEmail || !customerName) {
                 return { 
                     success: false, 
-                    error: "Missing required fields: amount, customerEmail, customerName" 
+                    error: "Missing required fields: propertyId, checkInDate, checkOutDate, customerEmail, customerName" 
                 };
             }
 
-            // Validate amount
+            if (!/^[^s@]+@[^s@]+.[^s@]+$/.test(customerEmail)) {
+                return { success: false, error: "Invalid email address" };
+            }
+
+            const start = new Date(checkInDate);
+            const end = new Date(checkOutDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
+                return { success: false, error: "Invalid dates" };
+            }
+
+            // Price is always computed server-side from the stored property rate
+            const { data: property, error: propError } = await supabaseAdmin
+                .from("property")
+                .select("id, price, status, current_rental_end, rental_periods")
+                .eq("id", propertyId)
+                .single();
+
+            if (propError || !property || property.status === "archived") {
+                return { success: false, error: "Property not found" };
+            }
+
+            const availability = areDatesAvailable(
+                checkInDate,
+                checkOutDate,
+                property.current_rental_end,
+                property.rental_periods || []
+            );
+            if (!availability.available) {
+                return { success: false, error: availability.reason || "Dates not available" };
+            }
+
+            const amount = calculateRentalCost(checkInDate, checkOutDate, Number(property.price)).total;
             if (!validatePaymentAmount(amount)) {
-                return {
-                    success: false,
-                    error: "Invalid payment amount"
-                };
+                return { success: false, error: "Invalid payment amount" };
             }
 
             // Generate unique order number
@@ -58,7 +86,7 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
                 .from("payments")
                 .insert({
                     order_number: orderNumber,
-                    property_id: propertyId || null,
+                    property_id: propertyId,
                     enquiry_id: enquiryId || null,
                     user_email: customerEmail,
                     user_name: customerName,
@@ -86,7 +114,7 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
                 currency: 'AED',
                 customerEmail,
                 customerName,
-                description: description || `Property Booking - Order ${orderNumber}`,
+                description: `Property Booking - Order ${orderNumber}`,
                 successUrl: `${baseUrl}/payment/success?order_number=${orderNumber}`,
                 cancelUrl: `${baseUrl}/payment/cancel?order_number=${orderNumber}`,
                 notificationUrl: `${baseUrl}/api/payments/webhook`,
@@ -134,7 +162,7 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
     }, {
         body: t.Object({
             propertyId: t.Optional(t.String()),
-            amount: t.Number(),
+            amount: t.Optional(t.Number()), // ignored: computed server-side
             customerEmail: t.String(),
             customerName: t.String(),
             customerPhone: t.Optional(t.String()),
@@ -196,6 +224,11 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             if (fetchError || !payment) {
                 console.error("Payment not found:", payload.order_number, fetchError);
                 return 'ERROR';
+            }
+
+            // Already processed: acknowledge without re-applying the booking
+            if (payment.status === "success") {
+                return "OK";
             }
 
             // Map TotalPay Checkout statuses to our internal statuses
@@ -310,7 +343,7 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
     })
 
     /**
-     * Get payment by order number
+     * Get payment by order number (public: unguessable order number, non-PII fields only)
      * GET /api/payments/:orderNumber
      */
     .get("/:orderNumber", async ({ params }) => {
@@ -318,7 +351,8 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             const { data: payment, error } = await supabaseAdmin
                 .from("payments")
                 .select(`
-                    *,
+                    order_number, amount, currency, status, created_at, paid_at,
+                    check_in_date, check_out_date, guests, totalpay_transaction_id,
                     property:property_id (
                         id,
                         title
@@ -342,8 +376,7 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             return { success: false, error: error.message };
         }
     }, {
-        beforeHandle: requireStaffGuard,
-        params: t.Object({
+                params: t.Object({
             orderNumber: t.String(),
         }),
         detail: {
