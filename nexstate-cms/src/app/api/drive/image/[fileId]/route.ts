@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDriveClient } from '@/lib/google-drive';
+import { isAllowedMediaType, SAFE_FILE_ID } from '@/lib/media-guard';
 
 export async function GET(
     request: NextRequest,
@@ -10,7 +11,7 @@ export async function GET(
 
         console.log('Drive image proxy request:', { fileId });
 
-        if (!fileId) {
+        if (!fileId || !SAFE_FILE_ID.test(fileId)) {
             return NextResponse.json(
                 { error: 'File ID is required' },
                 { status: 400 }
@@ -25,13 +26,16 @@ export async function GET(
             fields: 'id, name, mimeType, size',
         });
 
-        console.log('Drive file metadata:', file.data);
 
         if (!file.data) {
             return NextResponse.json(
                 { error: 'File not found' },
                 { status: 404 }
             );
+        }
+
+        if (!isAllowedMediaType(file.data.mimeType)) {
+            return NextResponse.json({ error: 'Unsupported media type' }, { status: 415 });
         }
 
         // Download file content
@@ -50,7 +54,9 @@ export async function GET(
         return new NextResponse(buffer, {
             status: 200,
             headers: {
-                'Content-Type': file.data.mimeType || 'image/jpeg',
+                'Content-Type': file.data.mimeType,
+                'X-Content-Type-Options': 'nosniff',
+                'Content-Security-Policy': "default-src 'none'; sandbox",
                 'Cache-Control': 'public, max-age=31536000, immutable',
                 'Content-Length': buffer.length.toString(),
             },
@@ -65,9 +71,7 @@ export async function GET(
         });
         return NextResponse.json(
             { 
-                error: 'Failed to fetch file from Google Drive', 
-                details: error.message,
-                code: error.code 
+                error: 'Failed to fetch file from Google Drive'
             },
             { status: 500 }
         );

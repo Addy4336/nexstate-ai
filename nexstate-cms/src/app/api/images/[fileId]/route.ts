@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDriveClient } from "@/lib/google-drive";
+import { isAllowedMediaType, SAFE_FILE_ID } from "@/lib/media-guard";
 
 export async function GET(
     request: NextRequest,
@@ -7,7 +8,7 @@ export async function GET(
 ) {
     const fileId = (await params).fileId;
 
-    if (!fileId) {
+    if (!fileId || !SAFE_FILE_ID.test(fileId)) {
         return new NextResponse("File ID missing", { status: 400 });
     }
 
@@ -20,7 +21,10 @@ export async function GET(
             fields: "mimeType, name, size",
         });
 
-        const mimeType = metadata.data.mimeType || "application/octet-stream";
+        const mimeType = metadata.data.mimeType;
+        if (!isAllowedMediaType(mimeType)) {
+            return new NextResponse("Unsupported media type", { status: 415 });
+        }
 
         // Get the file content as a stream
         const response = await drive.files.get(
@@ -37,6 +41,8 @@ export async function GET(
         return new NextResponse(stream, {
             headers: {
                 "Content-Type": mimeType,
+                "X-Content-Type-Options": "nosniff",
+                "Content-Security-Policy": "default-src 'none'; sandbox",
                 "Cache-Control": "public, max-age=31536000, immutable",
             },
         });
