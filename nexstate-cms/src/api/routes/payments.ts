@@ -1,4 +1,5 @@
 import { Elysia, t } from "elysia";
+import { requireStaffGuard } from "../guards";
 import { supabaseAdmin } from "@/lib/db";
 import { 
     createTotalPaySession, 
@@ -159,7 +160,6 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             console.log('='.repeat(60));
             console.log('🔔 CALLBACK RECEIVED FROM TOTALPAY');
             console.log('='.repeat(60));
-            console.log('Headers:', JSON.stringify(headers, null, 2));
             console.log('Body:', JSON.stringify(body, null, 2));
             console.log('='.repeat(60));
             
@@ -182,9 +182,8 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             // Verify callback signature for security
             const isValidSignature = verifyCallbackSignature(payload);
             if (!isValidSignature) {
-                console.error("Invalid callback signature!");
-                console.error("Received hash:", payload.hash);
-                console.warn("⚠️  Processing anyway for testing, but this should be rejected in production!");
+                console.error("Invalid callback signature - rejecting");
+                return "ERROR";
             }
 
             // Find payment by order number
@@ -200,6 +199,12 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             }
 
             // Map TotalPay Checkout statuses to our internal statuses
+            // Amount must match what we stored server-side when the session was created
+            if (payload.order_amount !== undefined && Number(payload.order_amount) !== Number(payment.amount)) {
+                console.error("Callback amount mismatch for order", payload.order_number);
+                return "ERROR";
+            }
+
             const internalStatus = mapOrderStatusToPaymentStatus(payload.order_status);
 
             // Update payment status
@@ -337,6 +342,7 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             return { success: false, error: error.message };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         params: t.Object({
             orderNumber: t.String(),
         }),
@@ -384,6 +390,7 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             return { success: false, error: error.message };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         query: t.Object({
             status: t.Optional(t.String()),
             limit: t.Optional(t.String()),
@@ -426,6 +433,7 @@ export const paymentsRoutes = new Elysia({ prefix: "/payments" })
             return { success: false, error: error.message };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         detail: {
             tags: ["Payments"],
             summary: "Payment statistics",

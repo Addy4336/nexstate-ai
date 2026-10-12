@@ -118,6 +118,9 @@ export function calculateCallbackHash(
  * Verify callback signature from TotalPay
  */
 export function verifyCallbackSignature(callbackData: CheckoutCallbackData): boolean {
+  if (!callbackData?.hash || typeof callbackData.hash !== "string") return false;
+  if (!MERCHANT_KEY || !PASSWORD) return false; // fail closed when not configured
+
   const expectedHash = calculateCallbackHash(
     callbackData.id,
     callbackData.order_number,
@@ -126,15 +129,9 @@ export function verifyCallbackSignature(callbackData: CheckoutCallbackData): boo
     callbackData.order_description
   );
 
-  const isValid = expectedHash === callbackData.hash;
-  
-  console.log('🔐 Callback hash verification:', {
-    received: callbackData.hash.substring(0, 20) + '...',
-    expected: expectedHash.substring(0, 20) + '...',
-    valid: isValid,
-  });
-
-  return isValid;
+  const a = Buffer.from(expectedHash);
+  const b = Buffer.from(callbackData.hash);
+  return a.length === b.length && require("crypto").timingSafeEqual(a, b);
 }
 
 /**
