@@ -19,6 +19,8 @@ export const auth = betterAuth({
     ],
     emailAndPassword: {
         enabled: true,
+        // Staff are provisioned via inviteUser; no public self-registration
+        disableSignUp: true,
     },
     user: {
         modelName: "user",
@@ -31,6 +33,7 @@ export const auth = betterAuth({
             role: {
                 type: "string",
                 defaultValue: "user",
+                input: false, // clients can never set their own role
             },
         },
     },
