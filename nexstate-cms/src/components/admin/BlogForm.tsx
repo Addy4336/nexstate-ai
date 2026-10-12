@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { sanitizeBlogHtml } from "@/lib/sanitize";
 import { ImageUpload } from "./ImageUpload";
 import { RichTextEditor } from "./RichTextEditor";
 import { Button } from "@/components/ui/button";
@@ -220,7 +221,7 @@ export function BlogForm({ initialData }: BlogFormProps) {
                                         <div className="min-h-[400px] border rounded-md p-6 bg-muted/30">
                                             <div 
                                                 className="prose prose-sm max-w-none"
-                                                dangerouslySetInnerHTML={{ __html: previewHtml }}
+                                                dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(previewHtml) }}
                                                 style={{
                                                     fontSize: '16px',
                                                     lineHeight: '1.75',

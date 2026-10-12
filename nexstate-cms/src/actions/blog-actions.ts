@@ -4,6 +4,7 @@ import { requireStaff, requireManager } from "@/lib/auth-utils";
 
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { sanitizeBlogHtml } from "@/lib/sanitize";
 
 // Helper function to generate slug from title
 function generateSlug(title: string): string {
@@ -18,12 +19,13 @@ function generateSlug(title: string): string {
 export async function createBlogPost(formData: FormData) {
     await requireStaff();
     const title = formData.get("title") as string;
-    const content = formData.get("content") as string;
+    const rawContent = formData.get("content") as string;
     const excerpt = formData.get("excerpt") as string;
     const category = formData.get("category") as string || "general";
     const status = formData.get("status") as string || "draft";
     const drive_folder_id = formData.get("folderId") as string;
     const content_format = formData.get("content_format") as string || "html";
+    const content = content_format === "markdown" ? rawContent : sanitizeBlogHtml(rawContent);
 
     // Generate slug from title
     let slug = formData.get("slug") as string;
@@ -86,12 +88,13 @@ export async function createBlogPost(formData: FormData) {
 export async function updateBlogPost(id: string, formData: FormData) {
     await requireStaff();
     const title = formData.get("title") as string;
-    const content = formData.get("content") as string;
+    const rawContent = formData.get("content") as string;
     const excerpt = formData.get("excerpt") as string;
     const category = formData.get("category") as string || "general";
     const status = formData.get("status") as string || "draft";
     const drive_folder_id = formData.get("folderId") as string;
     const content_format = formData.get("content_format") as string || "html";
+    const content = content_format === "markdown" ? rawContent : sanitizeBlogHtml(rawContent);
 
     // Generate slug from title if not provided
     let slug = formData.get("slug") as string;
