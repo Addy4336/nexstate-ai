@@ -1,9 +1,18 @@
 import { Elysia, t } from "elysia";
+import { redactTenantData, getApiSession, requireStaffGuard } from "../guards";
 import { supabaseAdmin } from "@/lib/db";
 import { areDatesAvailable, calculateRentalCost, validateMinimumStay, enrichPropertiesWithTenantInfo } from "@/lib/rental-utils";
 import { RentalPeriod } from "@/types/property";
 
 export const propertiesRoutes = new Elysia({ prefix: "/properties" })
+    // Never expose tenant/booking data to non-staff clients
+    .onAfterHandle(async ({ request, response }) => {
+        if (!response || typeof response !== "object" || !/rental_periods|current_tenant/.test(JSON.stringify(response))) return;
+        const session = await getApiSession(request);
+        const role = session?.user?.role as string | undefined;
+        if (role && ["admin", "manager", "editor"].includes(role)) return;
+        return redactTenantData(response);
+    })
     // Get all properties (public) - shows all with rental status
     .get("/", async ({ query }) => {
         const { limit, featured } = query;
@@ -760,6 +769,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             message: "Booking confirmed successfully!",
         };
     }, {
+        beforeHandle: requireStaffGuard,
         params: t.Object({
             id: t.String(),
         }),
@@ -806,6 +816,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             },
         };
     }, {
+        beforeHandle: requireStaffGuard,
         params: t.Object({
             id: t.String(),
         }),
@@ -841,6 +852,7 @@ export const propertiesRoutes = new Elysia({ prefix: "/properties" })
             };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         detail: {
             tags: ["Properties"],
             summary: "Update rental statuses",

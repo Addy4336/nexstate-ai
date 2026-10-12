@@ -1,4 +1,5 @@
 import { Elysia, t } from "elysia";
+import { requireStaffGuard } from "../guards";
 import { supabaseAdmin } from "@/lib/db";
 
 const BUCKET_NAME = "property-images";
@@ -49,6 +50,7 @@ export const storageRoutes = new Elysia({ prefix: "/storage" })
             return { success: false, error: error.message };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         detail: {
             tags: ["Storage"],
             summary: "Initialize storage bucket",
@@ -84,6 +86,7 @@ WHERE name = 'property-images';
             return { success: false, error: error.message };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         detail: {
             tags: ["Storage"],
             summary: "Update bucket configuration",
@@ -154,6 +157,7 @@ WHERE name = 'property-images';
             return { success: false, error: error.message };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         body: t.Object({
             file: t.Object({
                 data: t.String(),
@@ -193,6 +197,7 @@ WHERE name = 'property-images';
             return { success: false, error: error.message };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         body: t.Object({
             path: t.String(),
         }),
@@ -223,6 +228,7 @@ WHERE name = 'property-images';
             return { success: false, error: error.message };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         body: t.Object({
             path: t.String(),
             expiresIn: t.Optional(t.Number()),
@@ -272,6 +278,7 @@ WHERE name = 'property-images';
             return { success: false, error: error.message, data: [] };
         }
     }, {
+        beforeHandle: requireStaffGuard,
         params: t.Object({
             folder: t.String(),
         }),
