@@ -2,6 +2,7 @@ import { exchangeCodeForTokens, saveZohoTokens } from "@/lib/zoho-crm";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/db";
+import { verifyOAuthState } from "@/lib/oauth-guard";
 
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
@@ -14,6 +15,12 @@ export async function GET(request: NextRequest) {
     console.log("  - Has code:", !!code);
     console.log("  - Location:", location);
     console.log("  - Accounts server:", accountsServer);
+
+    if (!verifyOAuthState("zoho", request)) {
+        return NextResponse.redirect(
+            new URL("/admin/integrations?error=Invalid%20OAuth%20state", request.url)
+        );
+    }
 
     if (error) {
         console.error("Zoho OAuth error:", error);
