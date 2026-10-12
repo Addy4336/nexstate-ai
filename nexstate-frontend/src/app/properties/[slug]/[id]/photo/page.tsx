@@ -3,7 +3,7 @@ import React, { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Loader2, ImageOff, X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
-import { convertGoogleDriveUrl, processImageUrls } from '@/lib/image-utils';
+import { processImageUrls } from '@/lib/image-utils';
 
 // API base URL
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';

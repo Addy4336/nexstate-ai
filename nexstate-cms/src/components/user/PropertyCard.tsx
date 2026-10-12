@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Heart, MapPin, BedDouble, Bath, Maximize } from "lucide-react";
 import type { PublicProperty } from "@/lib/public-property";
-import { getDriveImageUrl } from "@/lib/utils";
+import { getImageUrl } from "@/lib/utils";
 import { useState } from "react";
 import { FavoriteButton } from "./FavoriteButton";
 
@@ -21,10 +21,10 @@ export function PropertyCard({ property, layout = "grid" }: PropertyCardProps) {
         if (imgError) return PLACEHOLDER_IMAGE;
 
         if (property.images && property.images.length > 0 && property.images[0]) {
-            return getDriveImageUrl(property.images[0]);
+            return getImageUrl(property.images[0]);
         }
         if (property.cover_image && property.cover_image.length > 0 && property.cover_image[0]) {
-            return getDriveImageUrl(property.cover_image[0]);
+            return getImageUrl(property.cover_image[0]);
         }
         return PLACEHOLDER_IMAGE;
     };

@@ -7,76 +7,14 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Only hosts the site actually loads images from. Never use a '**' wildcard here:
+    // it turns the image optimizer into an open proxy for anyone on the internet.
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-      {
-        protocol: 'http',
-        hostname: '**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'api.dicebear.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'randomuser.me',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'plus.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'drive.google.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'drive.usercontent.google.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.weserv.nl',
-      },
-      {
-        protocol: 'https',
-        hostname: 'zrtqlkcwvmlmqcrdxdry.supabase.co',
-      },
-      {
-        protocol: 'https',
-        hostname: 'slelguoygbfzlpylpxfs.supabase.co',
-      },
-      {
-        protocol: 'https',
-        hostname: 'static.vecteezy.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'imgcdn.stablediffusionweb.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'incubees.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'drive.slaab.ai',
-      },
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com"
-      }
-
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'plus.unsplash.com' },
+      { protocol: 'https', hostname: 'randomuser.me' },
+      // Supabase Storage (uploaded property/blog media)
+      { protocol: 'https', hostname: '*.supabase.co' },
     ],
   },
 };

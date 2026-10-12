@@ -1,5 +1,5 @@
 import { getPropertyById } from "@/lib/properties";
-import { getDriveImageUrl } from "@/lib/utils";
+import { getImageUrl } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -71,7 +71,7 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                         <div className="relative aspect-video rounded-2xl overflow-hidden shadow-sm bg-muted">
                             {property.images && property.images.length > 0 ? (
                                 <img
-                                    src={getDriveImageUrl(property.images[0])}
+                                    src={getImageUrl(property.images[0])}
                                     alt={property.title}
                                     className="w-full h-full object-cover"
                                 />
@@ -97,7 +97,7 @@ export default async function PropertyDetailPage({ params }: PropertyPageProps) 
                                 {property.images.slice(1, 5).map((img, i) => (
                                     <div key={i} className="relative aspect-[4/3] rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-90 transition-opacity">
                                         <img
-                                            src={getDriveImageUrl(img)}
+                                            src={getImageUrl(img)}
                                             alt={`${property.title} ${i + 2}`}
                                             className="w-full h-full object-cover"
                                         />

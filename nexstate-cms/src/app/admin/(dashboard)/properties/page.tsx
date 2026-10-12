@@ -7,7 +7,7 @@ import { ArchivePropertyButton } from "@/components/admin/ArchivePropertyButton"
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth-utils";
-import { getDriveImageUrl } from "@/lib/utils";
+import { getImageUrl } from "@/lib/utils";
 import { StatusFilter } from "@/components/admin/StatusFilter";
 
 async function getProperties(statusFilter?: string) {
@@ -67,7 +67,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                         <div className="relative aspect-video">
                             {property.images && property.images.length > 0 ? (
                                 <Image
-                                    src={getDriveImageUrl(property.images[0])}
+                                    src={getImageUrl(property.images[0])}
                                     alt={property.title}
                                     fill
                                     className="object-cover"

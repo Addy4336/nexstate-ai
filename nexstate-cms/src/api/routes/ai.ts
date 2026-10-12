@@ -1,6 +1,5 @@
 import { Elysia, t } from "elysia";
 import { supabaseAdmin } from "../../lib/db";
-import { processLeadEnquiry } from "../../lib/crm-adapter";
 import { rateLimit, requireStaffGuard } from "../guards";
 
 // Helper function to call Gemini API Free Tier (defaults to Gemini 3 Flash generation)

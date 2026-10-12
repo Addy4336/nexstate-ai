@@ -13,8 +13,7 @@ import {
     X,
     Home,
     ChevronRight,
-    Plug,
-    Megaphone,
+      Megaphone,
     Calculator,
     KeyRound,
 } from "lucide-react";
@@ -76,12 +75,6 @@ const sidebarLinks: SidebarLink[] = [
         href: "/admin/settings",
         icon: Settings,
         // Visible to all staff
-    },
-    {
-        label: "Integrations",
-        href: "/admin/integrations",
-        icon: Plug,
-        roles: ["admin"], // Only visible to admins
     },
 ];
 

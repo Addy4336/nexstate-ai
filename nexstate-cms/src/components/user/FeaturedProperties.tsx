@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { PublicProperty } from "@/lib/public-property";
 import Link from "next/link";
 import { FavoriteButton } from "@/components/user/FavoriteButton";
-import { getDriveImageUrl } from "@/lib/utils";
+import { getImageUrl } from "@/lib/utils";
 
 interface FeaturedPropertiesProps {
   properties: PublicProperty[];
@@ -24,10 +24,10 @@ export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
   // Get the first image or a placeholder
   const getPropertyImage = (property: PublicProperty) => {
     if (property.images && property.images.length > 0 && property.images[0]) {
-      return getDriveImageUrl(property.images[0]);
+      return getImageUrl(property.images[0]);
     }
     if (property.cover_image && property.cover_image.length > 0 && property.cover_image[0]) {
-      return getDriveImageUrl(property.cover_image[0]);
+      return getImageUrl(property.cover_image[0]);
     }
     return PLACEHOLDER_IMAGE;
   };

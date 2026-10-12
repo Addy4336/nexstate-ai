@@ -8,32 +8,11 @@ const nextConfig: NextConfig = {
   // Enable standalone output for Docker
   // output: 'standalone',
 
-  // Skip TypeScript errors during Docker build
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'placehold.co',
-      },
-      {
-        protocol: 'https',
-        hostname: 'drive.google.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'drive.slaab.ai',
-      },
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'docs.google.com',
       },
       {
         protocol: 'https',
