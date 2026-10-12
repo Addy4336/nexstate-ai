@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "crypto";
 /**
  * TotalPay Checkout Integration
  * 
@@ -131,7 +132,7 @@ export function verifyCallbackSignature(callbackData: CheckoutCallbackData): boo
 
   const a = Buffer.from(expectedHash);
   const b = Buffer.from(callbackData.hash);
-  return a.length === b.length && require("crypto").timingSafeEqual(a, b);
+  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 /**
