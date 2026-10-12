@@ -3,13 +3,13 @@
 import { motion } from "framer-motion";
 import { MapPin, Bed, Bath, Square, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Property } from "@/types/property";
+import type { PublicProperty } from "@/lib/public-property";
 import Link from "next/link";
 import { FavoriteButton } from "@/components/user/FavoriteButton";
 import { getDriveImageUrl } from "@/lib/utils";
 
 interface FeaturedPropertiesProps {
-  properties: Property[];
+  properties: PublicProperty[];
 }
 
 export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
@@ -22,7 +22,7 @@ export function FeaturedProperties({ properties }: FeaturedPropertiesProps) {
   const PLACEHOLDER_IMAGE = "https://placehold.co/600x400/1a1a2e/ffffff?text=No+Image";
 
   // Get the first image or a placeholder
-  const getPropertyImage = (property: Property) => {
+  const getPropertyImage = (property: PublicProperty) => {
     if (property.images && property.images.length > 0 && property.images[0]) {
       return getDriveImageUrl(property.images[0]);
     }

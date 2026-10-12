@@ -1,6 +1,7 @@
 import { Elysia, t } from "elysia";
 import { supabaseAdmin } from "@/lib/db";
 import { getApiSession, requireSessionGuard } from "../guards";
+import { PUBLIC_PROPERTY_SELECT, toPublicProperty } from "@/lib/public-property";
 
 export const favoritesRoutes = new Elysia({ prefix: "/favorites" })
     // All favorites endpoints act on the signed-in user only
@@ -56,10 +57,7 @@ export const favoritesRoutes = new Elysia({ prefix: "/favorites" })
         const userId = (await getApiSession(request))!.user.id;
         const { data, error } = await supabaseAdmin
             .from("favorite")
-            .select(`
-                *,
-                property(*)
-            `)
+            .select(`created_at, property:property_id (${PUBLIC_PROPERTY_SELECT})`)
             .eq("user_id", userId)
             .order("created_at", { ascending: false });
         
@@ -67,7 +65,12 @@ export const favoritesRoutes = new Elysia({ prefix: "/favorites" })
             return { success: false, error: error.message, data: [] };
         }
         
-        return { success: true, data: data || [] };
+        // Public property shape only; hide listings that are no longer public
+        const favorites = (data || [])
+            .filter((row: any) => row.property && ["available", "rented"].includes(row.property.status))
+            .map((row: any) => ({ created_at: row.created_at, property: toPublicProperty(row.property) }));
+
+        return { success: true, data: favorites };
     }, {
         params: t.Object({
             userId: t.String(),

@@ -32,9 +32,9 @@ interface Property {
     cover_image: string[] | null;
     featured: boolean;
     amenities: string[] | null;
-    current_rental_start: string | null;
-    current_rental_end: string | null;
-    rental_periods: any[];
+    is_currently_rented: boolean;
+    rented_until: string | null;
+    booked_ranges: { start_date: string; end_date: string; status: string }[];
 }
 
 interface ApiResponse {
@@ -526,8 +526,8 @@ function PropertiesContent() {
                                         </p>
                                         
                                         {/* Available From Date for Currently Rented Properties */}
-                                        {property.is_currently_rented && property.current_tenant?.check_out_date && (() => {
-                                            const checkoutDate = new Date(property.current_tenant.check_out_date);
+                                        {property.is_currently_rented && property.rented_until && (() => {
+                                            const checkoutDate = new Date(property.rented_until);
                                             const tomorrow = new Date(checkoutDate);
                                             tomorrow.setDate(tomorrow.getDate() + 1);
                                             
