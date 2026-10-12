@@ -3,6 +3,12 @@
 import { supabaseAdmin } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { getSession } from "@/lib/auth-utils";
+
+async function resolveUserId(): Promise<string> {
+    const session = await getSession();
+    return session?.user?.id || await getGuestUserId();
+}
 
 // Get or create a guest user ID from cookies
 async function getGuestUserId(): Promise<string> {
@@ -18,9 +24,9 @@ async function getGuestUserId(): Promise<string> {
     return guestId;
 }
 
-export async function toggleFavorite(propertyId: string, userId?: string) {
-    // Use provided userId or generate guest ID
-    const effectiveUserId = userId || await getGuestUserId();
+export async function toggleFavorite(propertyId: string, _userId?: string) {
+    // Identity comes from the session (or guest cookie), never from the caller
+    const effectiveUserId = await resolveUserId();
     
     try {
         // Check if already favorited
@@ -58,8 +64,9 @@ export async function toggleFavorite(propertyId: string, userId?: string) {
     }
 }
 
-export async function getFavorites(userId: string) {
+export async function getFavorites(_userId?: string) {
     try {
+        const userId = await resolveUserId();
         const { data, error } = await supabaseAdmin
             .from("favorite")
             .select(`
@@ -81,8 +88,9 @@ export async function getFavorites(userId: string) {
     }
 }
 
-export async function getFavoritePropertyIds(userId: string): Promise<string[]> {
+export async function getFavoritePropertyIds(_userId?: string): Promise<string[]> {
     try {
+        const userId = await resolveUserId();
         const { data, error } = await supabaseAdmin
             .from("favorite")
             .select("property_id")
@@ -100,8 +108,9 @@ export async function getFavoritePropertyIds(userId: string): Promise<string[]> 
     }
 }
 
-export async function isFavorited(propertyId: string, userId: string): Promise<boolean> {
+export async function isFavorited(propertyId: string, _userId?: string): Promise<boolean> {
     try {
+        const userId = await resolveUserId();
         const { data } = await supabaseAdmin
             .from("favorite")
             .select("id")

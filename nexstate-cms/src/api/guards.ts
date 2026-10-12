@@ -66,3 +66,26 @@ export function redactTenantData<T>(value: T): T {
     }
     return value;
 }
+
+/** Simple in-memory per-IP rate limiter (per instance) for public, costly endpoints. */
+const hits = new Map<string, { count: number; reset: number }>();
+
+export function rateLimit(name: string, max: number, windowMs = 60_000) {
+    return ({ request, set }: Ctx) => {
+        const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+            || request.headers.get("x-real-ip")
+            || "unknown";
+        const key = name + ":" + ip;
+        const now = Date.now();
+        const entry = hits.get(key);
+        if (!entry || entry.reset < now) {
+            hits.set(key, { count: 1, reset: now + windowMs });
+            if (hits.size > 5000) for (const [k, v] of hits) if (v.reset < now) hits.delete(k);
+            return;
+        }
+        if (++entry.count > max) {
+            set.status = 429;
+            return { success: false, error: "Too many requests" };
+        }
+    };
+}

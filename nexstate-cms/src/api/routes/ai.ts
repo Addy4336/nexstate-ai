@@ -1,6 +1,7 @@
 import { Elysia, t } from "elysia";
 import { supabaseAdmin } from "../../lib/db";
 import { processLeadEnquiry } from "../../lib/crm-adapter";
+import { rateLimit, requireStaffGuard } from "../guards";
 
 // Helper function to call Gemini API Free Tier (defaults to Gemini 3 Flash generation)
 async function callGeminiAPI(
@@ -59,7 +60,7 @@ export const aiRoutes = new Elysia({ prefix: "/ai" })
     .post(
         "/parse-search",
         async ({ body }) => {
-            const prompt = body.prompt;
+            const prompt = body.prompt.slice(0, 500);
             const promptLower = prompt.toLowerCase();
 
             let matchedLocation = "";
@@ -132,6 +133,7 @@ export const aiRoutes = new Elysia({ prefix: "/ai" })
             };
         },
         {
+            beforeHandle: rateLimit("ai-parse", 20),
             body: t.Object({
                 prompt: t.String(),
             }),
@@ -188,6 +190,7 @@ export const aiRoutes = new Elysia({ prefix: "/ai" })
             };
         },
         {
+            beforeHandle: rateLimit("ai-recommend", 30),
             body: t.Object({
                 propertyId: t.String(),
                 limit: t.Optional(t.Number()),
@@ -248,6 +251,7 @@ Key Highlights:
             };
         },
         {
+            beforeHandle: requireStaffGuard,
             body: t.Object({
                 title: t.String(),
                 location: t.String(),
@@ -271,7 +275,8 @@ Key Highlights:
     .post(
         "/agent",
         async ({ body }) => {
-            const { message, conversationHistory = [] } = body;
+            const { conversationHistory = [] } = body;
+            const message = body.message.slice(0, 1000);
             const messageLower = message.toLowerCase();
 
             // 1. Tool Call: Property Search
@@ -312,6 +317,7 @@ Key Highlights:
             };
         },
         {
+            beforeHandle: rateLimit("ai-agent", 15),
             body: t.Object({
                 message: t.String(),
                 conversationHistory: t.Optional(t.Array(t.Any())),
